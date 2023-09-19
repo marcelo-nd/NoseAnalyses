@@ -30,3 +30,6 @@ done
 
 # Create custom database
 emu build-database LaCa --sequences /mnt/c/Users/Marcelo/Desktop/16s_nasal_strains.fasta --seq2tax /mnt/c/Users/Marcelo/Desktop/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/Marcelo/Desktop/taxonomy.tsv
+
+
+ . /mnt/c/Users/Marcelo/Documents/GitHub/NoseGenomicAnalyses/EmuWrapper/emu_wrapper.sh ./emu_std_database /mnt/c/Users/Marcelo/Desktop/230815_Marcelo/230816-Marcelo/230816-Marcelo/20230816_1015_MN31656_FAR91361_edfa8c58/fastq_pass/

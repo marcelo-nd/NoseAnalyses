@@ -33,3 +33,7 @@ emu build-database LaCa --sequences /mnt/c/Users/Marcelo/Desktop/16s_nasal_strai
 
 
  . /mnt/c/Users/Marcelo/Documents/GitHub/NoseGenomicAnalyses/EmuWrapper/emu_wrapper.sh ./emu_std_database /mnt/c/Users/Marcelo/Desktop/230815_Marcelo/230816-Marcelo/230816-Marcelo/20230816_1015_MN31656_FAR91361_edfa8c58/fastq_pass/
+
+
+ #fix line endings
+  sed -i 's/\r//' /mnt/c/Users/Marcelo/Documents/GitHub/NoseGenomicAnalyses/EmuWrapper/emu_wrapper.sh

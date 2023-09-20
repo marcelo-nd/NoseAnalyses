@@ -16,10 +16,14 @@ barcode_dir_list=`ls -d $2/$prefix*`
 # Iterate over the list of barcode directories.
 for bc_dir in $barcode_dir_list;
 do echo $bc_dir;
-export barcode_files=$bc_dir/fastaq/*;
+# If barcode directory exists
+if [ -d "$bc_dir/fastaq/" ];
+then export barcode_files=$bc_dir/fastaq/*;
 #echo $barcode_files;
 for fq_file in $barcode_files;
 do echo $fq_file;
-emu abundance $fq_file;
+emu abundance $fq_file --output-dir $3 --keep-counts;
 done;
+else echo "fastaq folder does not exist"
+fi
 done

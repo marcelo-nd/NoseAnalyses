@@ -12,6 +12,9 @@ export prefix="barcode";
 echo "prefix: $prefix"
 barcode_dir_list=`ls -d $2/$prefix*`
 #echo "Barcode directories list: $barcode_dir_list"
+# Iterate over the list of barcode directories.
 for bc_dir in $barcode_dir_list;
 do echo $bc_dir;
+export barcode_files=$bc_dir/fastaq/*;
+echo $barcode_files;
 done

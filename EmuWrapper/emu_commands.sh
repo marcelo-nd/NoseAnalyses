@@ -37,3 +37,8 @@ emu build-database LaCa --sequences /mnt/c/Users/Marcelo/Desktop/16s_nasal_strai
 
  #fix line endings
   sed -i 's/\r//' /mnt/c/Users/Marcelo/Documents/GitHub/NoseGenomicAnalyses/EmuWrapper/emu_wrapper.sh
+
+
+for bc_dir in $barcode_dir_list;
+do echo $bc_dir;
+done

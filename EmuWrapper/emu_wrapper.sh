@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "Database path: $1"
 # ./emu_std_database
+# ./LaCa
 echo "Sequences path: $2"
 # /mnt/c/Users/Marcelo/Desktop/230815_Marcelo/230816-Marcelo/230816-Marcelo/20230816_1015_MN31656_FAR91361_edfa8c58/fastq_pass
 echo "Output path: $3"
@@ -16,5 +17,9 @@ barcode_dir_list=`ls -d $2/$prefix*`
 for bc_dir in $barcode_dir_list;
 do echo $bc_dir;
 export barcode_files=$bc_dir/fastaq/*;
-echo $barcode_files;
+#echo $barcode_files;
+for fq_file in $barcode_files;
+do echo $fq_file;
+emu abundance $fq_file;
+done;
 done

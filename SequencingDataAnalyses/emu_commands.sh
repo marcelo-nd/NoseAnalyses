@@ -6,7 +6,7 @@ conda activate emu_py37
 emu build-database LaCaEmu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_taxonomy.tsv
 
 # Set EmuWrapper
-export EMUWRAPPER_LOC='/mnt/c/Users/"Marcelo Navarro"/Documents/GitHub/EmuWrapper'
+EMUWRAPPER_LOC="/mnt/c/Users/Marcelo Navarro/Documents/GitHub/EmuWrapper"
 
 export EMU_DATABASE_DIR=./emu_std_database
 

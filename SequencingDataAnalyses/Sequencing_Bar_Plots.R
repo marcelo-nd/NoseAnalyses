@@ -1,3 +1,29 @@
+# Load microbiome graph helper
+source("https://raw.githubusercontent.com/marcelo-nd/microbiome-help/main/graphs.R")
+
+otu_table_s1 <- read.csv("E:/NoseSynComProject/SequencingData/1_16S_First_Test_17_01_24/results/otu_table.csv", row.names=1)
+
+otu_table_s2 <- read.csv("E:/NoseSynComProject/SequencingData/2_Test2_240124/results/otu_table.csv", row.names=1)
+
+otu_table_s3 <- read.csv("E:/NoseSynComProject/SequencingData/3_SynComTest3/results/otu_table.csv", row.names=1)
+
+
+barplot_from_feature_table(otu_table_s1)
+
+barplot_from_feature_table(otu_table_s2)
+
+barplot_from_feature_table(otu_table_s3)
+
+
+
+
+
+
+
+
+
+
+
 joined_tables <- dplyr::full_join(resultsotu_table, resultsotu_table_2)
 
 joined_tables_e <- joined_tables[,-1]

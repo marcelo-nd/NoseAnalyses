@@ -7,6 +7,21 @@ conda config --add channels bioconda
 conda config --add channels conda-forge
 conda install emu
 
+# R steps
+# Install R
+
+# Activate R
+R
+
+# Install required packages
+install.packages("readr")
+install.packages("dplyr")
+install.packages("plyr")
+
+# quit R
+# quit()
+
+
 # Create custom database
 cd /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database
 
@@ -31,7 +46,7 @@ conda activate emu_py37
 
 export SC1=/mnt/e/NoseSynComProject/SequencingData/1_16S_First_Test_17_01_24
 
-. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -s $SC1/no_sample/20240117_1510_MN45148_FAY00412_e8d22899/fastq_pass -o $SC1/results  -c "TRUE" -p /mnt/c/Users/Marcelo/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -s $SC1/no_sample/20240117_1510_MN45148_FAY00412_e8d22899/fastq_pass -o $SC1/results  -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
 
 # SynCom Test 2 (24.01.24)
 conda activate emu_py37
@@ -43,4 +58,4 @@ conda activate emu_py37
 
 export SC3=/mnt/e/NoseSynComProject/SequencingData/3_SynComTest3
 
-. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -s $SC3/no_sample/20240212_1656_MN45148_FAY00412_e1705dac/fastq_pass -o $SC3/results -c "TRUE" -p /mnt/c/Users/Marcelo/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -s $SC3/no_sample/20240212_1656_MN45148_FAY00412_e1705dac/fastq_pass -o $SC3/results -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv

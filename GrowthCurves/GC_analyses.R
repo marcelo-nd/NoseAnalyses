@@ -138,3 +138,7 @@ gcbhi_Dpig$add_gco(gcbhi3$growthCurveObjects[3])
 gcbhi_Dpig$strains_names
 
 gcbhi_Dpig$plot_curves()
+
+
+########### Tests and debugging
+

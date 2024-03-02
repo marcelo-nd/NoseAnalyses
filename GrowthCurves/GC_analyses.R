@@ -1,5 +1,7 @@
-# Load microbiome graph helper
+# Load growthCurveExperiment script
 source("https://raw.githubusercontent.com/marcelo-nd/growthCurveExperiment/main/growthCurveExperiment.R")
+
+source("C:/Users/marce/Documents/Github/growthCurveExperiment/growthCurveExperiment.R")
 
 
 # Read Results Files
@@ -9,16 +11,15 @@ gcbhi1 <- GrowthCurveExperiment(name = "BHI 1")
 gcbhi1$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Inf)Cprop_Sepi_Slu__010224.xlsx",
                                      plate_reader_type = "Infinite",
                                      gc_range = "B44:CM173",
-                                     strains_names = c("Blank1", "C. prop1", "C. prop2", "C. prop3", "S. epi1", "S. epi2",
-                                                       "S. epi3","S. lug1", "S. lug2", "S. lug3", "Blank2"),
+                                     strains_names = c("Blank1", "C. prop16", "C. prop17", "C. prop265", "S. epi28", "S. epi231",
+                                                       "S. epi251","S. lug81", "S. lug115", "S. lug239", "Blank2"),
                                      strains_plate_cols = list("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"),
                                      strains_plate_rows = list("A", "B", "C", "D", "E", "F", "G", "H"),
-                                     blank = TRUE)
+                                     blank = TRUE, blank_col = 1, pr_correction = TRUE)
 
 gcbhi1$strains_names
 
 gcbhi1$plot_curves()
-
 
 # BHI 2
 
@@ -27,15 +28,15 @@ gcbhi2 <- GrowthCurveExperiment(name = "BHI 2")
 gcbhi2$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Syn)Cacc_Cpse_240207.xlsx",
                                      plate_reader_type = "Biotek",
                                      gc_range = "B220:BN365",
-                                     strains_names = c("Blank1", "C. acc1", "C. acc2", "C. acc3", "C. pse1", "C. pse2",
-                                                       "C. pse3", "Blank2"),
+                                     strains_names = c("Blank1", "C. acc99", "C. acc157", "C. acc184", "C. pseDSM", "C. pse242",
+                                                       "C. pse244", "Blank2"),
                                      strains_plate_cols = list("1", "2", "3", "4", "5", "6", "7", "8"),
                                      strains_plate_rows = list("A", "B", "C", "D", "E", "F", "G", "H"),
-                                     blank = TRUE)
+                                     blank = TRUE, blank_col = 1, pr_correction = TRUE)
 
 gcbhi2$strains_names
 
-gcbhi2$plot_curves()
+gcbhi2$plot_curves(calculate_model = TRUE)
 
 
 # BHI 3
@@ -45,11 +46,11 @@ gcbhi3 <- GrowthCurveExperiment(name = "BHI 3")
 gcbhi3$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Syn)Dpig_Ctub_240208 .xlsx",
                                     plate_reader_type = "Biotek",
                                     gc_range = "B220:BF365",
-                                    strains_names = c("D. pig1", "D. pig2", "D. pig3", "C. tub1", "C. tub2",
-                                                      "C. tub3", "Blank1"),
+                                    strains_names = c("D. pig21", "D. pig61", "D. pig245", "C. tubDSM", "C. tub102",
+                                                      "C. tub223", "Blank1"),
                                     strains_plate_cols = list("1", "3", "4", "5", "6", "7", "8"),
                                     strains_plate_rows = list("A", "B", "C", "D", "E", "F", "G", "H"),
-                                    blank = TRUE)
+                                    blank = TRUE, blank_col = 8, pr_correction = TRUE)
 
 gcbhi3$strains_names
 
@@ -65,7 +66,7 @@ gcbhi_Cacc$add_gco(gcbhi2$growthCurveObjects[4])
 
 gcbhi_Cacc$strains_names
 
-gcbhi_Cacc$plot_curves()
+gcbhi_Cacc$plot_curves(calculate_model = TRUE)
 
 #BHI C. pro
 
@@ -138,7 +139,4 @@ gcbhi_Dpig$add_gco(gcbhi3$growthCurveObjects[3])
 gcbhi_Dpig$strains_names
 
 gcbhi_Dpig$plot_curves()
-
-
-########### Tests and debugging
 

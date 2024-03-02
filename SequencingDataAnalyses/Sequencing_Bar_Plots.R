@@ -1,23 +1,57 @@
 # Load microbiome graph helper
 source("https://raw.githubusercontent.com/marcelo-nd/microbiome-help/main/graphs.R")
 
-otu_table_s1 <- read.csv("E:/NoseSynComProject/SequencingData/1_16S_First_Test_17_01_24/results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("E:/1_NoseSynComProject/SequencingData/1_16S_First_Test_17_01_24/results/otu_table.csv", row.names=1)
 
-otu_table_s2 <- read.csv("E:/NoseSynComProject/SequencingData/2_Test2_240124/results/otu_table.csv", row.names=1)
+otu_table_s2 <- read.csv("E:/1_NoseSynComProject/SequencingData/2_Test2_240124/results/otu_table.csv", row.names=1)
 
-otu_table_s3 <- read.csv("E:/NoseSynComProject/SequencingData/3_SynComTest3/results/otu_table.csv", row.names=1)
+otu_table_s3 <- read.csv("E:/1_NoseSynComProject/SequencingData/3_SynComTest3/results/otu_table.csv", row.names=1)
+
+otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers/results/otu_table.csv", row.names=1)
+
+otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers/results2/otu_table.csv", row.names=1)
 
 
 barplot_from_feature_table(otu_table_s1)
 
 barplot_from_feature_table(otu_table_s2)
 
+# Only inocs
+inoc <- otu_table_s2[,12:15]
+
+inoc2 <- inoc[apply(inoc[,-1], 1, function(x) !all(x==0)),]
+
+barplot_from_feature_table(inoc2)
+
+#
+
 barplot_from_feature_table(otu_table_s3)
 
+barplot_from_feature_table(otu_table_s3[apply(otu_table_s3[,13:20], 1, function(x) !all(x==0)),][,13:20])
+
+barplot_from_feature_table(otu_table_s3[apply(otu_table_s3[,5:12], 1, function(x) !all(x==0)),][,5:12])
+
+barplot_from_feature_table(otu_table_s3[apply(otu_table_s3[,1:4], 1, function(x) !all(x==0)),][,1:4])
+
+# Only inocs
+row_sub1 = apply(otu_table_s3[,1:4], 1, function(row) all(row !=0 ))
+
+barplot_from_feature_table(otu_table_s3[,1:4][row_sub1,])
+
+#
+barplot_from_feature_table(otu_table_s4)
+
+row_sub2 = apply(otu_table_s4[,1:4], 1, function(row) all(row !=0 ))
+
+barplot_from_feature_table(otu_table_s4[,1:4][row_sub2,])
+
+#
+barplot_from_feature_table(otu_table_s5[,1:4])
 
 
+row_sub3 = apply(otu_table_s5[,1:4], 1, function(row) all(row !=0 ))
 
-
+barplot_from_feature_table(otu_table_s5[,1:4][row_sub3,])
 
 
 

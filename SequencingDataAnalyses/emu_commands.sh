@@ -66,3 +66,33 @@ conda activate emu_py37
 export SC4=/mnt/e/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers
 
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC4/no_sample/20240228_1510_MN45148_FAY35039_711f6cab/fastq_pass -o $SC4/results -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+
+# SynCom Test 5 (05.03.24)
+conda activate emu_py37
+
+export SC5=/mnt/e/1_NoseSynComProject/SequencingData/5_240305_Primer_27F-Test
+
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "FALSE" -s $SC5/no_sample/20240305_1407_MN45148_FAY00412_2df0c6ae/fastq_pass -o $SC5/results -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+
+# SynCom Test 6
+conda activate emu_py37
+
+export SC6=/mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna
+
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC6/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass -o $SC5/results -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+
+
+./MIrROR.py -V -d DBDIR -o ./result /mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass/barcode06/fastq/barcode06_concat.fastq
+
+# SynCom Test 7 (11.03.24)
+conda activate emu_py37
+
+export SC7=/mnt/e/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC7/no_sample/20240311_1213_MN45148_FAY35039_b3637fda/fastq_pass -o $SC7/results  -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+
+
+# SynCom Test 7 (11.03.24) (part 2, long reads only decompressing)
+conda activate emu_py37
+
+export SC7=/mnt/e/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC7/no_sample/20240311_1213_MN45148_FAY35039_b3637fda/2 -o $SC7/results_long  -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv

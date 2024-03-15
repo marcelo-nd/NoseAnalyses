@@ -38,6 +38,27 @@ gcsnm2$strains_names
 gcsnm2$plot_curves(calculate_model = TRUE)
 
 
+# Anaerobic
+gcsnm3 <- GrowthCurveExperiment(name = "SNM 3")
+
+gcsnm3$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/Desktop/GC 72hrs anaerobic_240307_140259_0001.xlsx",
+                                    plate_reader_type = "Biotek",
+                                    gc_range = "A1:CK108",
+                                    psheet = "Tabelle1",
+                                    strains_names = c("Spc1", "Spc2","Spc3","Spc4","Spc5","Spc6","Spc7","Spc8","C. avi32", "C. avi181", "C. avi208"),
+                                    strains_plate_cols = list("1", 
+                                                              "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"),
+                                    strains_plate_rows = list("A", 
+                                                              "B", "C", "D", "E", "F", "G", "H"),
+                                    blank = TRUE, blank_col = 5, 
+                                    pr_correction = FALSE)
+
+gcsnm3$strains_names
+
+gcsnm3$plot_curves()
+
+
+
 # results for each species
 
 # SNM C. tuberculostearicum
@@ -86,7 +107,7 @@ gcsnm_D.pig$add_gco(gcsnm1$growthCurveObjects[11])
 
 gcsnm_D.pig$strains_names
 
-gcsnm_D.pig$plot_curves(calculate_model = FALSE)
+gcsnm_D.pig$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 1)
 
 # SNM S. lugdunensis
 
@@ -124,3 +145,16 @@ gcsnm_C.pse$strains_names
 
 gcsnm_C.pse$plot_curves(calculate_model = FALSE)
 
+#### Anarobics
+
+# SNM C. tuberculostearicum
+
+gcsnm_Cavi <- GrowthCurveExperiment(name = "SNM C. avidum")
+
+gcsnm_Cavi$add_gco(gcsnm3$growthCurveObjects[9])
+gcsnm_Cavi$add_gco(gcsnm3$growthCurveObjects[10])
+gcsnm_Cavi$add_gco(gcsnm3$growthCurveObjects[11])
+
+gcsnm_Cavi$strains_names
+
+gcsnm_Cavi$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 1)

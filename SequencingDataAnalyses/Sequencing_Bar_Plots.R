@@ -13,8 +13,6 @@ otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/4_Test4-SynComNe
 
 otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_240305_Primer_27F-Test/results/otu_table.csv", row.names=1)
 
-otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_240305_Primer_27F-Test/results/otu_table.csv", row.names=1)
-
 otu_table_s7 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results/otu_table.csv", row.names=1)
 
 otu_table_s8 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results_mirror/otu_table.csv", row.names=1)
@@ -102,6 +100,8 @@ otu_table_dna_mix <- as.data.frame(otu_table_dna_mix[,2:5])
 
 rownames(otu_table_dna_mix) <- species
 
+colnames(otu_table_dna_mix) <- c("Mock 1", "Mock 2", "Mock 3", "Mock 4")
+
 barplot_from_feature_table(otu_table_dna_mix)
 
 
@@ -122,13 +122,24 @@ mocks_rrna_plot <- barplot_from_feature_table(mocks_rrna)
 plot(mocks_rrna_plot)
 
 # Together
-mocks_plot <- barplot_from_feature_tables(feature_tables = list(mocks_v34, mocks_rrna), experiments_names = c("Inoc. v34", "Inoc. rRNA"))
+mocks_plot <- barplot_from_feature_tables(feature_tables = list(otu_table_dna_mix, mocks_v34, mocks_rrna), experiments_names = c("Theoretical", "Inoc. v34", "Inoc. rRNA"))
 
 plot(mocks_plot)
 
 
 
 ### Zymo Community Standars
+
+# Theoretical
+zcs_theo <- readxl::read_excel("C:/Users/marce/OneDrive - UT Cloud/Mappe1.xlsx", sheet = "Tabelle2", range = "I30:J38")
+
+species_zcs <- zcs_theo$species
+
+zcs_theo <- as.data.frame(zcs_theo[,2])
+
+rownames(zcs_theo) <- species
+
+barplot_from_feature_table(zcs_theo)
 
 
 # Zymo Community Standars 27 F (from otu_table_s3)
@@ -180,7 +191,7 @@ zcs_rrna_plot <- barplot_from_feature_table(zcs_rrna)
 plot(zcs_rrna_plot)
 
 # Together
-zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_27f, zcs_27f2, zcs_v34, zcs_rrna), experiments_names = c("ZCS_27F", "ZCS_27FII", "ZCS_v34", "ZCS_rRNA"))
+zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_theo, zcs_27f, zcs_27f2, zcs_v34, zcs_rrna), experiments_names = c("ZCS_theo", "ZCS_27F", "ZCS_27FII", "ZCS_v34", "ZCS_rRNA"))
 
 plot(zcs_plot)
 

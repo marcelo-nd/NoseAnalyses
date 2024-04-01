@@ -1,20 +1,32 @@
+export user_path=/mnt/e/KarosGenomes
+
+cd $user_path
+
+mkdir $user_path/anvio_analyses/contigs-fasta_files
+
 # Reformat fasta files to contigs-fasta files (anvio-style fasta).
 for file in *.{fna,fasta}
 do
     printf "%s \n" "$file"
     anvi-script-reformat-fasta $file\
-    -o "./anvio_analyses/contigs-fasta_files/${file/%fna/db}"\
+    -o "$user_path/anvio_analyses/contigs-fasta_files/${file}"\
     --simplify-names
 done
+
+cd $user_path/anvio_analyses/contigs-fasta_files
+
+mkdir $user_path/anvio_analyses/contigs-db
 
 # Generate contigs-db files (entry-point files for anvio).
 for file in *.fna
 do
     printf "%s \n" "$file"
     anvi-gen-contigs-database -f $file\
-    -o "../contigs-db/${file/%fna/db}"\
+    -o "$user_path/anvio_analyses/contigs-db/${file/%fna/db}"\
 
 done
+
+cd $user_path/anvio_analyses/contigs-db
 
 # Run HMMs (annotate your genes against an hmm-source).
 for file in *.db
@@ -23,6 +35,8 @@ do
     anvi-run-hmms -c $file\
     --num-threads 6
 done
+
+anvi-setup-scg-taxonomy
 
 # Run SCG Taxonomy, associates its single-copy core gene with taxonomic data.
 for file in *.db
@@ -40,6 +54,9 @@ do
 
 done
 
+# Set up COG data
+anvi-setup-ncbi-cogs
+
 # Functional annotation with the COGs database.
 for file in *.db
 do
@@ -47,6 +64,9 @@ do
     anvi-run-ncbi-cogs -c $file\
 
 done
+
+# Set up KEGG data
+anvi-setup-kegg-data
 
 # Functional annotation with KEGG KOfam database.
 for file in *.db

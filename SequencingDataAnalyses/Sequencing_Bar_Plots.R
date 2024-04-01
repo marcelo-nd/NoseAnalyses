@@ -9,13 +9,18 @@ otu_table_s3 <- read.csv("E:/1_NoseSynComProject/SequencingData/3_SynComTest3/re
 
 otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/4_Test4-SynComNewPrimers/results/otu_table.csv", row.names=1)
 
-#otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers/results2/otu_table.csv", row.names=1)
+#otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers/results2/otu_table.csv", row.names=1) # assigned with Emu DB
 
 otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_240305_Primer_27F-Test/results/otu_table.csv", row.names=1)
 
+# short reads of Run 7, processed with emu, LaCa 16S DB
 otu_table_s7 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results/otu_table.csv", row.names=1)
-
+# long reads of Run 7, processed with mirror
 otu_table_s8 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results_mirror/otu_table.csv", row.names=1)
+
+# long reads of Run 8, processed with mirror
+otu_table_s9 <- read.csv("E:/1_NoseSynComProject/SequencingData/8_confirmation_rrna/results_mirror/otu_table.csv", row.names=1)
+
 
 
 # Raw results
@@ -28,10 +33,12 @@ barplot_from_feature_table(otu_table_s3)
 barplot_from_feature_table(otu_table_s4)
 
 barplot_from_feature_table(otu_table_s5)
-
+# short reads of Run 7, processed with emu
 barplot_from_feature_table(otu_table_s7)
-
+# long reads of Run 7, processed with mirror
 barplot_from_feature_table(otu_table_s8)
+# long reads of Run 8, processed with mirror
+barplot_from_feature_table(otu_table_s9)
 
 
 
@@ -49,6 +56,8 @@ sub_otutable <- function(otu_table, sample_indices, sample_names){
 
 
 ### SynCom Inoculums
+# Samples on Inoculums were sequenced only once with primers 27F, 27FII and V34. Twice with primer rrna.
+# Since SynComs 1 and 2 are biological replicates, we really have duplicates for everything. and quatruplicates for rrna primers.
 
 # 4 SynCom Inocs 27 F (from otu_table_s3)
 
@@ -84,15 +93,17 @@ plot(inocs_rrna_plot)
 
 
 # Together
+library(dplyr)
 inocs_plot <- barplot_from_feature_tables(feature_tables = list(inocs_27f, inocs_27f2, inocs_v34, inocs_rrna), experiments_names = c("Inoc. 27F", "Inoc. 27FII", "Inoc. v34", "Inoc. rRNA"))
 
 plot(inocs_plot)
 
 
 ### Mock DNA mixes
+# Duplicates for V34 primers and triplicates for rrna.
 
 # Mock Mixes theoretical
-otu_table_dna_mix <- readxl::read_excel("C:/Users/marce/OneDrive - UT Cloud/Mappe1.xlsx", sheet = "Tabelle2", range = "I16:M27")
+otu_table_dna_mix <- readxl::read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/DNA_Calculations.xlsx", sheet = "Nasal Mock Comms", range = "J18:N29")
 
 species <- otu_table_dna_mix$species
 
@@ -128,16 +139,16 @@ plot(mocks_plot)
 
 
 
-### Zymo Community Standars
-
+### Zymo Community Standards
+# 27F: 10 seq replicates; 27FII: 2 replicates seq replicates; v34: 2 seq replicates; rrna: 6 seq replicates
 # Theoretical
-zcs_theo <- readxl::read_excel("C:/Users/marce/OneDrive - UT Cloud/Mappe1.xlsx", sheet = "Tabelle2", range = "I30:J38")
+zcs_theo <- readxl::read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/DNA_Calculations.xlsx", sheet = "zcs", range = "A2:B10")
 
 species_zcs <- zcs_theo$species
 
 zcs_theo <- as.data.frame(zcs_theo[,2])
 
-rownames(zcs_theo) <- species
+rownames(zcs_theo) <- species_zcs
 
 barplot_from_feature_table(zcs_theo)
 
@@ -195,7 +206,74 @@ zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_theo, zcs_27f,
 
 plot(zcs_plot)
 
+#################################### Plots comparing technical variability
+##### ZCS rrna Triplicates
+zcs_rrna1 <- otu_table_s8[9]
+colnames(zcs_rrna1) <- "zcs"
+zcs_rrna2 <- otu_table_s8[10]
+colnames(zcs_rrna2) <- "zcs"
+zcs_rrna3 <- otu_table_s9[10]
+colnames(zcs_rrna3) <- "zcs"
 
+zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_theo, zcs_rrna1, zcs_rrna2, zcs_rrna3), experiments_names = c("ZCS_theo", "ZCS_rRNA_1", "ZCS_rRNA_2", "ZCS_rRNA_3"))
+plot(zcs_plot)
+
+
+##### Inocs rrna Triplicates
+zcs_rrna <- sub_otutable(otu_table_s8, c(9:10), c("zcs1-rrna", "zcs-rrna_2"))
+
+##### Mocks Triplicates
+# Mock4
+mock4_theo <- otu_table_dna_mix[4]
+colnames(mock4_theo) <- "Mock4"
+mock4_rrna1 <- otu_table_s8[4]
+colnames(mock4_rrna1) <- "Mock4"
+mock4_rrna2 <- otu_table_s9[4]
+colnames(mock4_rrna2) <- "Mock4"
+mock4_rrna3 <- otu_table_s9[9]
+colnames(mock4_rrna3) <- "Mock4"
+
+mock4_plot <- barplot_from_feature_tables(feature_tables = list(mock4_theo, mock4_rrna1, mock4_rrna2, mock4_rrna3), experiments_names = c("mock4_theo", "mock4_rRNA_1", "mock4_rRNA_2", "mock4_rRNA_3"))
+plot(mock4_plot)
+
+# Mock2
+mock2_theo <- otu_table_dna_mix[2]
+colnames(mock2_theo) <- "Mock2"
+mock2_rrna1 <- otu_table_s8[2]
+colnames(mock2_rrna1) <- "Mock2"
+mock2_rrna2 <- otu_table_s9[2]
+colnames(mock2_rrna2) <- "Mock2"
+mock2_rrna3 <- otu_table_s9[7]
+colnames(mock2_rrna3) <- "Mock2"
+
+mock2_plot <- barplot_from_feature_tables(feature_tables = list(mock2_theo, mock2_rrna1, mock2_rrna2, mock2_rrna3), experiments_names = c("mock2_theo", "mock2_rRNA_1", "mock2_rRNA_2", "mock2_rRNA_3"))
+plot(mock2_plot)
+
+# Mock3
+mock3_theo <- otu_table_dna_mix[3]
+colnames(mock3_theo) <- "Mock3"
+mock3_rrna1 <- otu_table_s8[3]
+colnames(mock3_rrna1) <- "Mock3"
+mock3_rrna2 <- otu_table_s9[3]
+colnames(mock3_rrna2) <- "Mock3"
+mock3_rrna3 <- otu_table_s9[8]
+colnames(mock3_rrna3) <- "Mock3"
+
+mock3_plot <- barplot_from_feature_tables(feature_tables = list(mock3_theo, mock3_rrna1, mock3_rrna2, mock3_rrna3), experiments_names = c("mock3_theo", "mock3_rRNA_1", "mock3_rRNA_2", "mock3_rRNA_3"))
+plot(mock3_plot)
+
+# Mock1
+mock1_theo <- otu_table_dna_mix[1]
+colnames(mock1_theo) <- "Mock1"
+mock1_rrna1 <- otu_table_s8[1]
+colnames(mock1_rrna1) <- "Mock1"
+mock1_rrna2 <- otu_table_s9[1]
+colnames(mock1_rrna2) <- "Mock1"
+mock1_rrna3 <- otu_table_s9[6]
+colnames(mock1_rrna3) <- "Mock1"
+
+mock1_plot <- barplot_from_feature_tables(feature_tables = list(mock1_theo, mock1_rrna1, mock1_rrna2, mock1_rrna3), experiments_names = c("mock1_theo", "mock1_rRNA_1", "mock1_rRNA_2", "mock1_rRNA_3"))
+plot(mock1_plot)
 
 ### First 6 SynCom Experiment.
 

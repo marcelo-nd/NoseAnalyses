@@ -9,6 +9,7 @@ conda install emu
 
 # R steps
 # Install R
+sudo apt install r-base-core
 
 # Activate R
 R
@@ -29,8 +30,6 @@ conda activate emu_py37
 
 emu build-database LaCaEmu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_taxonomy.tsv
 
-sudo apt install r-base-core
-
 # Set EmuWrapper
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 
@@ -40,6 +39,7 @@ export EMU_DATABASE_DIR=/mnt/e/1_NoseSynComProject/SequencingData/LaCaEmu
 
 #fix line endings of EmuWrapper.sh
 sed -i 's/\r//' /mnt/c/Users/marce/Documents/GitHub/EmuWrapper/emu_wrapper.sh
+
 
 # SynCom Test 1 (17.01.24)
 conda activate emu_py37
@@ -96,3 +96,4 @@ conda activate emu_py37
 
 export SC7=/mnt/e/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC7/no_sample/20240311_1213_MN45148_FAY35039_b3637fda/2 -o $SC7/results_long  -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
+

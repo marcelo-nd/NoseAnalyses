@@ -21,6 +21,9 @@ otu_table_s8 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest
 # long reads of Run 8, processed with mirror
 otu_table_s9 <- read.csv("E:/1_NoseSynComProject/SequencingData/8_confirmation_rrna/results_mirror/otu_table.csv", row.names=1)
 
+# Run 9, Mock DNA test using 16S barcoding Kit.
+otu_table_s10 <- read.csv("E:/1_NoseSynComProject/SequencingData/9_16STest_MockDNA_030424/results/otu_table.csv", row.names=1)
+
 
 
 # Raw results
@@ -39,7 +42,8 @@ barplot_from_feature_table(otu_table_s7)
 barplot_from_feature_table(otu_table_s8)
 # long reads of Run 8, processed with mirror
 barplot_from_feature_table(otu_table_s9)
-
+# Run 9, Mock DNA test using 16S barcoding Kit.
+barplot_from_feature_table(otu_table_s10)
 
 
 sub_otutable <- function(otu_table, sample_indices, sample_names){
@@ -116,6 +120,15 @@ colnames(otu_table_dna_mix) <- c("Mock 1", "Mock 2", "Mock 3", "Mock 4")
 barplot_from_feature_table(otu_table_dna_mix)
 
 
+# 4 Mock Mixes 27F (Illumina Stlye) (from otu_table_s7)
+
+mocks_27F <- sub_otutable(otu_table_s10, c(9, 12, 15, 2), c("Mock 1", "Mock 2", "Mock 3", "Mock 4"))
+
+mocks_27F_plot <- barplot_from_feature_table(mocks_27F)
+
+plot(mocks_27F_plot)
+
+
 # 4 Mock Mixes V34 (Illumina Stlye) (from otu_table_s7)
 
 mocks_v34 <- sub_otutable(otu_table_s7, c(1:4), c("Mock 1", "Mock 2", "Mock 3", "Mock 4"))
@@ -123,6 +136,7 @@ mocks_v34 <- sub_otutable(otu_table_s7, c(1:4), c("Mock 1", "Mock 2", "Mock 3", 
 mocks_v34_plot <- barplot_from_feature_table(mocks_v34)
 
 plot(mocks_v34_plot)
+
 
 # 4 Mock Mixes rrna primer
 
@@ -133,10 +147,9 @@ mocks_rrna_plot <- barplot_from_feature_table(mocks_rrna)
 plot(mocks_rrna_plot)
 
 # Together
-mocks_plot <- barplot_from_feature_tables(feature_tables = list(otu_table_dna_mix, mocks_v34, mocks_rrna), experiments_names = c("Theoretical", "Inoc. v34", "Inoc. rRNA"))
+mocks_plot <- barplot_from_feature_tables(feature_tables = list(otu_table_dna_mix, mocks_27F, mocks_v34, mocks_rrna), experiments_names = c("Theoretical", "Mock27F", "Mock v34", "Mock rRNA"))
 
 plot(mocks_plot)
-
 
 
 ### Zymo Community Standards

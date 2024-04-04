@@ -97,3 +97,9 @@ conda activate emu_py37
 export SC7=/mnt/e/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC7/no_sample/20240311_1213_MN45148_FAY35039_b3637fda/2 -o $SC7/results_long  -c "TRUE" -p /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
 
+
+# SynCom Test 8 (03.04.24) (16s kit test of Mock communities)
+conda activate emu_py37
+
+export SC9=/mnt/e/1_NoseSynComProject/SequencingData/9_16STest_MockDNA_030424
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "FALSE" -s $SC9/no_sample/20240403_1526_MN45148_FAY00412_a67f721c/fastq_pass -o $SC9/results_long  -c "TRUE" -p /mnt/c/LaCa16copies.csv

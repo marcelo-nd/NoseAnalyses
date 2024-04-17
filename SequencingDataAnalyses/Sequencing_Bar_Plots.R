@@ -1,25 +1,25 @@
 # Load microbiome graph helper
 source("https://raw.githubusercontent.com/marcelo-nd/microbiome-help/main/graphs.R")
 
-otu_table_s1 <- read.csv("E:/1_NoseSynComProject/SequencingData/1_16S_First_Test_17_01_24/results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("E:/1_NoseSynComProject/SequencingData/1_16S_First_Test_170124/results/otu_table.csv", row.names=1)
 
 otu_table_s2 <- read.csv("E:/1_NoseSynComProject/SequencingData/2_Test2_240124/results/otu_table.csv", row.names=1)
 
-otu_table_s3 <- read.csv("E:/1_NoseSynComProject/SequencingData/3_SynComTest3/results/otu_table.csv", row.names=1)
+otu_table_s3 <- read.csv("E:/1_NoseSynComProject/SequencingData/3_SynComTest3_120224/results/otu_table.csv", row.names=1)
 
-otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/4_Test4-SynComNewPrimers/results/otu_table.csv", row.names=1)
+otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/4_Test4-SynComNewPrimers_280224/results/otu_table.csv", row.names=1)
 
 #otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/Test4-SynComNewPrimers/results2/otu_table.csv", row.names=1) # assigned with Emu DB
 
-otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_240305_Primer_27F-Test/results/otu_table.csv", row.names=1)
+otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_Primer_27F-Test_050324/results/otu_table.csv", row.names=1)
 
 # short reads of Run 7, processed with emu, LaCa 16S DB
-otu_table_s7 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results/otu_table.csv", row.names=1)
+otu_table_s7 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks_110324/results/otu_table.csv", row.names=1)
 # long reads of Run 7, processed with mirror
-otu_table_s8 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results_mirror/otu_table.csv", row.names=1)
+otu_table_s8 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks_110324/results_mirror/otu_table.csv", row.names=1)
 
 # long reads of Run 8, processed with mirror
-otu_table_s9 <- read.csv("E:/1_NoseSynComProject/SequencingData/8_confirmation_rrna/results_mirror/otu_table.csv", row.names=1)
+otu_table_s9 <- read.csv("E:/1_NoseSynComProject/SequencingData/8_confirmation_rrna_230324/results_mirror/otu_table.csv", row.names=1)
 
 # Run 9, Mock DNA test using 16S barcoding Kit.
 otu_table_s10 <- read.csv("E:/1_NoseSynComProject/SequencingData/9_16STest_MockDNA_030424/results/otu_table.csv", row.names=1)

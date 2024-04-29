@@ -4,7 +4,7 @@ MIRRORWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/MIrROR_Wrapper"
 
 ##### First experiment
 
-./MIrROR.py -V -d DBDIR -o ./result8 -m 1000 -b 2000 /mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass/barcode06/fastq/barcode06_concat.fastq
+~/MIrROR/MIrROR.py -V -d DBDIR -o ./result8 -m 1000 -b 2000 /mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass/barcode06/fastq/barcode06_concat.fastq
 
 ./MIrROR.py -V -d DBDIR -o ./result9 -m 1000 -b 2000 /mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass/barcode07/fastq/barcode07_concat.fastq
 
@@ -20,6 +20,10 @@ MIRRORWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/MIrROR_Wrapper"
 
 ./MIrROR.py -V -d DBDIR -o ./result14 -m 1000 -b 2000 /mnt/e/1_NoseSynComProject/SequencingData/6_070324_Creat_rrna/no_sample/20240307_1134_MN45148_FAY35039_5bd01a44/fastq_pass/barcode13/fastq/barcode13_concat.fastq
 
+
+export SC6=/mnt/e/1_NoseSynComProject/SequencingData/6_Creat_rrna_070324/results_mirror
+
+Rscript $MIRRORWRAPPER_LOC/tables_merging.R $SC6 "TRUE" /mnt/c/LaCa16copies.csv
 
 ##### Second experiment
 export SC7=/mnt/e/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks/results_mirror
@@ -81,4 +85,3 @@ cd /mnt/e/1_NoseSynComProject/SequencingData/8_confirmation_rrna/no_sample/20240
 
 # Merging tables
 Rscript $MIRRORWRAPPER_LOC/tables_merging.R $SC8 "TRUE" /mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/SequencingDataAnalyses/LaCa16copies.csv
-

@@ -13,6 +13,9 @@ otu_table_s4 <- read.csv("E:/1_NoseSynComProject/SequencingData/4_Test4-SynComNe
 
 otu_table_s5 <- read.csv("E:/1_NoseSynComProject/SequencingData/5_Primer_27F-Test_050324/results/otu_table.csv", row.names=1)
 
+# 
+otu_table_s6 <- read.csv("E:/1_NoseSynComProject/SequencingData/6_Creat_rrna_070324/results_mirror/otu_table.csv", row.names=1)
+
 # short reads of Run 7, processed with emu, LaCa 16S DB
 otu_table_s7 <- read.csv("E:/1_NoseSynComProject/SequencingData/7_PrimerConfTest_Mocks_110324/results/otu_table.csv", row.names=1)
 # long reads of Run 7, processed with mirror
@@ -39,6 +42,8 @@ barplot_from_feature_table(otu_table_s5)
 # short reads of Run 7, processed with emu
 barplot_from_feature_table(otu_table_s7)
 # long reads of Run 7, processed with mirror
+barplot_from_feature_table(otu_table_s6)
+# long reads of Run 7, processed with mirror
 barplot_from_feature_table(otu_table_s8)
 # long reads of Run 8, processed with mirror
 barplot_from_feature_table(otu_table_s9)
@@ -56,6 +61,10 @@ sub_otutable <- function(otu_table, sample_indices, sample_names){
     colnames(sub_otut) <- sample_names
   }
   return(sub_otut)
+}
+
+join_otu_tables <- function(otu_table, otu_table2){
+  
 }
 
 
@@ -219,22 +228,6 @@ zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_theo, zcs_27f,
 
 plot(zcs_plot)
 
-#################################### Plots comparing technical variability
-##### ZCS rrna Triplicates
-zcs_rrna1 <- otu_table_s8[9]
-colnames(zcs_rrna1) <- "zcs"
-zcs_rrna2 <- otu_table_s8[10]
-colnames(zcs_rrna2) <- "zcs"
-zcs_rrna3 <- otu_table_s9[10]
-colnames(zcs_rrna3) <- "zcs"
-
-zcs_plot <- barplot_from_feature_tables(feature_tables = list(zcs_theo, zcs_rrna1, zcs_rrna2, zcs_rrna3), experiments_names = c("ZCS_theo", "ZCS_rRNA_1", "ZCS_rRNA_2", "ZCS_rRNA_3"))
-plot(zcs_plot)
-
-
-##### Inocs rrna Triplicates
-zcs_rrna <- sub_otutable(otu_table_s8, c(9:10), c("zcs1-rrna", "zcs-rrna_2"))
-
 ##### Mocks Triplicates
 # Mock4
 mock4_theo <- otu_table_dna_mix[4]
@@ -322,3 +315,4 @@ syncomall2 <- syncomall2[rowSums(syncomall2 != 0) > 0, ]
 syncomall3 <- syncomall2[!(row.names(syncomall2) %in% c("Escherichia coli")), ]
 
 barplot_from_feature_table(syncomall3)
+

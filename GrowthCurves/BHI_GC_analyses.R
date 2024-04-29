@@ -3,12 +3,11 @@ source("https://raw.githubusercontent.com/marcelo-nd/growthCurveExperiment/main/
 
 source("C:/Users/marce/Documents/Github/growthCurveExperiment/growthCurveExperiment.R")
 
-
 # Read Results Files
 # BHI 1
 gcbhi1 <- GrowthCurveExperiment(name = "BHI 1")
 
-gcbhi1$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Inf)Cprop_Sepi_Slu__010224.xlsx",
+gcbhi1$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/GC_BHI(Inf)Cprop_Sepi_Slu__010224.xlsx",
                                      plate_reader_type = "Infinite",
                                      gc_range = "B44:CM173",
                                      strains_names = c("Blank1", "C. prop16", "C. prop17", "C. prop265", "S. epi28", "S. epi231",
@@ -25,7 +24,7 @@ gcbhi1$plot_curves()
 
 gcbhi2 <- GrowthCurveExperiment(name = "BHI 2")
 
-gcbhi2$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Syn)Cacc_Cpse_240207.xlsx",
+gcbhi2$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/GC_BHI(Syn)Cacc_Cpse_240207.xlsx",
                                      plate_reader_type = "Biotek",
                                      gc_range = "B220:BN365",
                                      strains_names = c("Blank1", "C. acc99", "C. acc157", "C. acc184", "C. pseDSM", "C. pse242",
@@ -43,7 +42,7 @@ gcbhi2$plot_curves(calculate_model = TRUE)
 
 gcbhi3 <- GrowthCurveExperiment(name = "BHI 3")
 
-gcbhi3$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/(GC_BHI)(Syn)Dpig_Ctub_240208 .xlsx",
+gcbhi3$create_gc_objects_from_table(gc_df_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/GrowthCurves/GC_BHI(Syn)Dpig_Ctub_240208 .xlsx",
                                     plate_reader_type = "Biotek",
                                     gc_range = "B220:BF365",
                                     strains_names = c("D. pig21", "D. pig61", "D. pig245", "C. tubDSM", "C. tub102",
@@ -66,7 +65,7 @@ gcbhi_Cacc$add_gco(gcbhi2$growthCurveObjects[4])
 
 gcbhi_Cacc$strains_names
 
-gcbhi_Cacc$plot_curves(calculate_model = TRUE)
+gcbhi_Cacc$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 6)
 
 #BHI C. pro
 
@@ -78,7 +77,7 @@ gcbhi_Cpro$add_gco(gcbhi1$growthCurveObjects[4])
 
 gcbhi_Cpro$strains_names
 
-gcbhi_Cpro$plot_curves()
+gcbhi_Cpro$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 7)
 
 #BHI C. pse
 
@@ -90,7 +89,7 @@ gcbhi_Cpse$add_gco(gcbhi2$growthCurveObjects[7])
 
 gcbhi_Cpse$strains_names
 
-gcbhi_Cpse$plot_curves()
+gcbhi_Cpse$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 6)
 
 #BHI C. tub
 
@@ -102,7 +101,7 @@ gcbhi_Ctub$add_gco(gcbhi3$growthCurveObjects[6])
 
 gcbhi_Ctub$strains_names
 
-gcbhi_Ctub$plot_curves()
+gcbhi_Ctub$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 6)
 
 # BHI S. epi
 
@@ -114,7 +113,7 @@ gcbhi_Sepi$add_gco(gcbhi1$growthCurveObjects[7])
 
 gcbhi_Sepi$strains_names
 
-gcbhi_Sepi$plot_curves()
+gcbhi_Sepi$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 7)
 
 # BHI S. lugdunensis
 
@@ -126,7 +125,7 @@ gcbhi_Slug$add_gco(gcbhi1$growthCurveObjects[10])
 
 gcbhi_Slug$strains_names
 
-gcbhi_Slug$plot_curves()
+gcbhi_Slug$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 8)
 
 # BHI D. pigrum
 
@@ -138,5 +137,5 @@ gcbhi_Dpig$add_gco(gcbhi3$growthCurveObjects[3])
 
 gcbhi_Dpig$strains_names
 
-gcbhi_Dpig$plot_curves()
+gcbhi_Dpig$plot_curves(calculate_model = FALSE, yScalemin = 0, yScalemax = 6)
 

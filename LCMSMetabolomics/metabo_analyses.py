@@ -58,8 +58,15 @@ import time
 from sklearn.inspection import permutation_importance
 from skbio.stats.distance import permdisp
 
+import skbio
+
+from skbio.stats.distance import permdisp
+
 #### From scripts
-from helper_functions import InsideLevels, MergingAnnotationsFT, tidyTables
+import sys, os
+sys.path.append('./NoseAnalyses/LCMSMetabolomics/')
+from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal
+
 
 
 ft = pd.read_csv("/mnt/c/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
@@ -87,11 +94,39 @@ an_analog = pd.read_csv("/mnt/c/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep
 
 ft_w_an = MergingAnnotationsFT(ft, an_gnps, an_analog)
 
-print('Dimension: ', ft_w_an.shape)
-print(ft_w_an.head())
-
 new_tables = tidyTables(ft, md, ft_w_an)
 
-new_ft = new_tables[0]
+new_ft_tidy = new_tables[0]
 
-new_md = new_tables[1]
+new_md_tidy = new_tables[1]
+
+
+#checking the dimensions of our new ft and md:
+print("The number of rows and columns in our original ft is:", ft.shape,"\n")
+print("The number of rows and columns in our new ft is:", new_ft_tidy.shape,"\n")
+print("The number of rows and columns in our new md is:", new_md_tidy.shape)
+
+# Data-cleanup
+
+# As a first step of data-cleanup step, lets merge the metadata and feature table (transposed) together.
+ft_t = ft_md_merging(new_ft_tidy, new_md_tidy)
+
+
+# Examine Metadata Attributes
+ins_lvls = InsideLevels(new_md_tidy.iloc[:, 1:])
+print(ins_lvls) #skipping the 0th column (filename) and looking at the summary table
+
+blank_tables = blank_removal(md_df=new_md_tidy, ft_t_df=ft_t, sample_index_input=1, blank_num_input=1, sample_num_input=2)
+
+blanks_table = blank_tables[0]
+
+samples_table = blank_tables[1]
+
+# Display the chosen blanks
+print('Dimension: ',blanks_table.shape)
+blanks_table.head(2)
+
+# Display the chosen samples
+print('Dimension: ',samples_table.shape)
+samples_table.head(2)
+

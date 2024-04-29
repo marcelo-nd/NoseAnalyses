@@ -56,10 +56,10 @@ def MergingAnnotationsFT(ft_df, an_df, an_ana_df):
         # To do Sirius annotations merging
     return(ft_an)
 
-def tidyTables(ft, md, ft_an):
-    new_ft = copy.deepcopy(ft)
-    new_md = copy.deepcopy(md)
-    new_ft_an = copy.deepcopy(ft_an)
+def tidyTables(ft_p, md_p, ft_an_p):
+    new_ft = copy.deepcopy(ft_p)
+    new_md = copy.deepcopy(md_p)
+    new_ft_an = copy.deepcopy(ft_an_p)
     
     # Cleaning the files
     new_ft.columns = new_ft.columns.str.replace(' Peak area', '') # Removing " Peak area" extensions from the column names of new_ft
@@ -73,11 +73,14 @@ def tidyTables(ft, md, ft_an):
     
     # Update the row names of feature table
     # Compare "row ID" columns from new_ft_an with 
-    if((new_ft_an['row ID'].values == new_ft['row ID'].values).all()):
+    comparison_result=(new_ft_an['row ID'].values == new_ft['row ID'].values).all()
+    print("Comparison result: ", comparison_result)
+    if(comparison_result):
+        print("Should print True if you have an annotation file")
         # Changing the index (row names) of new_ft into the combined name as "XID_mz_RT":
         new_name = 'X' + new_ft['row ID'].astype(str) + '_' + new_ft['row m/z'].round(3).astype(str) + '_' + new_ft['row retention time'].round(3).astype(str)
         new_name_values = new_name.values
-        combined_name_ft = ft_an['Combined_Name'].astype(str).values
+        combined_name_ft = new_ft_an['Combined_Name'].astype(str).values
         underscore_added = ['_' + x for x in combined_name_ft] #add a underscore prefix
         new_name_values = np.core.defchararray.add(new_name_values.astype(str), underscore_added)
         # Set the new index and remove trailing underscore if present
@@ -87,6 +90,8 @@ def tidyTables(ft, md, ft_an):
         #### Selecting Relevant Columns
         # Selecting only the columns with names containing 'mzXML' or 'mzML'
         new_ft = new_ft.loc[:, new_ft.columns.str.contains('\\.mzXML$|\\.mzML$')]
+        
+        new_ft.shape
 
     # If either .mzXML or .mzML files are present, print a message
         if new_ft.columns.str.contains('\\.mzXML$').any() and new_ft.columns.str.contains('\\.mzML$').any():
@@ -117,4 +122,65 @@ def tidyTables(ft, md, ft_an):
     
     return (new_ft, new_md)
 
-# test
+# Data-cleanup
+
+def ft_md_merging(new_ft_p, new_md_p):
+    # As a first step of data-cleanup step, lets merge the metadata and feature table (transposed) together.
+    # This can be used later for other purposes such as batch correction.
+    ft_trans = pd.DataFrame(new_ft_p).T #transposing the ft
+    ft_trans = ft_trans.apply(pd.to_numeric) #converting all values to numeric
+    np.array_equal(new_md_p['filename'],ft_trans.index) #should return True now
+    
+    print(ft_trans.head(n=3))
+    
+    #merging metadata (new_md) and transposed feature table based on the sample names
+    ft_merged_with_md = pd.merge(new_md_p, ft_trans.reset_index(), left_on='filename', right_on='index', how='left')
+    #ft_merged_with_md.head(n=2)
+    
+    # option to export?
+    #ft_merged_with_md.to_csv(os.path.join(data_dir,"Ft_md_merged.csv")) # This file can be used for batch correction
+    return(ft_merged_with_md)
+    
+
+
+def batch_correction():
+    return ""
+
+
+def blank_removal(md_df, ft_t_df, sample_index_input, blank_num_input, sample_num_input):
+    sample_attribute = md_df.columns[sample_index_input]
+    
+    df = pd.DataFrame({"LEVELS": InsideLevels(md_df.iloc[:, 1:]).iloc[sample_index_input-1]["LEVELS"]})
+    df.index = [*range(1, len(df)+1)]
+    print(df.head())
+    
+    blank_num = InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][(blank_num_input-1)]
+    sample_num = InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][(sample_num_input-1)]
+    
+    print(blank_num)
+    print(sample_num)
+    
+    md_Blank = md_df[md_df[sample_attribute] == blank_num]
+    print(md_Blank.head())
+    print(md_Blank.shape)
+    
+    Blank = ft_t_df[ft_t_df.index.isin(md_Blank['filename'])]
+    print(Blank.head())
+    print(Blank.shape)
+
+    md_Samples  = md_df[md_df[sample_attribute] == sample_num]
+    print(md_Samples.head())
+    print(md_Samples.shape)
+    
+    Samples = ft_t_df[ft_t_df.index.isin(md_Samples['filename'])]
+    print(Samples.head())
+    print(Samples.shape)
+    
+    print(ft_t_df.head())
+    return(Blank, Samples)
+
+
+
+
+    
+    

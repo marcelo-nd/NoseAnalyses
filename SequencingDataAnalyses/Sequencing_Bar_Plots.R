@@ -316,3 +316,24 @@ syncomall3 <- syncomall2[!(row.names(syncomall2) %in% c("Escherichia coli")), ]
 
 barplot_from_feature_table(syncomall3)
 
+
+
+
+################
+
+# long reads of Run 8, processed with mirror
+otu_table_s9_2 <- read.csv("C:/Users/marce/Desktop/otu_table2.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s9_2)
+
+
+otu_table_s9_3 <- read.csv("C:/Users/marce/Desktop/otu_table3.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s9_3)
+
+
+###
+
+otu_table_s8_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/8_results_emu_RRNA_DB_no_repro/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s8_emu)

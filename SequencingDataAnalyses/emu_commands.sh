@@ -1,5 +1,5 @@
 # create conda environment for emu
-conda create --name emu_py37 python=3.7
+conda create --name emu python=3.7
 
 # install emu
 conda config --add channels defaults
@@ -15,12 +15,12 @@ sudo apt install r-base-core
 R
 
 # Install required packages
-install.packages("readr", lib = "/usr/lib/R/library")
-install.packages("dplyr", lib = "/usr/lib/R/library")
-install.packages("plyr", lib = "/usr/lib/R/library")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("plyr")
 
 # quit R
-# quit()
+quit()
 
 
 # Create custom database
@@ -103,3 +103,17 @@ conda activate emu_py37
 
 export SC9=/mnt/e/1_NoseSynComProject/SequencingData/9_16STest_MockDNA_030424
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "FALSE" -s $SC9/no_sample/20240403_1526_MN45148_FAY00412_a67f721c/fastq_pass -o $SC9/results_long  -c "TRUE" -p /mnt/c/LaCa16copies.csv
+
+
+# SynCom Test 8 (03.04.24) (16s kit test of Mock communities)
+conda activate emu_py37
+
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+export SC10=/mnt/f/SequencingData/SynComTFBatch1and2_252524
+
+sed -i 's/\r//' $EMUWRAPPER_LOC/emu_wrapper.sh
+
+. $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC10/no_sample/20240525_1628_MN45148_FAY35039_2aa0c353/fastq_pass -o $SC10/results_long  -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv

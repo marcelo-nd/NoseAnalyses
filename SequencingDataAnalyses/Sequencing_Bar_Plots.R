@@ -88,7 +88,7 @@ inocs_27f2_plot <- barplot_from_feature_table(inocs_27f2)
 
 plot(inocs_27f2_plot)
 
-# 4 SynCom Inocs V34 (Illumina Stlye) (from otu_table_s7)
+# 4 SynCom Inocs V34 (Illumina Stlye) (from otu_table_s7) 
 
 inocs_v34 <- sub_otutable(otu_table_s7, c(5:8), c("SynCom1 T0 0,1", "SynCom1 T0 0,01", "SynCom2 T0 0,1", "SynCom2 T0 0,01"))
 
@@ -337,3 +337,110 @@ barplot_from_feature_table(otu_table_s9_3)
 otu_table_s8_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/8_results_emu_RRNA_DB_no_repro/otu_table.csv", row.names=1)
 
 barplot_from_feature_table(otu_table_s8_emu)
+
+
+
+###############################################################
+
+otu_table_s10 <- read.csv("F:/SequencingData/SynComTFBatch1and2_252524/results_long/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s10)
+
+barplot_from_feature_table(otu_table_s10[1:61,])
+
+otu_table_s10 <- otu_table_s10[1:61,]
+
+# Select SynComs
+
+sc1_ab <- sub_otutable(otu_table_s10, c(5:7), c("SC1_r1", "SC1_r2", "SC1_r3"))
+
+barplot_from_feature_table(sc1_ab)
+
+sc2_ab <- sub_otutable(otu_table_s10, c(4, 8, 9), c("SC2_r1", "SC2_r2", "SC2_r3"))
+
+barplot_from_feature_table(sc2_ab)
+
+sc22_ab <- sub_otutable(otu_table_s10, c(13:15), c("SC22_r1", "SC22_r2", "SC22_r3"))
+
+barplot_from_feature_table(sc22_ab)
+
+sc23_ab <- sub_otutable(otu_table_s10, c(16, 17, 18), c("SC23_r1", "SC23_r2", "SC23_r3"))
+
+barplot_from_feature_table(sc23_ab)
+
+sc24_ab <- sub_otutable(otu_table_s10, c(19, 20, 2), c("SC24_r1", "SC24_r2", "SC24_r3"))
+
+barplot_from_feature_table(sc24_ab)
+
+syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom3", "SynCom4", "SynCom5"))
+plot(syncom_plot)
+
+
+barplot_from_feature_tables <- function(feature_tables, experiments_names){
+  # each experiment should have a separate table and should share samples and species
+  for (table in seq(from = 1, to = length(feature_tables), by=1)) {
+    #print(head(feature_tables))
+    # copy feature table
+    feature_table2 <- feature_tables[[table]]
+    
+    #print(head(feature_table2))
+    
+    # Remove columns (samples) with zero count
+    if (ncol(feature_table2) > 1) {
+      feature_table2 <- feature_table2[, colSums(feature_table2 != 0) > 0]
+    }
+    
+    # Generate a column with the names of ASVs/OTUs using rownames.
+    feature_table2["species"] <- row.names(feature_table2)
+    
+    feature_table_g <- tidyr::gather(feature_table2, 1:(ncol(feature_table2) - 1) , key = "sample", value = "abundance")
+    
+    #print(experiments_names[table])
+    
+    feature_table_g$experiment <- experiments_names[table]
+    
+    if (table == 1) {
+      exp_plot_table <- feature_table_g
+    }else{
+      exp_plot_table <- rbind(exp_plot_table, feature_table_g)
+    }
+  }
+  
+  #print(head(exp_plot_table))
+  #print(head(feature_table2))
+  
+  # Keep order of samples in graph
+  #exp_plot_table$sample <- factor(exp_plot_table$sample, levels = experiments_names)
+  #print(head(exp_plot_table))
+  # 
+  color_palette <- get_palette()
+  
+  #exp_plot_table$experiment <- factor(exp_plot_table$experiment,levels=unique(as.character(exp_plot_table$experiment)))
+  #exp_plot_table$species <- factor(exp_plot_table$species,levels = unique(as.character(exp_plot_table$species)))
+  
+  exp_plot_table <- exp_plot_table %>%
+    dplyr::arrange(species)
+  
+  # Reorder factor
+  #exp_plot_table$species <- forcats::fct_relevel(exp_plot_table$species, after = 0)
+  #exp_plot_table$species <- forcats::fct_rev(exp_plot_table$species)
+  
+  print(exp_plot_table)
+  
+  otu_barplot <- ggplot(exp_plot_table) +
+    geom_bar(aes(x = sample, y = abundance, fill = species),
+             position = position_fill(),
+             stat = "identity") + 
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    ggplot2::scale_fill_manual(values=color_palette) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"),
+                   legend.title=ggplot2::element_text(size=14), 
+                   legend.text=ggplot2::element_text(size=12)) +
+    facet_grid(~experiment, scales = "free", space = "free") # this is to remove empty factors
+  otu_barplot
+  return(otu_barplot)
+}
+
+syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom22", "SynCom23", "SynCom24"))
+
+plot(syncom_plot)

@@ -80,12 +80,40 @@ print(head(fia_norm))
 
 # Remove highly variable metabolites
 
+filter_by_error <- function(dataframe, error_threshold = 50){
+  
+  # Step 1: Calculate the error for each variable per type
+  errors <- dataframe %>%
+    group_by(SynCom) %>%
+    summarise(across(where(is.numeric), ~ (sd(.) / mean(.)) * 100, .names = "error_{col}"))
+  
+  # View the errors dataframe
+  #print(head(errors))
+  
+  # Step 2: Average the error for each variable for all types
+  avg_errors <- errors %>%
+    summarise(across(starts_with("error_"), mean, na.rm = TRUE))
+  
+  # View the average errors dataframe
+  #print(head(avg_errors))
+  
+  variables_to_keep <- names(avg_errors)[avg_errors <= threshold]
+  variables_to_keep <- gsub("error_", "", variables_to_keep)
+  
+  # Keep the metadata columns and the variables with error below the threshold
+  df_filtered <- dataframe %>%
+    select(all_of(c("Sample", "SynCom", "Time", "OD", variables_to_keep)))
+  
+  # View the filtered dataframe
+  return(df_filtered)
+}
 
+filtered_fia <- filter_by_error(fia_norm, error_threshold = 50)
 
 # Do PCA
 fia_pos_pca <- prcomp(fia_pos_df_2, scale. = TRUE)
 
-fia_pos_pca <- prcomp(fia_norm[, 5:ncol(fia_norm)], scale. = TRUE)
+fia_pos_pca <- prcomp(filtered_fia[, 5:ncol(filtered_fia)], scale. = TRUE)
 
 # Plot PCA with samples coloured by SynCom
 p2 <- ggplot2::autoplot(fia_pos_pca, data = na.omit(fia_metadata_df), colour = 'SynCom') +

@@ -117,3 +117,4 @@ export SC10=/mnt/f/SequencingData/SynComTFBatch1and2_252524
 sed -i 's/\r//' $EMUWRAPPER_LOC/emu_wrapper.sh
 
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC10/no_sample/20240525_1628_MN45148_FAY35039_2aa0c353/fastq_pass -o $SC10/results_long  -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+

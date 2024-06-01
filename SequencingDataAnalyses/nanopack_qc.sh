@@ -44,12 +44,6 @@ export SC1=/mnt/f/SequencingData/ReproData/1_16S_First_Test_170124_repro/basecal
 ####
 NanoPlot --fastq /mnt/f/SequencingData/ReproData/1_16S_First_Test_170124_repro/basecalling/pass/barcode01/fastq/barcode01_concat.fastq -o /mnt/f/SequencingData/ReproData/1_16S_First_Test_170124_repro/
 
-####
-# Barcode 8
-NanoPlot --fastq /mnt/f/SequencingData/Tests/8_confirmation_rrna_230324/no_sample/20240323_1548_MN45148_FAY35039_f0c3d280/fastq_pass/barcode01/fastq/barcode01_concat.fastq -o /mnt/f/SequencingData/Tests/8_confirmation_rrna_230324
-
-NanoPlot --fastq /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro/basecalling/pass/barcode01/fastq/barcode01_concat.fastq -o /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro/
-
 ############
 # QC
 sed -i 's/\r//' /mnt/c/Users/marce/Documents/GitHub/EmuWrapper/emu_wrapper_qc.sh
@@ -60,3 +54,18 @@ export SC1=/mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro_tests/basec
 
 . $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC1 -o $SC1/fastq_qc
 
+####
+# Barcode 8
+NanoPlot --fastq /mnt/f/SequencingData/Tests/8_confirmation_rrna_230324/no_sample/20240323_1548_MN45148_FAY35039_f0c3d280/fastq_pass/barcode01/fastq/barcode01_concat.fastq -o /mnt/f/SequencingData/Tests/8_confirmation_rrna_230324
+
+NanoPlot --fastq /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro/basecalling/pass/barcode01/fastq/barcode01_concat.fastq -o /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro/
+
+NanoPlot --fastq /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro_tests/basecalling/pass/barcode01/fastq_qc/barcode01_qc.fastq -o /mnt/f/SequencingData/ReproData/8_confirmation_rrna_repro_tests/qc_nanoplot
+
+# rrna tests
+
+NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq/barcode01/barcode01_concat.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/
+
+NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq_qc/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/
+
+NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq_qc2/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/

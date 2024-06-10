@@ -69,3 +69,6 @@ NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq/barcode01/ba
 NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq_qc/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/
 
 NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq_qc2/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/
+
+NanoPlot --fastq /mnt/f/SequencingData/NanoporeTech/rrnaTests/fastq_qc_only_short/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/NanoporeTech/rrnaTests/
+

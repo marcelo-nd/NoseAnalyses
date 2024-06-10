@@ -375,3 +375,45 @@ barplot_from_feature_table(sc24_ab)
 syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom22", "SynCom23", "SynCom24"), shared_samples =  FALSE)
 
 plot(syncom_plot)
+
+###############
+otu_table_short <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_short/otu_table.csv", row.names=1)
+colnames(otu_table_short) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
+barplot_from_feature_table(otu_table_s1)
+
+otu_table_medium <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_medium/otu_table.csv", row.names=1)
+colnames(otu_table_medium) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
+barplot_from_feature_table(otu_table_s2)
+
+otu_table_long <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_long//otu_table.csv", row.names=1)
+colnames(otu_table_long) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
+barplot_from_feature_table(otu_table_s2)
+
+otu_table_only_short <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_only_short/otu_table.csv", row.names=1)
+colnames(otu_table_only_short) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
+barplot_from_feature_table(otu_table_only_short)
+
+barplot_from_feature_tables(list(otu_table_only_short, otu_table_short, otu_table_medium, otu_table_long), c("Short", ">= Short", ">= Medium", "<= Long"), shared_samples = TRUE)
+
+barplot_from_feature_tables(list(otu_table_only_short[c(1, 4, 7)], otu_table_short[c(1, 4, 7)], otu_table_medium[c(1, 4, 7)], otu_table_long[c(1, 4, 7)]), c("Short", ">= Short", ">= Medium", "<= Long"), shared_samples = TRUE)
+
+
+#####
+
+otu_table_070624 <- read.csv("F:/SequencingData/SynComExp070624/emu_results/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_070624[20:24])
+
+otu_table_070624_filt <- filter_otus_by_counts_col_counts(otu_table_070624[1:19], min_count = 50,
+                                                          col_number = 1)
+
+barplot_from_feature_table(otu_table_070624_filt)
+
+
+
+otu_table_070624_filt <- filter_otus_by_counts_col_counts(otu_table_070624, min_count = 50,
+                                                          col_number = 1)
+
+barplot_from_feature_table(otu_table_070624_filt[1:13,])
+
+

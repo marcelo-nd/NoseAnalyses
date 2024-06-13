@@ -14,4 +14,4 @@ colnames(otu_table_screening) <- c("SC1","SC2","SC3", "SC4", "SC5", "SC6", "SC7"
 otu_table_screening_filt <- filter_otus_by_counts_col_counts(otu_table_screening, min_count = 50,
                                                           col_number = 1)
 
-barplot_from_feature_table(otu_table_screening_filt)
+barplot_from_feature_table(otu_table_screening_filt[1:13,])

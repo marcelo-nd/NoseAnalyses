@@ -112,7 +112,27 @@ EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
 
-export SC10=/mnt/f/SequencingData/SynComTFBatch1and2_252524
+export SC10=/mnt/f/SequencingData/OriginalRuns/ReproData/SynComTFBatch1and2_250524
+
+# Unzip sequences
+
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC10/Basecalling -o $SC10
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC10/fastq -o $SC10
+
+# emu
+
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC10/fastq_qc -o $SC10 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+
+
+
+
+
+
+
 
 sed -i 's/\r//' $EMUWRAPPER_LOC/emu_wrapper.sh
 

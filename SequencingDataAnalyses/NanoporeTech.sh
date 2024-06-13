@@ -14,11 +14,7 @@ export S27F=/mnt/f/SequencingData/NanoporeTech/27F
 # emu
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27F/fastq -o $S27F -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-# Table Merging
-Rscript $EMUWRAPPER_LOC/tables_merging.R $S27F/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
-
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27F/fastq_qc -o $S27F -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 ### 27F-II
 # Unzip sequences
@@ -32,11 +28,7 @@ export S27FII=/mnt/f/SequencingData/NanoporeTech/27FII
 # emu
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq -o $S27FII -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-# Table Merging
-Rscript $EMUWRAPPER_LOC/tables_merging.R $S27FII/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
-
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 ### V34
 # Unzip sequences
@@ -50,11 +42,7 @@ export V34=/mnt/f/SequencingData/NanoporeTech/V34
 # emu
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq -o $V34 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-# Table Merging
-Rscript $EMUWRAPPER_LOC/tables_merging.R $V34/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
-
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 ### rRNA
 # Unzip sequences
@@ -63,14 +51,12 @@ export Srrna=/mnt/f/SequencingData/NanoporeTech/rrna
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $Srrna -o $Srrna
 
 # QC
-export Srrna=/mnt/f/SequencingData/NanoporeTech/rrnaTests
-
 . $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $Srrna/fastq -o $Srrna
 
 # emu
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 # Table Merging
 Rscript $EMUWRAPPER_LOC/tables_merging.R $Srrna/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv

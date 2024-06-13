@@ -342,11 +342,11 @@ source("C:/Users/marce/Documents/GitHub/microbiome-help/microbiomeGraphing.R")
 source("C:/Users/marce/Documents/GitHub/microbiome-help/otuTableWrangling.R")
 
 
-otu_table_s10 <- read.csv("F:/SequencingData/SynComTFBatch1and2_252524/results_long/otu_table.csv", row.names=1)
+otu_table_s10 <- read.csv("F:/SequencingData/OriginalRuns/ReproData/SynComTFBatch1and2_250524/emu_results/otu_table.csv", row.names=1)
 
 otu_table_s10 <- otu_table_s10[1:61,]
 
-otu_table_s10 <- filter_otus_by_counts_col_counts(otu_table_s10, 5, 3)
+otu_table_s10 <- filter_otus_by_counts_col_counts(otu_table_s10, 10, 1)
 
 barplot_from_feature_table(otu_table_s10)
 
@@ -360,34 +360,34 @@ sc2_ab <- sub_otutable(otu_table_s10, c(4, 8, 9), c("SC2_r1", "SC2_r2", "SC2_r3"
 
 barplot_from_feature_table(sc2_ab)
 
-sc22_ab <- sub_otutable(otu_table_s10, c(13:15), c("SC22_r1", "SC22_r2", "SC22_r3"))
+sc22_ab <- sub_otutable(otu_table_s10, c(13:15), c("SC6_r1", "SC6_r2", "SC6_r3"))
 
 barplot_from_feature_table(sc22_ab)
 
-sc23_ab <- sub_otutable(otu_table_s10, c(16, 17, 18), c("SC23_r1", "SC23_r2", "SC23_r3"))
+sc23_ab <- sub_otutable(otu_table_s10, c(16, 17, 18), c("SC7_r1", "SC7_r2", "SC7_r3"))
 
 barplot_from_feature_table(sc23_ab)
 
-sc24_ab <- sub_otutable(otu_table_s10, c(19, 20, 2), c("SC24_r1", "SC24_r2", "SC24_r3"))
+sc24_ab <- sub_otutable(otu_table_s10, c(19, 20, 2), c("SC11_r1", "SC11_r2", "SC11_r3"))
 
 barplot_from_feature_table(sc24_ab)
 
-syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom22", "SynCom23", "SynCom24"), shared_samples =  FALSE)
+syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom06", "SynCom07", "SynCom11"), shared_samples =  FALSE)
 
 plot(syncom_plot)
 
 ###############
 otu_table_short <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_short/otu_table.csv", row.names=1)
 colnames(otu_table_short) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
-barplot_from_feature_table(otu_table_s1)
+barplot_from_feature_table(otu_table_short)
 
 otu_table_medium <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_medium/otu_table.csv", row.names=1)
 colnames(otu_table_medium) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
-barplot_from_feature_table(otu_table_s2)
+barplot_from_feature_table(otu_table_medium)
 
 otu_table_long <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_long//otu_table.csv", row.names=1)
 colnames(otu_table_long) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")
-barplot_from_feature_table(otu_table_s2)
+barplot_from_feature_table(otu_table_long)
 
 otu_table_only_short <- read.csv("F:/SequencingData/NanoporeTech/rrnaTests/emu_results_only_short/otu_table.csv", row.names=1)
 colnames(otu_table_only_short) <- c("Zymo Std R1","Zymo Std R2","Zymo Std R3", "NasalDNAMix R1", "NasalDNAMix R2",  "NasalDNAMix R3", "NasalCellMix R1", "NasalCellMix R2")

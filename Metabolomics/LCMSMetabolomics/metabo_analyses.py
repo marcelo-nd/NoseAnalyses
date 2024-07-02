@@ -56,41 +56,40 @@ import statsmodels.api as sm
 
 import time
 from sklearn.inspection import permutation_importance
-from skbio.stats.distance import permdisp
 
+#### Not imported anymore?
+from skbio.stats.distance import permdisp
 import skbio
 
-from skbio.stats.distance import permdisp
 
 #### From scripts
 import sys, os
-sys.path.append('./NoseAnalyses/LCMSMetabolomics/')
+sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal
 
 
+ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
-ft = pd.read_csv("/mnt/c/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
+md = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/20221125_Metadata_SD_Beaches_with_injection_order.txt", sep = "\t")
 
-md = pd.read_csv("/mnt/c/metaboData/20221125_Metadata_SD_Beaches_with_injection_order.txt", sep = "\t")
+an_gnps = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_result_FBMN.tsv.txt", sep = "\t")
 
-an_gnps = pd.read_csv("/mnt/c/metaboData/GNPS_result_FBMN.tsv.txt", sep = "\t")
+an_analog = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep = "\t")
 
-an_analog = pd.read_csv("/mnt/c/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep = "\t")
+print('Dimension: ', ft.shape) #gets the dimension (number of rows and columns) of ft
+print(ft.head()) # gets the first 5 rows of ft
 
-#print('Dimension: ', ft.shape) #gets the dimension (number of rows and columns) of ft
-#print(ft.head()) # gets the first 5 rows of ft
+print('Dimension: ', md.shape)
+print(md.head())
 
-#print('Dimension: ', md.shape)
-#print(md.head())
+print(an_gnps.head(n=2))
 
-#print(an_gnps.head(n=2))
+print(an_analog.head(n=2))
 
-#print(an_analog.head(n=2))
+print('Dimension: ', an_gnps.shape)
+print('Dimension: ', an_analog.shape)
 
-#print('Dimension: ', an_gnps.shape)
-#print('Dimension: ', an_analog.shape)
-
-#print(InsideLevels(md))
+print(InsideLevels(md))
 
 ft_w_an = MergingAnnotationsFT(ft, an_gnps, an_analog)
 

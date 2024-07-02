@@ -400,9 +400,9 @@ barplot_from_feature_tables(list(otu_table_only_short[c(1, 4, 7)], otu_table_sho
 
 #####
 
-otu_table_070624 <- read.csv("F:/SequencingData/SynComExp070624/emu_results/otu_table.csv", row.names=1)
+otu_table_070624 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/Sequencing of Batches 1 and 2/SynComExp070624/emu_results/otu_table.csv", row.names=1)
 
-barplot_from_feature_table(otu_table_070624[20:24])
+barplot_from_feature_table(otu_table_070624)
 
 otu_table_070624_filt <- filter_otus_by_counts_col_counts(otu_table_070624[1:19], min_count = 50,
                                                           col_number = 1)

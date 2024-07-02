@@ -31,13 +31,17 @@ def combine_annotation_names(row):
     return ';'.join([str(row['Compound_Name']), str(row['Analog_Compound_Name'])])
 
 def MergingAnnotationsFT(ft_df, an_df, an_ana_df):
+    """"Merge the annotations from GNPS: Actual library hits and analogs. This is given in 'an_final' dataframe.
+        The compound names of 'an_gnps' and 'an_analog' are combined by a separator ';'. As a result, for each
+        #Scan#, we have a single associated compound name. This result is given in 'an_final_single' dataframe."""
+
     # deep copies to prevent modification of orignal DFs
     ft_df2 = copy.deepcopy(ft_df)
     an_df2 = copy.deepcopy(an_df)
     an_ana_df2 = copy.deepcopy(an_ana_df)
     
     # Checking if both "#Scan#" columns are of similar class to "row ID" column in FT dataframe
-    if(ft_df["row ID"].dtype == an_df2["#Scan#"].dtype and ft_df2["row ID"].dtype == an_ana_df2["#Scan#"].dtype):
+    if(ft_df2["row ID"].dtype == an_df2["#Scan#"].dtype and ft_df2["row ID"].dtype == an_ana_df2["#Scan#"].dtype):
         
         # Rename the columns of 'an_analog' with a prefix 'Analog' (excluding the '#Scan#' column)
         an_ana_df2.columns = ['Analog_' + col if col != '#Scan#' else col for col in an_ana_df2.columns]
@@ -57,6 +61,11 @@ def MergingAnnotationsFT(ft_df, an_df, an_ana_df):
     return(ft_an)
 
 def tidyTables(ft_p, md_p, ft_an_p):
+    """ In the next cells, we bring feature table and metadata in the correct format such that the rownames of the
+        metadata and column names of the feature table are the same. Filenames and the order of files need to correspond
+        in both tables, as we will match metadata attributes to the feature table. In that way, both metadata and feature
+        table, can easily be filtered. """
+    
     new_ft = copy.deepcopy(ft_p)
     new_md = copy.deepcopy(md_p)
     new_ft_an = copy.deepcopy(ft_an_p)
@@ -106,7 +115,8 @@ def tidyTables(ft_p, md_p, ft_an_p):
             new_md = new_md.sort_values(by='filename').reset_index(drop=True) #ordering the md by the 1st column filename
             # how many files in the metadata are also present in the feature table
             if (not new_md['filename'].isin(new_ft.columns).value_counts()):  #if this returns False it means some files are missing
-                print
+                #print(not new_md['filename'].isin(new_ft.columns).value_counts())
+                print()
     # check if new_ft column names and md row names are the same
     if sorted(new_ft.columns) == sorted(new_md['filename']):
         print(f"All {len(new_ft.columns)} files are present in both new_md & new_ft.")

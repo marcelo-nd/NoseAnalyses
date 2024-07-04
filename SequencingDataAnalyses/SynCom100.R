@@ -15,3 +15,5 @@ otu_table_screening_filt <- filter_otus_by_counts_col_counts(otu_table_screening
                                                           col_number = 1)
 
 barplot_from_feature_table(otu_table_screening_filt[1:13, c(18, 20, 24)])
+
+barplot_from_feature_table(otu_table_screening_filt[1:13, ])

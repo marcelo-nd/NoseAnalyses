@@ -10,6 +10,8 @@ if (!requireNamespace('BiocManager', quietly = TRUE))
 
 BiocManager::install('PCAtools')
 
+library(PCAtools)
+
 source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")
 
 # Read fia positive mode
@@ -98,7 +100,7 @@ rownames(fia_metadata_df2) <- fia_metadata_df2$Sample
 fia_pos_pca <- PCAtools::pca(fia_df_3, scale = TRUE, metadata =fia_metadata_df2, transposed = FALSE)
 
 p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, ntopLoadings = 2, lab = NULL, colby = "SynCom",
-                       legendPosition = "right", legendLabSize = 9, legendIconSize = 3.0,
+                       legendPosition = "right", legendLabSize = 9, legendIconSize = 2, pointSize = 2,
                        colkey = get_palette(nColors = 26))
 
 p2

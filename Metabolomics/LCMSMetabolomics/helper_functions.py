@@ -129,22 +129,25 @@ def tidyTables(ft_p, md_p, ft_an_p):
         md_rows_not_in_ft = [row for row in new_md['filename'] if row not in new_ft.columns]
         print(f"These {len(md_rows_not_in_ft)} rows of metadata table are not present in feature table and will be removed:\n{', '.join(md_rows_not_in_ft)}\n")
         new_md.drop(md_rows_not_in_ft, inplace=True)
+        
+    # ft_trans iss the transposed features table
+    ft_trans = pd.DataFrame(new_ft).T #transposing the ft
+    ft_trans = ft_trans.apply(pd.to_numeric) #converting all values to numeric
     
-    return (new_ft, new_md)
+    #np.array_equal(new_md['filename'],ft_trans.index) #should return True now
+    
+    #print(ft_trans.head(n=3))
+    
+    return (ft_trans, new_md)
 
 # Data-cleanup
 
 def ft_md_merging(new_ft_p, new_md_p):
     # As a first step of data-cleanup step, lets merge the metadata and feature table (transposed) together.
     # This can be used later for other purposes such as batch correction.
-    ft_trans = pd.DataFrame(new_ft_p).T #transposing the ft
-    ft_trans = ft_trans.apply(pd.to_numeric) #converting all values to numeric
-    np.array_equal(new_md_p['filename'],ft_trans.index) #should return True now
-    
-    print(ft_trans.head(n=3))
-    
+       
     #merging metadata (new_md) and transposed feature table based on the sample names
-    ft_merged_with_md = pd.merge(new_md_p, ft_trans.reset_index(), left_on='filename', right_on='index', how='left')
+    ft_merged_with_md = pd.merge(new_md_p, new_ft_p.reset_index(), left_on='filename', right_on='index', how='left')
     #ft_merged_with_md.head(n=2)
     
     # option to export?
@@ -152,42 +155,56 @@ def ft_md_merging(new_ft_p, new_md_p):
     return(ft_merged_with_md)
     
 
-
 def batch_correction():
     return ""
 
 
-def blank_removal(md_df, ft_t_df, sample_index_input, blank_num_input, sample_num_input):
+def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, sample_num_input):
     sample_attribute = md_df.columns[sample_index_input]
     
     df = pd.DataFrame({"LEVELS": InsideLevels(md_df.iloc[:, 1:]).iloc[sample_index_input-1]["LEVELS"]})
     df.index = [*range(1, len(df)+1)]
-    print(df.head())
+    #print(df.head())
     
-    blank_num = InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][(blank_num_input-1)]
-    sample_num = InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][(sample_num_input-1)]
+    # Input for blanks, allowing multiple indices
+    blank_indices = [int(index.strip()) - 1 for index in blank_num_input]
+    blank_nums = [InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][index] for index in blank_indices]
     
-    print(blank_num)
-    print(sample_num)
-    
-    md_Blank = md_df[md_df[sample_attribute] == blank_num]
-    print(md_Blank.head())
-    print(md_Blank.shape)
+    # Input for samples, allowing multiple indices
+    sample_indices = [int(index.strip()) - 1 for index in sample_num_input]
+    sample_nums = [InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][index] for index in sample_indices]
+
+    md_Blank = md_df[md_df[sample_attribute].isin(blank_nums)]
     
     Blank = ft_t_df[ft_t_df.index.isin(md_Blank['filename'])]
-    print(Blank.head())
-    print(Blank.shape)
 
-    md_Samples  = md_df[md_df[sample_attribute] == sample_num]
-    print(md_Samples.head())
-    print(md_Samples.shape)
+    md_Samples  = md_df[md_df[sample_attribute].isin(sample_nums)]
     
     Samples = ft_t_df[ft_t_df.index.isin(md_Samples['filename'])]
-    print(Samples.head())
-    print(Samples.shape)
     
-    print(ft_t_df.head())
-    return(Blank, Samples)
+    #return(Blank, Samples)
+    # Getting mean for every feature in blank and Samples in a DataFrame named 'Avg_ft'
+    Avg_ft = pd.DataFrame({'Avg_blank': Blank.mean(axis=0, skipna=False)}) # Set skipna=False to check if there are NA values
+    Avg_ft['Avg_samples'] = Samples.mean(axis=0, skipna=False) # Adding another column 'Avg_samples' for feature means of samples
+    
+    # Getting the ratio of blank vs Sample
+    Avg_ft['Ratio_blank_Sample'] = (Avg_ft['Avg_blank'] + 1) / (Avg_ft['Avg_samples'] + 1)
+
+    # Creating a bin with 1s when the ratio > Cutoff, else put 0s
+    Avg_ft['Bg_bin'] = (Avg_ft['Ratio_blank_Sample'] > cutoff).astype(int)
+
+    # Calculating the number of background features and features present
+    print("Total no.of features:", Avg_ft.shape[0])
+    print("No.of Background or noise features:", Avg_ft['Bg_bin'].sum())
+    print("No.of features after excluding noise:", (Samples.shape[1] - Avg_ft['Bg_bin'].sum()))
+
+    # Merging Samples with Avg_ft and selecting only the required rows and columns
+    blk_rem = pd.concat([Samples.T, Avg_ft], axis=1, join='inner')
+    blk_rem = blk_rem[blk_rem['Bg_bin'] == 0]  # Picking only the features
+    blk_rem = blk_rem.drop(columns=['Avg_blank', 'Avg_samples', 'Ratio_blank_Sample', 'Bg_bin'])  # Removing the last 4 columns
+    blk_rem = blk_rem.T
+    
+    return(blk_rem, md_Samples)
 
 
 

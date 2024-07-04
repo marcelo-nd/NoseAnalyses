@@ -108,24 +108,22 @@ print("The number of rows and columns in our new md is:", new_md_tidy.shape)
 # Data-cleanup
 
 # As a first step of data-cleanup step, lets merge the metadata and feature table (transposed) together.
-ft_t = ft_md_merging(new_ft_tidy, new_md_tidy)
+ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be used for batch correction
 
 
 # Examine Metadata Attributes
 ins_lvls = InsideLevels(new_md_tidy.iloc[:, 1:])
 print(ins_lvls) #skipping the 0th column (filename) and looking at the summary table
 
-blank_tables = blank_removal(md_df=new_md_tidy, ft_t_df=ft_t, sample_index_input=1, blank_num_input=1, sample_num_input=2)
+blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_index_input=1, blank_num_input="1", sample_num_input="2")
 
-blanks_table = blank_tables[0]
+blk_rem = blk_tables[0]
 
-samples_table = blank_tables[1]
+md_Samples = blk_tables[1]
 
-# Display the chosen blanks
-print('Dimension: ',blanks_table.shape)
-blanks_table.head(2)
+print('Dimension: ',blk_rem.shape)
+blk_rem.head(n=3)
 
-# Display the chosen samples
-print('Dimension: ',samples_table.shape)
-samples_table.head(2)
-
+# metadata without the blanks info:
+print('Dimension: ', md_Samples.shape)
+md_Samples.head(n=3)

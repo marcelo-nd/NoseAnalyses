@@ -5,9 +5,12 @@ Created on Fri Feb  9 14:58:36 2024
 
 @author: marcelo
 """
+
 import pandas as pd
 import copy
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+
 
 def InsideLevels(df):
     # get all the columns (equals all attributes) -> will be number of rows
@@ -20,7 +23,6 @@ def InsideLevels(df):
         tmp = df[col].value_counts()
         count.append([tmp[levels[-1][i]] for i in range(len(levels[-1]))])
     return pd.DataFrame({"ATTRIBUTES": df.columns, "LEVELS": levels, "COUNT":count, "TYPES": types}, index=range(1, len(levels)+1))
-
 
 ### Merging annotations with feature table
 
@@ -207,7 +209,40 @@ def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, s
     return(blk_rem, md_Samples)
 
 
-
-
+def imputation(ft_p):
+    # get the lowest intensity (that is not zero) as a cutoff LOD value
+    cutoff_LOD = round(ft_p.replace(0, np.nan).min(numeric_only=True).min())
+    # Step 25: Random Value Generation & Zero Replacement
     
+    # Set the seed for random number generation
+    np.random.seed(141222)
+
+    imp_ft = ft_p.copy()
+    imp_ft = imp_ft.applymap(lambda x: np.random.randint(1, cutoff_LOD) if x == 0 else x)
     
+    print('Dimension: ', imp_ft.shape)
+    print(imp_ft.head(n=3))
+    
+    (imp_ft == 0).sum().sum() # checking if there are any zeros in our imputed table
+    
+    return(imp_ft)
+    
+def tic_normalize(p_ft):
+    # Step 27: Total Ion Current (TIC) or sample-centric normalization
+    normalized = p_ft.copy()
+    
+    # Dividing each element of a particular row (as each row is the sample) with its row sum
+    norm_TIC = normalized.apply(lambda x: x/np.sum(x), axis=1)
+    print('No NA values in Normalized data:',norm_TIC.isnull().values.any() == False)
+    print('Dimension: ', norm_TIC.shape)
+    print(norm_TIC.head(n=3))
+    
+    return(norm_TIC)
+
+def scale_ft(ft_p):
+    # center and scale filtered data
+    ft_scaled = pd.DataFrame(StandardScaler().fit_transform(ft_p),
+                              index=ft_p.index, columns=ft_p.columns)
+    print(ft_scaled.head(n=2))
+    return(ft_scaled)
+

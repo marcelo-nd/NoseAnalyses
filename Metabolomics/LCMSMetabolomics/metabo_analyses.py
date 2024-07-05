@@ -35,7 +35,7 @@ from scipy.stats import shapiro
 from scipy.stats import lognorm
 from scipy.stats import spearmanr
 
-from sklearn.preprocessing import StandardScaler
+
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import train_test_split
@@ -65,7 +65,7 @@ import skbio
 #### From scripts
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
-from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal
+from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
 
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
@@ -127,3 +127,26 @@ blk_rem.head(n=3)
 # metadata without the blanks info:
 print('Dimension: ', md_Samples.shape)
 md_Samples.head(n=3)
+
+imp_ft = imputation(blk_rem)
+
+tic_norm_ft = tic_normalize(imp_ft)
+
+
+#Setting 'filename' column as 'index' for md_Samples
+md_Samples.set_index('filename', inplace=True)
+md_Samples.index.name = None
+
+# put the rows in the feature table and metadata in the same order
+imp_ft.sort_index(inplace=True)
+md_Samples.sort_index(inplace=True)
+
+if (md_Samples.index == imp_ft.index).all():
+    print("pass")
+else:
+    print("WARNING: Sample names in feature and metadata table are NOT the same!")
+
+scaled_ft = scale_ft(imp_ft)
+
+
+

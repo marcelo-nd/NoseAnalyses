@@ -57,7 +57,6 @@ import statsmodels.api as sm
 import time
 from sklearn.inspection import permutation_importance
 
-#### Not imported anymore?
 from skbio.stats.distance import permdisp
 import skbio
 
@@ -66,7 +65,7 @@ import skbio
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-
+from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -141,6 +140,7 @@ md_Samples.index.name = None
 imp_ft.sort_index(inplace=True)
 md_Samples.sort_index(inplace=True)
 
+# Check if the deature table and metadata have the same sample names!
 if (md_Samples.index == imp_ft.index).all():
     print("pass")
 else:
@@ -148,5 +148,27 @@ else:
 
 scaled_ft = scale_ft(imp_ft)
 
+########################################################### Multivariate analyses
+######## Principal coordinates analysis (PCoA)
+pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
+
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Month')
+
+# Scree plot?
+
+pca_plot_fig.show()
+
+pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
+
+######## Permanova
+permanova_metab(cleaned_data=scaled_ft, metadata=md_Samples, attribute_permanova='ATTRIBUTE_Month')
 
 
+
+####### Hierarchial Clustering Algorithm
+
+####### Heatmaps
+
+###### Supervised learning with Random Forest
+
+########################################################### Univariate analyses

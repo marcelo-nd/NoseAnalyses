@@ -342,7 +342,7 @@ source("C:/Users/marce/Documents/GitHub/microbiome-help/microbiomeGraphing.R")
 source("C:/Users/marce/Documents/GitHub/microbiome-help/otuTableWrangling.R")
 
 
-otu_table_s10 <- read.csv("F:/SequencingData/OriginalRuns/ReproData/SynComTFBatch1and2_250524/emu_results/otu_table.csv", row.names=1)
+otu_table_s10 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/ReproData/SynComTFBatch1and2_250524/emu_results/otu_table.csv", row.names=1)
 
 otu_table_s10 <- otu_table_s10[1:61,]
 
@@ -372,7 +372,7 @@ sc24_ab <- sub_otutable(otu_table_s10, c(19, 20, 2), c("SC11_r1", "SC11_r2", "SC
 
 barplot_from_feature_table(sc24_ab)
 
-syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab, sc2_ab, sc22_ab, sc23_ab, sc24_ab), experiments_names = c("SynCom1", "SynCom2", "SynCom06", "SynCom07", "SynCom11"), shared_samples =  FALSE)
+syncom_plot <- barplot_from_feature_tables(feature_tables = list(sc1_ab[1:3,], sc2_ab[1:3,], sc22_ab[1:3,], sc23_ab[1:6,], sc24_ab[1:4,]), experiments_names = c("SynCom1", "SynCom2", "SynCom06", "SynCom07", "SynCom11"), shared_samples =  FALSE)
 
 plot(syncom_plot)
 

@@ -11,6 +11,11 @@ import copy
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
+def load_help_packages():
+    import pandas as pd
+    import copy
+    import numpy as np
+    from sklearn.preprocessing import StandardScaler
 
 def InsideLevels(df):
     # get all the columns (equals all attributes) -> will be number of rows

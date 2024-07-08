@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jul  8 09:56:33 2024
+
+@author: marcelo
+"""
+import numpy as np
+import pandas as pd
+from scipy.spatial import distance
+import skbio
+import plotly.express as px
+
+def pcoa_metabolomics(cleaned_data, metadata):
+    # In order to perform a PCoA as described below,
+    # it is important that the filenames in our metadata are identical as well as in the same order
+    # as the filenames in our feature table.
+    DataCheck = np.isin(metadata.index, cleaned_data.index)
+
+    # Check if all elements are True
+    if DataCheck.all():
+        print("All elements meet the condition")
+        print(np.bincount(DataCheck.astype(int)))
+    else:
+        print("Not all elements meet the condition.")
+    
+    print('Dimension: ', cleaned_data.shape)
+    print(cleaned_data.head(n=2))
+    
+    # Then we will calculate pairwise distances across all samples in our data 
+    # using the Euclidean distance metric. When we use the Euclidean distance,
+    # it's referred to as Principal Component Analysis (PCA). For other distance metrics,
+    # it corresponds to a Principal Coordinates Analysis (PCoA).
+    raw_pcoa = distance.squareform(distance.pdist(cleaned_data, metric="euclidean"))
+    distm = skbio.stats.distance.DistanceMatrix(raw_pcoa, ids=cleaned_data.index)
+    
+    # All pairwise Euclidean distances are now stored within our distance (dissimilarity) matrix (distm).
+    # The distance matrix is then used as input for the PCoA.
+    #computing multi-dimensional scaling on distance matrix to 10 components
+    PCoA = skbio.stats.ordination.pcoa(distm, number_of_dimensions=10) # 10 principal coordinates
+
+    return PCoA
+
+def pca_plot(pcoa_obj, metadata, attribute, attribute_type='categorical'):
+    pcoa_df= pcoa_obj.samples
+    explained_var= np.round(pcoa_obj.proportion_explained*100, decimals =2)
+    
+    title = f'PCoA plot representing the sample distribution across different groups'
+    df = pd.merge(pcoa_df[['PC1', 'PC2']], metadata[attribute].apply(str if attribute_type == 'categorical'
+                                                                      else float),
+                  left_index=True,
+                  right_index=True)
+
+    if attribute_type == 'continuous':
+        fig = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400,
+                         color=attribute,
+                         color_continuous_scale='Viridis')
+    else:
+        fig = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400,
+                         color=attribute)
+
+        fig.update_layout(
+        font={"color": "grey", "size": 12, "family": "Sans"},
+        title={"text": title, 'x': 0.5, "font_color": "#3E3D53", "xanchor": "center"},  # Center title
+        xaxis_title=f'PCoA1 {explained_var[0]}%',
+        yaxis_title=f'PCoA2 {explained_var[1]}%',
+        legend_title_text='',
+        legend=dict(
+            title=dict(font=dict(size=18, family='bold')),
+            itemclick='toggleothers',
+            itemdoubleclick='toggle'
+        )
+    )
+
+    fig.update_traces(marker=dict(size=6))
+
+    fig.show()

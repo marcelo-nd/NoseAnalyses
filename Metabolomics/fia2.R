@@ -80,7 +80,6 @@ p2 <- ggplot2::autoplot(fia_pos_pca, data = na.omit(fia_metadata_df), colour = '
 p2
 
 
-
 ###############################################################################
 # Reprocess Fia df
 

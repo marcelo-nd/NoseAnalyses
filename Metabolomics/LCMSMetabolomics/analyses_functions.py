@@ -120,5 +120,69 @@ def permanova_metab(cleaned_data, metadata, attribute_permanova):
     print("\n")
     return None
     
+custom_palette = [
+    "orange", "green", "red", "blue", "black", "slategray", "purple", "cyan",
+    "maroon", "yellow", "magenta", "teal", "pink", "lavender", "olive",
+    "turquoise", "brown", "navy", "goldenrod", "indigo", "darkorange"
+]
+
+def pcoa_w_metrics(data, meta, distmetric, attribute,
+             col_attribute, mdtype='categorical', cols=custom_palette,
+             title='Principal coordinates plot', plot=True, print_perm=True):
+     
+    metrices = ['euclidean','cityblock','canberra','braycurtis','jaccard','minkowski']
     
+    if not distmetric in metrices:
+      print('Wrong metric. Please choose one out of the following list: ', metrices)
+
+    # Create the distance matrix from the original data
+    distance_matrix = skbio.stats.distance.DistanceMatrix(distance.squareform(distance.pdist(data, distmetric)),
+                                                         ids=data.index)
+
+    np.random.seed(0)
+    # perform PERMDISP test
+    permdisp = skbio.stats.distance.permdisp(distance_matrix, meta[attribute])
+    if print_perm:
+        print("\n")
+        print("Homoscedasticity check!\n")
+        print(permdisp)
+        print("\n")
+
+    # perform PERMANOVA test
+    permanova = skbio.stats.distance.permanova(distance_matrix, meta[attribute])
+
+    # SumOfSquares_ratio is the ratio of sum of squares between groups (SSB) and the sum of squares within groups (SSW)
+    SumOfSquares_ratio = (permanova['test statistic'] * (permanova['number of groups'] - 1)) / (permanova['sample size'] - permanova['number of groups'])
+    permanova['R2'] = SumOfSquares_ratio / (SumOfSquares_ratio + 1)
+    if print_perm:
+      print("Permanova results!\n")
+      print(permanova)
+      print("\n")
+
+    # perfom PCoA
+    pcoa = skbio.stats.ordination.pcoa(distance_matrix)
+    df = pcoa.samples[['PC1', 'PC2']]
+    df = df.set_index(meta.index)
+    df = pd.merge(df[['PC1', 'PC2']], meta[attribute].apply(str), left_index=True, right_index=True)
+
+    title_text = (
+    f'{title}<br>'  # First line with existing title
+    f'PERMISP p-value: {permdisp["p-value"]}<br>'  # Second line with PERMISP p-value
+    f'PERMANOVA p-value: {permanova["p-value"]}  R2: {permanova["R2"]:.4f}<br>'  # Third line with PERMANOVA p-value and R2
+    )
+
+    if mdtype == 'categorical':
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400, color=col_attribute, color_discrete_sequence=cols)
+    elif mdtype == 'continuous':
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400, color=col_attribute, color_continuous_scale=cols)
+    else:
+      print('Wrong mdtype parameter. Please choose from categorical or continuous')
+    pcoa_w_metrics_plot.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                      title={"text": title_text, 'x':0.18, "font_color":"#3E3D53"},
+                      xaxis_title=f'PC1 {round(pcoa.proportion_explained[0]*100, 1)}%',
+                      yaxis_title=f'PC2 {round(pcoa.proportion_explained[1]*100, 1)}%')
+    if plot:
+      pcoa_w_metrics_plot.show()
+    
+    return pcoa_w_metrics_plot
     

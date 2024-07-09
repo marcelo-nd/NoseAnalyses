@@ -65,7 +65,7 @@ import skbio
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab
+from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -140,7 +140,7 @@ md_Samples.index.name = None
 imp_ft.sort_index(inplace=True)
 md_Samples.sort_index(inplace=True)
 
-# Check if the deature table and metadata have the same sample names!
+# Check if the feature table and metadata have the same sample names!
 if (md_Samples.index == imp_ft.index).all():
     print("pass")
 else:
@@ -163,7 +163,14 @@ pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 ######## Permanova
 permanova_metab(cleaned_data=scaled_ft, metadata=md_Samples, attribute_permanova='ATTRIBUTE_Month')
 
+####### Permanova + PCoA
 
+pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "euclidean",
+                                     attribute = "ATTRIBUTE_Month", col_attribute = "ATTRIBUTE_Month",
+                                     mdtype="categorical", cols=custom_palette,
+                                     title="Principal coordinates plot", plot=True, print_perm=True)
+
+pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 
 ####### Hierarchial Clustering Algorithm
 

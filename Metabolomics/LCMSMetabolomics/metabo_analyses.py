@@ -9,63 +9,63 @@ Created on Fri Feb  9 13:27:01 2024
 import pandas as pd
 import numpy as np
 
-import glob
-import os
-import re
-import itertools
-import io
-import session_info
-import shutil
-import warnings
-import matplotlib.pyplot as plt
-import platform
-import math
-import scipy.stats as stats
+# import glob
+# import os
+# import re
+# import itertools
+# import io
+# import session_info
+# import shutil
+# import warnings
+# import matplotlib.pyplot as plt
+# import platform
+# import math
+# import scipy.stats as stats
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.figure_factory as ff
-import plotly.io as pio
+# import plotly.express as px
+# import plotly.graph_objects as go
+# import plotly.figure_factory as ff
+# import plotly.io as pio
 
-from scipy.cluster.hierarchy import dendrogram, linkage
-from scipy.cluster.hierarchy import fcluster
-from scipy.spatial import distance
-from scipy.stats import lognorm
-from scipy.stats import shapiro
-from scipy.stats import lognorm
-from scipy.stats import spearmanr
+# from scipy.cluster.hierarchy import dendrogram, linkage
+# from scipy.cluster.hierarchy import fcluster
+# from scipy.spatial import distance
+# from scipy.stats import lognorm
+# from scipy.stats import shapiro
+# from scipy.stats import lognorm
+# from scipy.stats import spearmanr
 
 
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import OrdinalEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.utils import class_weight
-from sklearn.metrics import classification_report
-from sklearn.metrics import silhouette_score
-from sklearn.cluster import KMeans
+# from sklearn.decomposition import PCA
+# from sklearn.preprocessing import OrdinalEncoder
+# from sklearn.model_selection import train_test_split
+# from sklearn.ensemble import RandomForestClassifier
+# from sklearn.utils import class_weight
+# from sklearn.metrics import classification_report
+# from sklearn.metrics import silhouette_score
+# from sklearn.cluster import KMeans
 
-import pingouin as pg
-import scikit_posthocs as sp
-from PyComplexHeatmap import *
-from yellowbrick.cluster import KElbowVisualizer
+# import pingouin as pg
+# import scikit_posthocs as sp
+# from PyComplexHeatmap import *
+# from yellowbrick.cluster import KElbowVisualizer
 
-from PIL import Image
+# from PIL import Image
 
-import statsmodels.api as sm
+# import statsmodels.api as sm
 
-import time
-from sklearn.inspection import permutation_importance
+# import time
+# from sklearn.inspection import permutation_importance
 
-from skbio.stats.distance import permdisp
-import skbio
+# from skbio.stats.distance import permdisp
+# import skbio
 
 
 #### From scripts
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette
+from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -92,12 +92,14 @@ print(InsideLevels(md))
 
 ft_w_an = MergingAnnotationsFT(ft, an_gnps, an_analog)
 
+print('Dimension: ', ft_w_an.shape)
+ft_w_an.head(n=2)
+
 new_tables = tidyTables(ft, md, ft_w_an)
 
 new_ft_tidy = new_tables[0]
 
 new_md_tidy = new_tables[1]
-
 
 #checking the dimensions of our new ft and md:
 print("The number of rows and columns in our original ft is:", ft.shape,"\n")
@@ -106,7 +108,7 @@ print("The number of rows and columns in our new md is:", new_md_tidy.shape)
 
 # Data-cleanup
 
-# As a first step of data-cleanup step, lets merge the metadata and feature table (transposed) together.
+# Merge the metadata and feature table (transposed) together.
 ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be used for batch correction
 
 
@@ -154,14 +156,17 @@ pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
 
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Month')
 
-# Scree plot?
-
 pca_plot_fig.show()
 
 pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 
+# Scree plot?
+
 ######## Permanova
-permanova_metab(cleaned_data=scaled_ft, metadata=md_Samples, attribute_permanova='ATTRIBUTE_Month')
+permanova_metab(cleaned_data=scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
+
+################ this gives FALSE
+
 
 ####### Permanova + PCoA
 
@@ -170,7 +175,34 @@ pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distme
                                      mdtype="categorical", cols=custom_palette,
                                      title="Principal coordinates plot", plot=True, print_perm=True)
 
-pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
+pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest2.svg")
+
+####### Permanova + PCoA (Attribute and Data cleanup strategies exploration)
+
+# Define the choice of distance metric, category for permanova calculation,
+# category for coloring the PCoA plot and the type of the chosen category in the cell below.
+
+distance_metric = "canberra"
+category_permanova = "ATTRIBUTE_Month"
+category_colors = "ATTRIBUTE_Month"
+category_type = 'categorical'
+
+pcoa_titles = ["a) Before Data cleanup", "b) After Blank removal", "c) After Imputation", "d) After TIC Normalization", "e) After Scaling"]
+
+# Define the dataframe of data choices
+cleaned_data_choice = pd.DataFrame({
+    'INDEX': range(1, 6),
+    'Description': ["Raw data", "Blank removed data", "Imputed data", "TIC Normalized", "Scaled"],
+    'Variable_name': [new_ft_tidy, blk_rem, imp_ft, tic_norm_ft, scaled_ft],
+    'metadata_name': [new_md_tidy, md_Samples, md_Samples, md_Samples, md_Samples]
+})
+
+pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, category_permanova = category_permanova,
+                                 category_type = category_type, category_colors = category_colors,
+                                 pcoa_titles = pcoa_titles,
+                                 distance_metric = distance_metric)
+
+pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest3.svg")
 
 ####### Hierarchial Clustering Algorithm
 

@@ -15,6 +15,10 @@ import plotly.io as pio
 from PIL import Image
 import io
 import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
+from sklearn.cluster import KMeans
+from yellowbrick.cluster import KElbowVisualizer
+from sklearn.metrics import silhouette_score
 
 def pcoa_metabolomics(cleaned_data, metadata):
     # In order to perform a PCoA as described below,
@@ -239,4 +243,43 @@ def pcoa_explore(cleaned_data_choice, category_permanova, category_type, categor
     
     return plt
 
-####
+def h_cluster(cleaned_data, cluster_num_method = None):
+    np.random.seed(1234) # Setting a seed for reproducing the same result
+    linkage_data = linkage(cleaned_data, method='complete', metric='euclidean')
+    
+    if(cluster_num_method == None):
+        dendo_obj = dendrogram(linkage_data, labels=cleaned_data.index, no_plot=False)
+        plt.grid(False)
+        plt.show()
+        return None
+    elif(cluster_num_method == "elbow"):
+        # Calculating elbow
+        # Instantiate the clustering model and visualizer
+        model = KMeans()
+        visualizer = KElbowVisualizer(model, k=(1,10), timings=False)
+        clusters_value = int(visualizer.fit(cleaned_data).elbow_value_)
+        #print(elbow_value)
+    elif(cluster_num_method == "silhouette"):
+        silhouette_scores = []
+        for i in range(2,11):
+            km = KMeans(n_clusters=i, random_state=42)
+            km.fit_predict(cleaned_data)
+            silhouette_scores.append(silhouette_score(cleaned_data, km.labels_))
+        #print(max(range(len(silhouette_scores)), key=silhouette_scores.__getitem__)+2)
+        clusters_value = (max(range(len(silhouette_scores)), key=silhouette_scores.__getitem__)+2)
+        
+    
+    clustering = dendrogram(linkage_data, truncate_mode='lastp', p=clusters_value, show_contracted=True, no_plot=True)
+    cluster_labels = fcluster(linkage_data, t=clusters_value, criterion='maxclust')
+    # Pair these cluster labels with original labels (which are in cleaned_data.index)
+    label_cluster_pairs = list(zip(cleaned_data.index, cluster_labels))
+    cluster_results = pd.DataFrame(label_cluster_pairs, columns=['Sample Name', 'Assigned Cluster'])
+    # Get the y-axis level corresponding to cluters_value clusters
+    clust_array = np.array(clustering['dcoord'])
+    clust_threshold = np.floor(np.min(clust_array[np.nonzero(clust_array)]))
+    # Plot the dendrogram with the 4 clusters coloured
+    dendo_obj = dendrogram(linkage_data, color_threshold=clust_threshold, labels=cleaned_data.index, no_plot=False)
+    plt.grid(False)
+    plt.show()
+        
+    #return dendo_obj

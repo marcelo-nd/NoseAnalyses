@@ -8,6 +8,7 @@ Created on Fri Feb  9 13:27:01 2024
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # import glob
 # import os
@@ -42,13 +43,13 @@ import numpy as np
 # from sklearn.ensemble import RandomForestClassifier
 # from sklearn.utils import class_weight
 # from sklearn.metrics import classification_report
-# from sklearn.metrics import silhouette_score
-# from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
 
 # import pingouin as pg
 # import scikit_posthocs as sp
 # from PyComplexHeatmap import *
-# from yellowbrick.cluster import KElbowVisualizer
+from yellowbrick.cluster import KElbowVisualizer
 
 # from PIL import Image
 
@@ -64,8 +65,8 @@ import numpy as np
 #### From scripts
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
-from helper_functions import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-from analyses_functions import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore
+from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
+from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -205,7 +206,13 @@ pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, cate
 pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest3.svg")
 
 ####### Hierarchial Clustering Algorithm
+hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method=None)
 
+hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="elbow")
+
+hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="silhouette")
+
+plt.savefig("/mnt/c/Users/marce/Desktop/colored_dendrogram.svg", format="svg")
 ####### Heatmaps
 
 ###### Supervised learning with Random Forest

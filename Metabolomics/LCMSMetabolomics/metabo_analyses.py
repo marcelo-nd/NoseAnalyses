@@ -66,7 +66,8 @@ from yellowbrick.cluster import KElbowVisualizer
 import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster
+from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
+from univar_analyses import norm_test, gen_anova_data, gen_anova_data
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -183,7 +184,7 @@ pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest2.svg")
 # Define the choice of distance metric, category for permanova calculation,
 # category for coloring the PCoA plot and the type of the chosen category in the cell below.
 
-distance_metric = "canberra"
+distance_metric = "euclidean"
 category_permanova = "ATTRIBUTE_Month"
 category_colors = "ATTRIBUTE_Month"
 category_type = 'categorical'
@@ -203,18 +204,35 @@ pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, cate
                                  pcoa_titles = pcoa_titles,
                                  distance_metric = distance_metric)
 
-pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest3.svg")
+pcoa_explore_plot.savefig("/mnt/c/Users/marce/Desktop/figtest3.svg")
 
 ####### Hierarchial Clustering Algorithm
-hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method=None)
+hc_plot = h_cluster(cleaned_data=new_ft_tidy, cluster_num_method=None)
 
-hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="elbow")
+#hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="elbow")
 
-hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="silhouette")
+#hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="silhouette")
 
 plt.savefig("/mnt/c/Users/marce/Desktop/colored_dendrogram.svg", format="svg")
 ####### Heatmaps
+print(InsideLevels(new_md_tidy.iloc[:, 1:]))
+heatmap_attributes = [2, 3, 9]
+
+metabo_heatmap(cleaned_data=tic_norm_ft, input_list= heatmap_attributes, ins_lev=ins_lvls, meta=new_md_tidy)
 
 ###### Supervised learning with Random Forest
 
+
+
 ########################################################### Univariate analyses
+
+# Normality Test
+# In order to decide whether to go for parametric or non-parametric tests, we test for normality. 
+norm_test_df = norm_test(imp_ft, new_md_tidy)
+
+# ANOVA
+anova_attribute = 'ATTRIBUTE_Sample_Area'
+
+anova_results = gen_anova_data(cleaned_data= imp_ft, metadata=new_md_tidy, groups_col = anova_attribute)
+
+anova_results

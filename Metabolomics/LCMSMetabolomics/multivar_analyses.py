@@ -19,6 +19,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 from sklearn.cluster import KMeans
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.metrics import silhouette_score
+from PyComplexHeatmap import *
 
 def pcoa_metabolomics(cleaned_data, metadata):
     # In order to perform a PCoA as described below,
@@ -282,4 +283,40 @@ def h_cluster(cleaned_data, cluster_num_method = None):
     plt.grid(False)
     plt.show()
         
-    #return dendo_obj
+def metabo_heatmap(cleaned_data, input_list, ins_lev, meta):
+    heatmap_attributes = list(ins_lev.iloc[input_list]['ATTRIBUTES'])
+    ann = meta.loc[:,heatmap_attributes]
+    ann.columns = ann.columns.str.replace('ATTRIBUTE_','') #removing the ATTRBUTE suffix from column names for easier heatmap visualization
+    heatmap_attributes = [attr.replace('ATTRIBUTE_','') for attr in heatmap_attributes]
+    
+    print(heatmap_attributes)
+    
+    def generate_colors(attributes):
+      colors = {}
+      for attribute in attributes:
+        unique_levels = list(set(ann.loc[:,attribute]))
+        n_colors = len(unique_levels)
+        selected_colors = custom_palette[:n_colors]
+        colors_levels = {unique_levels[i]: selected_colors[i] for i in range(n_colors)}
+        colors[attribute] = colors_levels
+      return(colors)
+    
+    colors = generate_colors(heatmap_attributes)
+    print(colors)
+    
+    col_ha = HeatmapAnnotation(df=ann, colors=colors, verbose=0)
+    
+    cm = ClusterMapPlotter(data=cleaned_data.T, #heatmap_data.T,
+                       top_annotation=col_ha,
+                       col_dendrogram=True,
+                       col_cluster_method='complete',
+                       col_cluster_metric='euclidean', # you can change the distance here
+                       row_dendrogram=True,
+                       row_cluster_method='complete',
+                       row_cluster_metric='euclidean', # you can change the distance here
+                       cmap='seismic',
+                       vmin=-1,  # Set minimum value for colormap
+                       vmax=1,  # Set maximum value for colormap
+                       verbose=0)
+    
+    return None

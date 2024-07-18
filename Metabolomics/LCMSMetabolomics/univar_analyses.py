@@ -6,9 +6,12 @@ Created on Wed Jul 17 13:19:36 2024
 @author: marcelo
 """
 import pandas as pd
+import numpy as np
 from scipy.stats import shapiro
 import statsmodels.api as sm
 import pingouin as pg
+import plotly.express as px
+import plotly.graph_objects as go
 
 def norm_test(cleaned_data, metadata):
     #getting 'cleaned_data_with_md' and selecting all columns that starts with X into the 'norm_test'
@@ -72,7 +75,122 @@ def gen_anova_data(cleaned_data, metadata, groups_col):
 
     # Sort by p-value
     results.sort_values('p_fdr_bh', inplace=True)
+    
+    print("Total no.of features on which ANOVA test was performed:", len(results))
+    print("No.of features that showed significant difference:", len(results[results["bh_significant"]==True]))
+    print("No.of features that did not show significant difference:", len(results[results["bh_significant"]==False]))
+    
+    # collecting the significant features in an array
+    anova_significant_metabolites = results[results["bh_significant"]==True]["metabolite"].to_numpy()
 
+    return [results, anova_significant_metabolites]
 
-    return results
+def anova_vis(anova_results):
+    # first plot insignificant features
+    fig = px.scatter(x=anova_results[anova_results['bh_significant'] == False]['F'].apply(np.log),
+                y=anova_results[anova_results['bh_significant'] == False]['p_fdr_bh'].apply(lambda x: -np.log(x)),
+                template='plotly_white', width=600, height=600)
+    fig.update_traces(marker_color="#696880")
 
+    # plot significant features
+    fig.add_scatter(x=anova_results[anova_results['bh_significant']]['F'].apply(np.log),
+                y=anova_results[anova_results['bh_significant']]['p_fdr_bh'].apply(lambda x: -np.log(x)),
+                mode='markers+text',
+                text=anova_results['metabolite'].iloc[:4],
+                textposition='top left', textfont=dict(color='#ef553b', size=7), name='bh_significant')
+
+    fig.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                  title={"text":"ANOVA - FEATURE SIGNIFICANCE", 'x':0.5, "font_color":"#3E3D53"},
+                  xaxis_title="log(F)", yaxis_title="-log(p)", showlegend=False)
+
+    return fig
+
+def anova_boxplots(cleaned_data, metadata, anova_attribute, anova_results, save_to=None):
+    # boxplots with top 5 metabolites from ANOVA
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    for metabolite in anova_results.sort_values('p_fdr_bh').iloc[:4, 0]:
+        fig = px.box(cleaned_data_with_md, x=anova_attribute, y=metabolite, color=anova_attribute)
+        fig.update_layout(showlegend=False, title=metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")
+
+def tukey_post_hoc_test(cleaned_data, metadata, anova_attribute, contrasts, metabolites):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    print(cleaned_data_with_md.head)
+    # Ensure metabolites is a list
+    metabolites = [metabolites] if isinstance(metabolites, str) else metabolites
+
+    results = []
+    for metabolite in metabolites:
+        for contrast in contrasts:
+            filtered_df = cleaned_data_with_md[cleaned_data_with_md[anova_attribute].isin(contrast)][[metabolite, anova_attribute]]
+            pairwise_tukey = pg.pairwise_tukey(filtered_df, dv=metabolite, between=anova_attribute)
+
+            # Getting the order from Tukey result
+            group_A = pairwise_tukey['A'].iloc[0]
+            group_B = pairwise_tukey['B'].iloc[0]
+
+            diff_value = pairwise_tukey['diff'].iloc[0]
+            #print(diff_value)
+            p_tukey_value = pairwise_tukey['p-tukey'].iloc[0]
+
+            results.append([f'{group_A}-{group_B}', metabolite, int(metabolite.split('_')[0].replace('X', '')), diff_value, p_tukey_value])
+
+    tukey = pd.DataFrame(results, columns=['contrast', 'stats_metabolite', 'stats_ID', 'stats_diff', 'stats_p'])
+
+    # add Benjamini-Hochberg corrected p-values
+    tukey['stats_p_bh'] = pg.multicomp(tukey['stats_p'], method='fdr_bh')[1]
+
+    # add significance
+    tukey['stats_significant'] = tukey['stats_p_bh'] < 0.05
+
+    # sort by p-value
+    tukey.sort_values('stats_p_bh', inplace=True)
+    
+    print("Total no.of features on which ANOVA test was performed:", len(tukey))
+    print("No.of features that showed significant difference:", len(tukey[tukey["stats_significant"]==True]))
+    print("No.of features that did not show significant difference:", len(tukey[tukey["stats_significant"]==False]))
+
+    return tukey
+
+def volcano(sig_results, anova):
+    fig = px.scatter(template='plotly_white', width=1000, height=600)
+
+    # plot insignificant values
+    fig.add_trace(go.Scatter(x=sig_results[sig_results['stats_significant'] == False]['stats_diff'],
+                             y=sig_results[sig_results['stats_significant'] == False]['stats_p'].apply(lambda x: -np.log10(x)),
+                             mode='markers', marker_color='#696880', name='insignificant'))
+    
+    # plot significant values
+    fig.add_trace(go.Scatter(x=sig_results[sig_results['stats_significant']]['stats_diff'],
+                             y=sig_results[sig_results['stats_significant']]['stats_p'].apply(lambda x: -np.log10(x)),
+                             mode='markers+text', text=anova['metabolite'].iloc[:4], textposition='top left',
+                             textfont=dict(color='#ef553b', size=8), marker_color='#ef553b', name='significant'))
+    
+    # Grabbing the groups from the first contrast
+    group_A = sig_results['contrast'].str.split('-').str[0].iloc[0]
+    group_B = sig_results['contrast'].str.split('-').str[1].iloc[0]
+    
+    # Add annotations to the figure to indicate upregulated and downregulated groups
+    fig.add_annotation(
+        x=0.85, # Position on x-axis (between 0 and 1)
+        y=1.02, # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{group_A} upregulated",
+        showarrow=False
+    )
+    
+    fig.add_annotation(
+        x=0.15, # Position on x-axis (between 0 and 1)
+        y=1.02, # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{group_B} upregulated",
+        showarrow=False
+    )
+    
+    fig.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                      title={"text":"TUKEY PLOT", 'x':0.5, "font_color":"#3E3D53"},
+                      xaxis_title="stats_diff", yaxis_title="-log(p)")
+    
+    return fig

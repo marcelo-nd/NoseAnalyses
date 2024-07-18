@@ -67,7 +67,7 @@ import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
 from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
-from univar_analyses import norm_test, gen_anova_data, gen_anova_data
+from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -158,7 +158,7 @@ pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
 
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Month')
 
-pca_plot_fig.show()
+pca_plot_fig.show(renderer="png")
 
 pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 
@@ -176,6 +176,8 @@ pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distme
                                      attribute = "ATTRIBUTE_Month", col_attribute = "ATTRIBUTE_Month",
                                      mdtype="categorical", cols=custom_palette,
                                      title="Principal coordinates plot", plot=True, print_perm=True)
+
+pcoa_w_metrics_plot.show(renderer="png")
 
 pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest2.svg")
 
@@ -235,4 +237,40 @@ anova_attribute = 'ATTRIBUTE_Sample_Area'
 
 anova_results = gen_anova_data(cleaned_data= imp_ft, metadata=new_md_tidy, groups_col = anova_attribute)
 
-anova_results
+results_df_anova = anova_results[0]
+
+results_df_anova
+
+significant_features_anova = anova_results[1]
+
+significant_features_anova
+
+### Step 63: Visualize ANOVA Results
+fig = anova_vis(results_df_anova)
+
+fig.show(renderer="png")
+# save fig as pdf
+fig.write_image("/mnt/c/Users/marce/Desktop/plot_ANOVA.pdf", scale=3) # you can use different file types here e.g. svg, png
+
+# Boxplots for the first 5 
+anova_boxplots(imp_ft, new_md_tidy, anova_attribute=anova_attribute, anova_results=results_df_anova, save_to=None)
+#fig.show()
+
+# Tukey's post-hoc test
+
+# Applying the tukey_post_hoc_test function
+tukey = tukey_post_hoc_test(cleaned_data=scaled_ft, metadata=new_md_tidy,
+                            anova_attribute = anova_attribute,
+                            contrasts = [("Mission_Bay", "La_Jolla Reefs")],
+                            metabolites= significant_features_anova)
+
+tukey.head()
+
+# Visualize Results with a Volcano Plot
+volcano_tukey_fig = volcano(sig_results=tukey, anova=results_df_anova)
+
+volcano_tukey_fig.show(renderer="png")
+# save image as pdf
+volcano_tukey_fig.write_image("/mnt/c/Users/marce/Desktop/TukeyHSD.pdf", scale=3)
+    
+

@@ -67,7 +67,7 @@ import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
 from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
-from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano
+from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -288,4 +288,40 @@ ttest_volcano_plot = ttest_volcano(ttest=ttest, target_group=target_group)
 
 ttest_volcano_plot.show(renderer="png")
 
-# Kruskall wallis
+# Kruskall wallis (Non-parametric anova)
+# select an attribute to perform Kruskal Wallis
+kruskal_attribute = 'ATTRIBUTE_Sample_Area'
+
+kruskal_results = gen_kruskal_data(cleaned_data = scaled_ft, metadata = new_md_tidy, groups_col = kruskal_attribute)
+
+kruskal = kruskal_results[0]
+print(kruskal.head())
+
+kruskal_signif = kruskal_results[1]
+print(kruskal_signif)
+
+kruskal_fig = kruskal_viz(kruskal = kruskal)
+
+kruskal_fig.show(renderer="png")
+
+kruskal_boxplots(cleaned_data=scaled_ft, metadata=new_md_tidy, kruskal = kruskal, kruskal_attribute = kruskal_attribute, features = 5)
+
+# Dunn's post hoc test
+dunn_group1 = "La_Jolla Reefs"
+dunn_group2 = "Mission_Bay"
+
+dunn_contrasts = [(dunn_group1, dunn_group2)]
+
+# Applying the dunn_post_hoc_test function
+dunn = dunn_post_hoc_test(cleaned_data=scaled_ft, metadata=new_md_tidy,
+                          kruskal_attribute = kruskal_attribute,
+                          contrasts = dunn_contrasts,
+                          metabolites= kruskal_signif)
+
+dunn.head()
+
+dunn_volc_fig = dunn_volcano(dunn, kruskal)
+
+dunn_volc_fig.show(renderer="png")
+
+

@@ -12,6 +12,8 @@ import statsmodels.api as sm
 import pingouin as pg
 import plotly.express as px
 import plotly.graph_objects as go
+import scikit_posthocs as sp
+import scipy.stats as stats
 
 def norm_test(cleaned_data, metadata):
     #getting 'cleaned_data_with_md' and selecting all columns that starts with X into the 'norm_test'
@@ -233,6 +235,8 @@ def gen_ttest_data(cleaned_data, metadata, ttest_attribute, target_group):
     return ttest
 
 def ttest_volcano(ttest, target_group):
+    
+
     # To avoid taking -log10(0)
     ttest['log_p'] = ttest['p-bh'].apply(lambda x: -np.log10(x + 1e-50))
     
@@ -277,3 +281,151 @@ def ttest_volcano(ttest, target_group):
     # save image as pdf
     #fig.write_image(os.path.join(data_dir, "T-Test_Volcano_Plot.pdf"), scale=3)
     return fig
+
+def gen_kruskal_data(cleaned_data, metadata, groups_col):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    uni_data = cleaned_data_with_md.loc[:, cleaned_data_with_md.columns.str.startswith('X')]
+    columns = uni_data.columns
+    results = []
+
+    for col in columns:
+        result = pg.kruskal(data=cleaned_data_with_md , dv=col, between=groups_col, detailed=True).set_index('Source')
+        p = result.loc[groups_col, 'p-unc']
+        H = result.loc[groups_col, 'H']
+        dof = result.loc[groups_col, 'ddof1']
+
+        results.append([col, int(col.split('_')[0].replace('X', '')), p, H, dof])
+
+    kruskal_columns = ['metabolite', 'stats_ID', 'p', 'H', 'dof']
+    kruskal = pd.DataFrame(results, columns=kruskal_columns)
+
+    # add Benjamini-Hochberg corrected p-values
+    kruskal['stats_p_bh'] = pg.multicomp(kruskal['p'], method='fdr_bh')[1]
+
+    # add significance
+    kruskal['stats_significant'] = kruskal['stats_p_bh'] < 0.05
+
+    # sort by p-value
+    kruskal.sort_values('stats_p_bh', inplace=True)
+    
+    print("Total no.of features on which Kruskal-Wallis test was performed:", len(kruskal))
+    print("No.of features that showed significant difference:", len(kruskal[kruskal["stats_significant"]==True]))
+    print("No.of features that did not show significant difference:", len(kruskal[kruskal["stats_significant"]==False]))
+    kruskal_significant_metabolites = kruskal[kruskal["stats_significant"]==True]["metabolite"].to_numpy()
+    
+    return [kruskal,kruskal_significant_metabolites]
+
+def kruskal_viz(kruskal):
+    # first plot in significant features
+    fig = px.scatter(x=kruskal[kruskal['stats_significant'] == False]['H'].apply(np.log),
+                    y=kruskal[kruskal['stats_significant'] == False]['stats_p_bh'].apply(lambda x: -np.log(x)),
+                    template='plotly_white', width=600, height=600)
+    fig.update_traces(marker_color="#696880")
+    
+    # plot significant features
+    fig.add_scatter(x=kruskal[kruskal['stats_significant']]['H'].apply(np.log),
+                    y=kruskal[kruskal['stats_significant']]['stats_p_bh'].apply(lambda x: -np.log(x)),
+                    mode='markers+text',
+                    text=kruskal['metabolite'].iloc[:4],
+                    textposition='top left', textfont=dict(color='#ef553b', size=7), name='significant')
+    
+    fig.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                      title={"text":"KRUSKAL-WALLIS TEST - FEATURE SIGNIFICANCE", 'x':0.5, "font_color":"#3E3D53"},
+                      xaxis_title="log(H)", yaxis_title="-log(p)", showlegend=False)
+    
+    # save fig as pdf
+    #fig.write_image(os.path.join(data_dir, "plot_kruskal.pdf"), scale=3) # you can use different file types here e.g. svg, png
+    
+    return fig
+
+def kruskal_boxplots(cleaned_data, metadata, kruskal, kruskal_attribute, features = 5):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    for idx, row in kruskal.sort_values('stats_p_bh').iloc[:features].iterrows():
+        metabolite = row['metabolite']
+        stats_id = row['stats_ID']
+        fig = px.box(cleaned_data_with_md, x=kruskal_attribute, y=metabolite, color=kruskal_attribute)
+        fig.update_layout(showlegend=False, title=metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")
+
+def dunn_post_hoc_test(cleaned_data, metadata, kruskal_attribute, contrasts, metabolites):
+    
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    # Ensure metabolites is a list
+    metabolites = [metabolites] if isinstance(metabolites, str) else metabolites
+
+    results = []
+    for metabolite in metabolites:
+        for contrast in contrasts:
+            filtered_df = cleaned_data_with_md[cleaned_data_with_md[kruskal_attribute].isin(contrast)][[metabolite, kruskal_attribute]]
+
+            # Conduct Dunn's posthoc test
+            dunn_result = sp.posthoc_dunn(a=filtered_df, val_col=metabolite, group_col=kruskal_attribute, p_adjust='fdr_bh', sort=True)
+            p_value = dunn_result.loc[contrast[0], contrast[1]]
+
+            # Calculate rank sum differences
+            ranks = stats.rankdata(filtered_df[metabolite])
+            rank_sum_A = sum(ranks[filtered_df[kruskal_attribute] == contrast[0]])
+            rank_sum_B = sum(ranks[filtered_df[kruskal_attribute] == contrast[1]])
+            rank_sum_diff = rank_sum_A - rank_sum_B
+
+            results.append([f'{contrast[0]}-{contrast[1]}', metabolite, int(metabolite.split('_')[0].replace('X', '')), rank_sum_diff, p_value])
+
+    dunn_df = pd.DataFrame(results, columns=['contrast', 'stats_metabolite', 'stats_ID', 'rank_sum_diff', 'stats_p_bh'])
+
+    # Add significance
+    dunn_df['stats_significant'] = dunn_df['stats_p_bh'] < 0.05
+
+    # Sort by p-value
+    dunn_df.sort_values('stats_p_bh', inplace=True)
+    
+    print("Total no.of features on which Dunn Test test was performed:", len(dunn_df))
+    print("No.of features that showed significant difference:", len(dunn_df[dunn_df["stats_significant"]==True]))
+    print("No.of features that did not show significant difference:", len(dunn_df[dunn_df["stats_significant"]==False]))
+    
+    return dunn_df
+
+def dunn_volcano(dunn, kruskal):
+    fig = px.scatter(template='plotly_white', width=1000, height=600)
+
+    # plot insignificant values
+    fig.add_trace(go.Scatter(x=dunn[dunn['stats_significant'] == False]['rank_sum_diff'],
+                             y=dunn[dunn['stats_significant'] == False]['stats_p_bh'].apply(lambda x: -np.log10(x)),
+                             mode='markers', marker_color='#696880', name='insignificant'))
+    
+    # plot significant values
+    fig.add_trace(go.Scatter(x=dunn[dunn['stats_significant']]['rank_sum_diff'],
+                             y=dunn[dunn['stats_significant']]['stats_p_bh'].apply(lambda x: -np.log10(x)),
+                             mode='markers+text', text=kruskal['metabolite'].iloc[:4], textposition='top left',
+                             textfont=dict(color='#ef553b', size=8), marker_color='#ef553b', name='significant'))
+    
+    # Grabbing the groups from the first contrast
+    group_A = dunn['contrast'].str.split('-').str[0].iloc[0]
+    group_B = dunn['contrast'].str.split('-').str[1].iloc[0]
+    
+    # Add annotations to the figure to indicate upregulated and downregulated groups
+    fig.add_annotation(
+        x=0.85, # Position on x-axis (between 0 and 1)
+        y=1.02, # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{group_A} upregulated",
+        showarrow=False
+    )
+    
+    fig.add_annotation(
+        x=0.15, # Position on x-axis (between 0 and 1)
+        y=1.02, # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{group_B} upregulated",
+        showarrow=False
+    )
+    
+    fig.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                      title={"text":"Dunn Test Plot", 'x':0.5, "font_color":"#3E3D53"},
+                      xaxis_title="Difference of Rank sums", yaxis_title="-log(p)")
+    
+    return fig
+
+def dunn_boxplots():
+    return None

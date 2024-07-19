@@ -5,6 +5,8 @@ Created on Wed Jul 17 13:19:36 2024
 
 @author: marcelo
 """
+# TO DO: All plots in plotly?, reduce functions, make save figures possible.
+
 import pandas as pd
 import numpy as np
 from scipy.stats import shapiro
@@ -427,5 +429,19 @@ def dunn_volcano(dunn, kruskal):
     
     return fig
 
-def dunn_boxplots():
-    return None
+def dunn_boxplots(cleaned_data, metadata, dunn, kruskal_attribute, features = 3):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    
+    rightside_top_metabolites_dunn = dunn[dunn['stats_significant']].sort_values('rank_sum_diff', ascending=False)['stats_metabolite'].iloc[:features]
+
+    for stats_metabolite in rightside_top_metabolites_dunn:
+        fig = px.box(cleaned_data_with_md, x=kruskal_attribute, y=stats_metabolite, color=kruskal_attribute)
+        fig.update_layout(showlegend=False, title=stats_metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")
+        
+    left_top_metabolites_dunn = dunn[dunn['stats_significant']].sort_values('rank_sum_diff')['stats_metabolite'].iloc[:features]
+
+    for stats_metabolite in left_top_metabolites_dunn:
+        fig = px.box(cleaned_data_with_md, x=kruskal_attribute, y=stats_metabolite, color=kruskal_attribute)
+        fig.update_layout(showlegend=False, title=stats_metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")

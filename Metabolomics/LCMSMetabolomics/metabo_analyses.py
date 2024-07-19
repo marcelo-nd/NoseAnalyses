@@ -67,7 +67,7 @@ import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
 from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
-from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano
+from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -324,4 +324,4 @@ dunn_volc_fig = dunn_volcano(dunn, kruskal)
 
 dunn_volc_fig.show(renderer="png")
 
-
+dunn_boxplots(cleaned_data=scaled_ft, metadata=new_md_tidy, dunn = dunn, kruskal_attribute = kruskal_attribute, features = 3)

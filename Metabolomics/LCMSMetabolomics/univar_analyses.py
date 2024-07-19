@@ -108,7 +108,7 @@ def anova_vis(anova_results):
 def anova_boxplots(cleaned_data, metadata, anova_attribute, anova_results, save_to=None):
     # boxplots with top 5 metabolites from ANOVA
     cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
-    for metabolite in anova_results.sort_values('p_fdr_bh').iloc[:4, 0]:
+    for metabolite in anova_results.sort_values('p_fdr_bh').iloc[:5, 0]:
         fig = px.box(cleaned_data_with_md, x=anova_attribute, y=metabolite, color=anova_attribute)
         fig.update_layout(showlegend=False, title=metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
         fig.show(renderer="png")
@@ -163,7 +163,7 @@ def volcano(sig_results, anova):
     # plot significant values
     fig.add_trace(go.Scatter(x=sig_results[sig_results['stats_significant']]['stats_diff'],
                              y=sig_results[sig_results['stats_significant']]['stats_p'].apply(lambda x: -np.log10(x)),
-                             mode='markers+text', text=anova['metabolite'].iloc[:4], textposition='top left',
+                             mode='markers+text', text=anova['metabolite'].iloc[:5], textposition='top left',
                              textfont=dict(color='#ef553b', size=8), marker_color='#ef553b', name='significant'))
     
     # Grabbing the groups from the first contrast
@@ -193,4 +193,87 @@ def volcano(sig_results, anova):
                       title={"text":"TUKEY PLOT", 'x':0.5, "font_color":"#3E3D53"},
                       xaxis_title="stats_diff", yaxis_title="-log(p)")
     
+    return fig
+
+def tukey_boxplots(cleaned_data, metadata, anova_attribute, tukey):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    rightside_top_metabolites = tukey[tukey['stats_significant']].sort_values('stats_diff', ascending=False)['stats_metabolite'].iloc[:3]
+    for stats_metabolite in rightside_top_metabolites:
+        fig = px.box(cleaned_data_with_md, x=anova_attribute, y=stats_metabolite, color=anova_attribute)
+        fig.update_layout(showlegend=False, title=stats_metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")
+    leftside_top_metabolites = tukey[tukey['stats_significant']].sort_values('stats_diff')['stats_metabolite'].iloc[:3]
+    for stats_metabolite in leftside_top_metabolites:
+        fig = px.box(cleaned_data_with_md, x=anova_attribute, y=stats_metabolite, color=anova_attribute)
+        fig.update_layout(showlegend=False, title=stats_metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
+        fig.show(renderer="png")
+        
+def gen_ttest_data(cleaned_data, metadata, ttest_attribute, target_group):
+    cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
+    uni_data = cleaned_data_with_md.loc[:, cleaned_data_with_md.columns.str.startswith('X')]
+    columns = uni_data.columns
+    #norm_test.iloc[:, 0]
+
+    ttest = []
+    for col in columns:
+        group1 = cleaned_data_with_md[col][cleaned_data_with_md[ttest_attribute]==target_group]
+        group2 = cleaned_data_with_md[col][cleaned_data_with_md[ttest_attribute]!=target_group]
+        result = pg.ttest(group1, group2)
+        result['Metabolite'] = col
+
+        ttest.append(result)
+
+    ttest = pd.concat(ttest).set_index('Metabolite')
+
+    ttest.insert(8, 'p-bh', pg.multicomp(ttest['p-val'], method='fdr_bh')[1])
+    # add significance
+    ttest.insert(9, 'Significance', ttest['p-bh'] < 0.05)
+    ttest.sort_values('p-bh', inplace=True)
+
+    return ttest
+
+def ttest_volcano(ttest, target_group):
+    # To avoid taking -log10(0)
+    ttest['log_p'] = ttest['p-bh'].apply(lambda x: -np.log10(x + 1e-50))
+    
+    fig = px.scatter(template='plotly_white', width=1000, height=600)
+    
+    # Plot insignificant values
+    fig.add_trace(go.Scatter(x=ttest[ttest['Significance'] == False]['T'],
+                             y=ttest[ttest['Significance'] == False]['log_p'],
+                             mode='markers', marker_color='#696880', name='insignificant'))
+    
+    # Plot significant values
+    fig.add_trace(go.Scatter(x=ttest[ttest['Significance']]['T'],
+                             y=ttest[ttest['Significance']]['log_p'],
+                             mode='markers+text', text=ttest.index[:4], textposition='top left',
+                             textfont=dict(color='#ef553b', size=8), marker_color='#ef553b', name='significant'))
+    
+    fig.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
+                      title={"text":"T-TEST VOLCANO PLOT", 'x':0.5, "font_color":"#3E3D53"},
+                      xaxis_title="T-statistic", yaxis_title="-log(p)")
+    
+    # Adding annotations
+    fig.add_annotation(
+        x=0.85,  # Position on x-axis (between 0 and 1)
+        y=1.02,  # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{target_group} upregulated",
+        showarrow=False,
+        font=dict(size=12, color="black")
+    )
+    
+    fig.add_annotation(
+        x=0.15,  # Position on x-axis (between 0 and 1)
+        y=1.02,  # Position on y-axis (between 0 and 1)
+        xref="paper",
+        yref="paper",
+        text=f"{target_group} downregulated",
+        showarrow=False,
+        font=dict(size=12, color="black")
+    )
+    
+    # save image as pdf
+    #fig.write_image(os.path.join(data_dir, "T-Test_Volcano_Plot.pdf"), scale=3)
     return fig

@@ -67,7 +67,7 @@ import sys, os
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
 from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
 from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
-from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano
+from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -272,5 +272,20 @@ volcano_tukey_fig = volcano(sig_results=tukey, anova=results_df_anova)
 volcano_tukey_fig.show(renderer="png")
 # save image as pdf
 volcano_tukey_fig.write_image("/mnt/c/Users/marce/Desktop/TukeyHSD.pdf", scale=3)
-    
 
+
+tukey_boxplots(cleaned_data=scaled_ft, metadata=new_md_tidy, anova_attribute = anova_attribute,tukey=tukey)
+
+
+# T-tests
+ttest_attribute = 'ATTRIBUTE_Month'
+target_group = 'Jan'
+
+ttest = gen_ttest_data(cleaned_data = scaled_ft, metadata = new_md_tidy, ttest_attribute=ttest_attribute, target_group=target_group)
+ttest.head(5)
+
+ttest_volcano_plot = ttest_volcano(ttest=ttest, target_group=target_group)
+
+ttest_volcano_plot.show(renderer="png")
+
+# Kruskall wallis

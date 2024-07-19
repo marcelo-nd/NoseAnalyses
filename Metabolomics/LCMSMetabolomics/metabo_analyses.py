@@ -220,7 +220,7 @@ plt.savefig("/mnt/c/Users/marce/Desktop/colored_dendrogram.svg", format="svg")
 print(InsideLevels(new_md_tidy.iloc[:, 1:]))
 heatmap_attributes = [2, 3, 9]
 
-metabo_heatmap(cleaned_data=tic_norm_ft, input_list= heatmap_attributes, ins_lev=ins_lvls, meta=new_md_tidy)
+metabo_heatmap(cleaned_data=scaled_ft, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
 
 ###### Supervised learning with Random Forest
 

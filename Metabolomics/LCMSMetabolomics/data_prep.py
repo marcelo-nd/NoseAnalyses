@@ -21,6 +21,7 @@ def InsideLevels(df):
         levels.append(sorted(set(df[col].dropna())))
         tmp = df[col].value_counts()
         count.append([tmp[levels[-1][i]] for i in range(len(levels[-1]))])
+        
     return pd.DataFrame({"ATTRIBUTES": df.columns, "LEVELS": levels, "COUNT":count, "TYPES": types}, index=range(1, len(levels)+1))
 
 ### Merging annotations with feature table
@@ -141,21 +142,17 @@ def tidyTables(ft_p, md_p, ft_an_p):
     
     ft_trans = ft_trans.sort_index()
     ft_trans.index.name = None
-    
     #print(ft_trans.head(n=3))
     
     
     # Sort new metadata table.
     new_md = new_md.sort_values("filename")
     # Set index of metadata table with the values of filenames.
-    new_md.set_index('filename', inplace=True, drop = False)
-    #new_md = new_md.set_index(ft_trans.index) # this option is not optimal since it can mask mistakes.
+    new_md.set_index('filename', inplace=True, drop = True)
     new_md.index.name = None
-    #new_md = new_md.sort_index() # not necesary to sort again.
     #print(new_md.head(n=3))
     
     #print(np.array_equal(new_md['filename'],ft_trans.index)) #should return True now
-    #if(np.array_equal(new_md['filename'],ft_trans.index)):
     if(np.array_equal(new_md.index,ft_trans.index)):
         print("All files in MD and FT are the same.")
     else:
@@ -190,21 +187,32 @@ def ft_md_merging(new_ft_p, new_md_p):
 def batch_correction():
     return ""
 
-def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, sample_num_input):
+def blank_removal(md_df, ft_t_df, cutoff, sample_type_index, blank_level_index, sample_level_index):
     # This function returns a new ft table and a new metadata table.
-    sample_attribute = md_df.columns[sample_index_input]
+    sample_attribute = md_df.columns[sample_type_index-1]
+    print(sample_attribute)
     
-    df = pd.DataFrame({"LEVELS": InsideLevels(md_df.iloc[:, 1:]).iloc[sample_index_input-1]["LEVELS"]})
+    df = pd.DataFrame({"LEVELS": InsideLevels(md_df).iloc[sample_type_index-1]["LEVELS"]})
     df.index = [*range(1, len(df)+1)]
-    #print(df.head())
+    print(df.head())
+    
+    print(InsideLevels(md_df).iloc[sample_type_index-1]['LEVELS'])
     
     # Input for blanks, allowing multiple indices
-    blank_indices = [int(index.strip()) - 1 for index in blank_num_input]
-    blank_nums = [InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][index] for index in blank_indices]
+    #blank_indices = [int(index.strip()) - 1 for index in blank_level_index]
+    blank_indices= blank_level_index
+    #blank_nums = [InsideLevels(md_df).iloc[sample_type_index-1]['LEVELS'][index] for index in blank_indices]
+    blank_nums = [InsideLevels(md_df).iloc[sample_type_index-1]['LEVELS'][index-1] for index in blank_indices]
+    print(blank_indices)
+    print(blank_nums)
     
     # Input for samples, allowing multiple indices
-    sample_indices = [int(index.strip()) - 1 for index in sample_num_input]
-    sample_nums = [InsideLevels(md_df.iloc[:,1:]).iloc[sample_index_input-1]['LEVELS'][index] for index in sample_indices]
+    #sample_indices = [int(index.strip()) - 1 for index in sample_level_index]
+    sample_indices = sample_level_index
+    #sample_nums = [InsideLevels(md_df).iloc[sample_type_index-1]['LEVELS'][index] for index in sample_indices]
+    sample_nums = [InsideLevels(md_df).iloc[sample_type_index-1]['LEVELS'][index-1] for index in sample_indices]
+    print(sample_indices)
+    print(sample_nums)
 
     md_Blank = md_df[md_df[sample_attribute].isin(blank_nums)]
     
@@ -213,11 +221,6 @@ def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, s
 
     md_Samples  = md_df[md_df[sample_attribute].isin(sample_nums)]
     
-    #Setting 'filename' column as 'index' for md_Samples
-    #md_Samples.set_index('filename', inplace=True)
-    #md_Samples.index.name = None
-    
-    #Samples = ft_t_df[ft_t_df.index.isin(md_Samples['filename'])]
     Samples = ft_t_df[ft_t_df.index.isin(md_Samples.index)]
     
     #return(Blank, Samples)

@@ -68,11 +68,13 @@ ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be u
 
 
 # Examine Metadata Attributes
-ins_lvls = InsideLevels(new_md_tidy.iloc[:, 1:])
+ins_lvls = InsideLevels(new_md_tidy)
 print(ins_lvls) #skipping the 0th column (filename) and looking at the summary table
 
 ##### Step 3. Blank removal. This step creates a new ft table and a new metadata table.
-blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_index_input=1, blank_num_input="1", sample_num_input="2")
+blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_type_index=1, blank_level_index=[1], sample_level_index=[2])
+
+blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_type_index=1, blank_level_index="1", sample_level_index="2")
 
 blk_rem = blk_tables[0]
 

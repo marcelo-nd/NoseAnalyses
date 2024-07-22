@@ -320,3 +320,6 @@ def metabo_heatmap(cleaned_data, input_list, ins_lev, meta):
                        verbose=0)
     
     return None
+
+def random_forest():
+    return None

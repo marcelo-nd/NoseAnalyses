@@ -7,67 +7,21 @@ Created on Fri Feb  9 13:27:01 2024
 """
 
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-
-# import glob
-# import os
-# import re
-# import itertools
-# import io
-# import session_info
-# import shutil
-# import warnings
-# import matplotlib.pyplot as plt
-# import platform
-# import math
-# import scipy.stats as stats
-
-# import plotly.express as px
-# import plotly.graph_objects as go
-# import plotly.figure_factory as ff
-# import plotly.io as pio
-
-# from scipy.cluster.hierarchy import dendrogram, linkage
-# from scipy.cluster.hierarchy import fcluster
-# from scipy.spatial import distance
-# from scipy.stats import lognorm
-# from scipy.stats import shapiro
-# from scipy.stats import lognorm
-# from scipy.stats import spearmanr
+#import numpy as np
 
 
-# from sklearn.decomposition import PCA
-# from sklearn.preprocessing import OrdinalEncoder
-# from sklearn.model_selection import train_test_split
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.utils import class_weight
-# from sklearn.metrics import classification_report
-from sklearn.metrics import silhouette_score
-from sklearn.cluster import KMeans
-
-# import pingouin as pg
-# import scikit_posthocs as sp
-# from PyComplexHeatmap import *
-from yellowbrick.cluster import KElbowVisualizer
-
-# from PIL import Image
-
-# import statsmodels.api as sm
-
-# import time
-# from sklearn.inspection import permutation_importance
-
-# from skbio.stats.distance import permdisp
-# import skbio
-
+#from sklearn.metrics import silhouette_score
+#from sklearn.cluster import KMeans
+#from yellowbrick.cluster import KElbowVisualizer
 
 #### From scripts
-import sys, os
+import sys
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
-from data_prep import InsideLevels, combine_annotation_names, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, tic_normalize, scale_ft
-from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap
-from univar_analyses import norm_test, gen_anova_data, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data, ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
+from data_prep import InsideLevels, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, normalize_ft, scale_ft
+from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap, random_forest
+from univar_analyses import norm_test, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data
+from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
 
 ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
 
@@ -77,6 +31,7 @@ an_gnps = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/G
 
 an_analog = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep = "\t")
 
+##### Explore original tables
 print('Dimension: ', ft.shape) #gets the dimension (number of rows and columns) of ft
 print(ft.head()) # gets the first 5 rows of ft
 
@@ -92,21 +47,19 @@ print('Dimension: ', an_analog.shape)
 
 print(InsideLevels(md))
 
+##### Step 1. Merging annotations from GNPS
+
 ft_w_an = MergingAnnotationsFT(ft, an_gnps, an_analog)
 
 print('Dimension: ', ft_w_an.shape)
 ft_w_an.head(n=2)
 
+##### Step 2. Tidy tables
 new_tables = tidyTables(ft, md, ft_w_an)
 
 new_ft_tidy = new_tables[0]
 
 new_md_tidy = new_tables[1]
-
-#checking the dimensions of our new ft and md:
-print("The number of rows and columns in our original ft is:", ft.shape,"\n")
-print("The number of rows and columns in our new ft is:", new_ft_tidy.shape,"\n")
-print("The number of rows and columns in our new md is:", new_md_tidy.shape)
 
 # Data-cleanup
 
@@ -118,6 +71,7 @@ ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be u
 ins_lvls = InsideLevels(new_md_tidy.iloc[:, 1:])
 print(ins_lvls) #skipping the 0th column (filename) and looking at the summary table
 
+##### Step 3. Blank removal. This step creates a new ft table and a new metadata table.
 blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_index_input=1, blank_num_input="1", sample_num_input="2")
 
 blk_rem = blk_tables[0]
@@ -131,30 +85,37 @@ blk_rem.head(n=3)
 print('Dimension: ', md_Samples.shape)
 md_Samples.head(n=3)
 
+##### Step 4. Imputation (dealing with missing values)
 imp_ft = imputation(blk_rem)
 
-tic_norm_ft = tic_normalize(imp_ft)
+##### Step 5. Either do Normalization or Scaling.
+### Normalization
+cleaned_data = normalize_ft(imp_ft)
 
-
-#Setting 'filename' column as 'index' for md_Samples
-md_Samples.set_index('filename', inplace=True)
-md_Samples.index.name = None
-
-# put the rows in the feature table and metadata in the same order
-imp_ft.sort_index(inplace=True)
-md_Samples.sort_index(inplace=True)
+### Scaling
+cleaned_data = scale_ft(imp_ft)
 
 # Check if the feature table and metadata have the same sample names!
-if (md_Samples.index == imp_ft.index).all():
+if (md_Samples.index == cleaned_data.index).all():
     print("pass")
 else:
     print("WARNING: Sample names in feature and metadata table are NOT the same!")
 
-scaled_ft = scale_ft(imp_ft)
+#Setting 'filename' column as 'index' for md_Samples
+#md_Samples.set_index('filename', inplace=True)
+#md_Samples.index.name = None
+
+# put the rows in the feature table and metadata in the same order
+#imp_ft.sort_index(inplace=True)
+#md_Samples.sort_index(inplace=True)
+
+
+
+
 
 ########################################################### Multivariate analyses
 ######## Principal coordinates analysis (PCoA)
-pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
+pcoa = pcoa_metabolomics(cleaned_data = cleaned_data, metadata = md_Samples)
 
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Month')
 
@@ -165,14 +126,14 @@ pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 # Scree plot?
 
 ######## Permanova
-permanova_metab(cleaned_data=scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
+permanova_metab(cleaned_data = cleaned_data, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
 
 ################ this gives FALSE
 
 
 ####### Permanova + PCoA
 
-pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "euclidean",
+pcoa_w_metrics_plot = pcoa_w_metrics(data = cleaned_data, meta = md_Samples, distmetric = "euclidean",
                                      attribute = "ATTRIBUTE_Month", col_attribute = "ATTRIBUTE_Month",
                                      mdtype="categorical", cols=custom_palette,
                                      title="Principal coordinates plot", plot=True, print_perm=True)
@@ -275,7 +236,6 @@ volcano_tukey_fig.write_image("/mnt/c/Users/marce/Desktop/TukeyHSD.pdf", scale=3
 
 
 tukey_boxplots(cleaned_data=scaled_ft, metadata=new_md_tidy, anova_attribute = anova_attribute,tukey=tukey)
-
 
 # T-tests
 ttest_attribute = 'ATTRIBUTE_Month'

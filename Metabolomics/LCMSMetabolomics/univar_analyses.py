@@ -445,3 +445,4 @@ def dunn_boxplots(cleaned_data, metadata, dunn, kruskal_attribute, features = 3)
         fig = px.box(cleaned_data_with_md, x=kruskal_attribute, y=stats_metabolite, color=kruskal_attribute)
         fig.update_layout(showlegend=False, title=stats_metabolite, xaxis_title="", yaxis_title="intensity", template="plotly_white", width=500)
         fig.show(renderer="png")
+

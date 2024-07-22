@@ -84,7 +84,7 @@ def tidyTables(ft_p, md_p, ft_an_p):
     # Update the row names of feature table
     # Compare "row ID" columns from new_ft_an with 
     comparison_result=(new_ft_an['row ID'].values == new_ft['row ID'].values).all()
-    print("Comparison result: ", comparison_result)
+    #print("Comparison result: ", comparison_result)
     if(comparison_result):
         print("Should print True if you have an annotation file")
         # Changing the index (row names) of new_ft into the combined name as "XID_mz_RT":
@@ -121,38 +121,55 @@ def tidyTables(ft_p, md_p, ft_an_p):
                 print()
     # check if new_ft column names and md row names are the same
     if sorted(new_ft.columns) == sorted(new_md['filename']):
-        print(f"All {len(new_ft.columns)} files are present in both new_md & new_ft.")
+        print(f"\nAll {len(new_ft.columns)} files are present in both new_md & new_ft.")
     else:
-        print("Not all files are present in both new_md & new_ft.\n")
+        print("\nNot all files are present in both new_md & new_ft.\n")
         # print the md rows / ft column which are not in ft columns / md rows and remove them
         ft_cols_not_in_md = [col for col in new_ft.columns if col not in new_md['filename']]
-        print(f"These {len(ft_cols_not_in_md)} columns of feature table are not present in metadata table and will be removed:\n{', '.join(ft_cols_not_in_md)}\n")
+        print(f"\nThese {len(ft_cols_not_in_md)} columns of feature table are not present in metadata table and will be removed:\n{', '.join(ft_cols_not_in_md)}\n")
         new_ft.drop(columns=ft_cols_not_in_md, inplace=True)
         md_rows_not_in_ft = [row for row in new_md['filename'] if row not in new_ft.columns]
-        print(f"These {len(md_rows_not_in_ft)} rows of metadata table are not present in feature table and will be removed:\n{', '.join(md_rows_not_in_ft)}\n")
+        print(f"\nThese {len(md_rows_not_in_ft)} rows of metadata table are not present in feature table and will be removed:\n{', '.join(md_rows_not_in_ft)}\n")
         new_md.drop(md_rows_not_in_ft, inplace=True)
-        print("Will stop execution")
+        print("\nWill stop execution")
         return
     
-    #checking the dimensions of our new ft and md:
-    print("The number of rows and columns in our original ft is:", ft_p.shape,"\n")
-    print("The number of rows and columns in our new ft is:", new_ft.shape,"\n")
-    print("The number of rows and columns in our new md is:", new_md.shape)
     
     # ft_trans is the transposed features table
     ft_trans = pd.DataFrame(new_ft).T #transposing the ft
     ft_trans = ft_trans.apply(pd.to_numeric) #converting all values to numeric
     
     ft_trans = ft_trans.sort_index()
+    ft_trans.index.name = None
+    
+    #print(ft_trans.head(n=3))
+    
+    
+    # Sort new metadata table.
     new_md = new_md.sort_values("filename")
+    # Set index of metadata table with the values of filenames.
+    new_md.set_index('filename', inplace=True, drop = False)
+    #new_md = new_md.set_index(ft_trans.index) # this option is not optimal since it can mask mistakes.
+    new_md.index.name = None
+    #new_md = new_md.sort_index() # not necesary to sort again.
+    #print(new_md.head(n=3))
     
-    print(np.array_equal(new_md['filename'],ft_trans.index)) #should return True now
+    #print(np.array_equal(new_md['filename'],ft_trans.index)) #should return True now
+    #if(np.array_equal(new_md['filename'],ft_trans.index)):
+    if(np.array_equal(new_md.index,ft_trans.index)):
+        print("All files in MD and FT are the same.")
+    else:
+        print("Not all files in MD and FT are the same.")
     
-    print(ft_trans.head(n=3))
+    #checking the dimensions of our new ft and md:
+    print("\nThe number of rows and columns in our original ft is:", ft_p.shape,"\n")
+    #print("The number of rows and columns in our new transposed ft is:", new_ft.shape,"\n")
+    print("The number of rows and columns in our new transposed ft is:", ft_trans.shape,"\n")
+    print("The number of rows and columns in our new md is:", new_md.shape)
     
-    print(new_md.head(n=3))
-    
-    new_md = new_md.set_index(ft_trans.index)
+    #print(np.array_equal(new_md.index,ft_trans.index)) #should return True now
+    if(np.array_equal(new_md.index,ft_trans.index)):
+        print("\nIndices of md and ft tables are the same!")
     
     return (ft_trans, new_md)
 
@@ -174,6 +191,7 @@ def batch_correction():
     return ""
 
 def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, sample_num_input):
+    # This function returns a new ft table and a new metadata table.
     sample_attribute = md_df.columns[sample_index_input]
     
     df = pd.DataFrame({"LEVELS": InsideLevels(md_df.iloc[:, 1:]).iloc[sample_index_input-1]["LEVELS"]})
@@ -190,11 +208,17 @@ def blank_removal(md_df, ft_t_df, cutoff, sample_index_input, blank_num_input, s
 
     md_Blank = md_df[md_df[sample_attribute].isin(blank_nums)]
     
-    Blank = ft_t_df[ft_t_df.index.isin(md_Blank['filename'])]
+    #Blank = ft_t_df[ft_t_df.index.isin(md_Blank['filename'])]
+    Blank = ft_t_df[ft_t_df.index.isin(md_Blank.index)]
 
     md_Samples  = md_df[md_df[sample_attribute].isin(sample_nums)]
     
-    Samples = ft_t_df[ft_t_df.index.isin(md_Samples['filename'])]
+    #Setting 'filename' column as 'index' for md_Samples
+    #md_Samples.set_index('filename', inplace=True)
+    #md_Samples.index.name = None
+    
+    #Samples = ft_t_df[ft_t_df.index.isin(md_Samples['filename'])]
+    Samples = ft_t_df[ft_t_df.index.isin(md_Samples.index)]
     
     #return(Blank, Samples)
     # Getting mean for every feature in blank and Samples in a DataFrame named 'Avg_ft'
@@ -238,7 +262,7 @@ def imputation(ft_p):
     
     return(imp_ft)
     
-def tic_normalize(p_ft):
+def normalize_ft(p_ft):
     # Step 27: Total Ion Current (TIC) or sample-centric normalization
     normalized = p_ft.copy()
     

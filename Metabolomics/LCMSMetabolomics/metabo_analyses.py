@@ -95,7 +95,7 @@ imp_ft = imputation(blk_rem)
 cleaned_data = normalize_ft(imp_ft)
 
 ### Scaling
-cleaned_data = scale_ft(imp_ft)
+scaled_ft = scale_ft(imp_ft)
 
 # Check if the feature table and metadata have the same sample names!
 if (md_Samples.index == cleaned_data.index).all():
@@ -110,9 +110,6 @@ else:
 # put the rows in the feature table and metadata in the same order
 #imp_ft.sort_index(inplace=True)
 #md_Samples.sort_index(inplace=True)
-
-
-
 
 
 ########################################################### Multivariate analyses
@@ -163,6 +160,8 @@ cleaned_data_choice = pd.DataFrame({
     'Variable_name': [new_ft_tidy, blk_rem, imp_ft, tic_norm_ft, scaled_ft],
     'metadata_name': [new_md_tidy, md_Samples, md_Samples, md_Samples, md_Samples]
 })
+
+cleaned_data = scaled_ft
 
 pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, category_permanova = category_permanova,
                                  category_type = category_type, category_colors = category_colors,

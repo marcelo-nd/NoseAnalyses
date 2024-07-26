@@ -10,16 +10,6 @@ renv::snapshot()
 
 renv::restore()
 
-tst_fasta <- metacoder::read_fasta("C:/Users/marce/Desktop/C_pro.fasta")
-
-
-pcr_result <- metacoder::primersearch_raw(input = tst_fasta,
-                                          forward = c("rrnaF" = "AGRGTTYGATYHTGGCTCAG"),
-                                          reverse = c("rrnaR" = "ACCRCCCCAGTHRAACT"),
-                                          mismatch = 10)
-
-nchar(pcr_result$amplicon[4])
-
 # Get all genomes
 # Define the directory path
 directory_path <- "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Nasal Genomes/LaCaRenamed"
@@ -30,19 +20,43 @@ fasta_files <- list.files(path = directory_path, pattern = "\\.fasta$", full.nam
 rrnaF = "AGRGTTYGATYHTGGCTCAG"
 rrnaR = "ACCRCCCCAGTHRAACT"
 
-for (fasta_file in fasta_files[1:10]) {
-  # Print the list of .fasta files
-  print(fasta_file)
+amplicon_fasta_list <- c()
+
+for (fasta_file in fasta_files) {
+  # Print the current fasta file
+  #print(fasta_file)
+  # Split the string by "/"
+  parts <- strsplit(fasta_file, "/")[[1]]
+  # Take the last part of the split string
+  last_part <- tail(parts, n = 1)
+  # Remove ".fasta" from the last part
+  bacteria <- sub("\\.fasta$", "", last_part)
+  
+  # Print the result
+  print(bacteria)
+  
   # Get pcr result
-  # Get amplicons/filter by size
+  pcr_result <- metacoder::primersearch_raw(input = metacoder::read_fasta(fasta_file),
+                                            forward = rrnaF,
+                                            reverse = rrnaR,
+                                            mismatch = 10)
+  # print number of amplicons
+  #print(nrow(pcr_result))
+  # Get amplicons/filter by size. FIltering according to MIrROR paper, 3500 to 7000 bp.
+  amplicons <- pcr_result[nchar(pcr_result[["amplicon"]]) >= 3500 & nchar(pcr_result[["amplicon"]]) <= 7000, ]$amplicon
+  #print(length(amplicons))
   # add to sequences fasta file
+  if (length(amplicons) > 0) {
+    amplicon_counter <- 1
+    for (amplicon in amplicons) {
+      amplicon_fasta_list <- c(amplicon_fasta_list, paste0(">", paste(bacteria, amplicon_counter, sep = "_")))
+      amplicon_fasta_list <- c(amplicon_fasta_list,amplicon)
+      amplicon_counter <- amplicon_counter + 1
+    }
+  }
 }
 
-pcr_result2 <- metacoder::primersearch_raw(input = metacoder::read_fasta(fasta_files[10]),
-                                          forward = rrnaF,
-                                          reverse = rrnaR,
-                                          mismatch = 10)
-nchar(pcr_result2$amplicon[13])
+print(amplicon_fasta_list)
 
-pcr_result2$amplicon[1]
+writeLines(amplicon_fasta_list, con = "C:/Users/marce/Desktop/LaCa_rRNA.fasta")
 

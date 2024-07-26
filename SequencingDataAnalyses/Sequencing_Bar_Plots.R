@@ -416,4 +416,8 @@ otu_table_070624_filt <- filter_otus_by_counts_col_counts(otu_table_070624, min_
 
 barplot_from_feature_table(otu_table_070624_filt[1:13,])
 
+####### Karo
 
+otu_table_s1 <- read.csv("F:/SequencingData/NanoporeTech/SC_soil/emu_results/otu_table.csv", row.names=1)
+# Raw results
+barplot_from_feature_table(otu_table_s1)

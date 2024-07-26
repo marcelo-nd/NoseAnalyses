@@ -49,6 +49,24 @@ for (fasta_file in fasta_files) {
   if (length(amplicons) > 0) {
     amplicon_counter <- 1
     for (amplicon in amplicons) {
+      
+      # check if amplicon contains unallowed characters
+      allowed_chars <- "ACGT"
+      
+      # Create a regular expression pattern for allowed characters
+      pattern <- paste0("[^", allowed_chars, "]")
+      
+      # Check if the string contains any character not in the allowed subset
+      contains_disallowed <- grepl(pattern, amplicon)
+      
+      # Print the result
+      if (contains_disallowed) {
+        cat("The string contains disallowed characters!!!!!!!!!!!!!!!\n")
+      } else {
+        cat("The string only contains allowed characters.\n")
+      }
+      #### end of checking
+      
       amplicon_fasta_list <- c(amplicon_fasta_list, paste0(">", paste(bacteria, amplicon_counter, sep = "_")))
       amplicon_fasta_list <- c(amplicon_fasta_list,amplicon)
       amplicon_counter <- amplicon_counter + 1

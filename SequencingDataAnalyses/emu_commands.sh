@@ -30,6 +30,10 @@ conda activate emu_py37
 
 emu build-database LaCaEmu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_taxonomy.tsv
 
+emu build-database LaCa_rRNA_Emu --sequences /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_rRNA.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_taxonomy.tsv
+
+emu build-database LaCa_rRNA_Emu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_taxonomy.tsv
+
 # Set EmuWrapper
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 
@@ -137,4 +141,23 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
 sed -i 's/\r//' $EMUWRAPPER_LOC/emu_wrapper.sh
 
 . $EMUWRAPPER_LOC/emu_wrapper.sh -d $EMU_DATABASE_DIR -z "TRUE" -s $SC10/no_sample/20240525_1628_MN45148_FAY35039_2aa0c353/fastq_pass -o $SC10/results_long  -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+
+#################### SC Karo 16S (25.07.24)
+
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+export SC10=/mnt/f/SequencingData/NanoporeTech/SC_soil
+
+# Unzip sequences
+
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC10/basecalling/pass -o $SC10
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC10/fastq -o $SC10
+
+# emu
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC10/fastq_qc -o $SC10 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 

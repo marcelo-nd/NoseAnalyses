@@ -185,3 +185,23 @@ export SC10=/mnt/d/SequencingTemp/KaroSC_NasalSC/no_sample/20240726_1242_MN45148
 Rscript $EMUWRAPPER_LOC/tables_merging.R $SC10/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
 
 
+########## Nose tests
+
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+
+export EMU_DATABASE_DIR=/mnt/d/SequencingTemp/16Sdatabases/LaCa_rRNA
+
+export SC10=/mnt/d/SequencingTemp/KaroSC_NasalSC/no_sample/20240726_1242_MN45148_aun678_1f2572b2/Nose
+
+# Unzip sequences
+
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC10 -o $SC10
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC10/fastq -o $SC10
+
+# emu
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC10/fastq_qc -o $SC10 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/SequencingTemp/16Sdatabases/LaCa16copies.csv
+
+Rscript $EMUWRAPPER_LOC/tables_merging.R $SC10/emu_results "TRUE" /mnt/d/SequencingTemp/16Sdatabases/LaCa16copies.csv

@@ -31,6 +31,16 @@ an_gnps = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/G
 
 an_analog = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep = "\t")
 
+### Soyoungs results
+
+ft = pd.read_csv("/mnt/c/Users/marce/Desktop/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-featuretable_reformated.csv")
+
+md = pd.read_csv("/mnt/c/Users/marce/Desktop/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_metadata.tsv", sep = "\t")
+
+an_gnps = pd.read_csv("/mnt/c/Users/marce/Desktop/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_results_with_gnps.tsv", sep = "\t")
+
+an_analog = an_gnps.copy()
+
 ##### Explore original tables
 print('Dimension: ', ft.shape) #gets the dimension (number of rows and columns) of ft
 print(ft.head()) # gets the first 5 rows of ft
@@ -61,6 +71,8 @@ new_ft_tidy = new_tables[0]
 
 new_md_tidy = new_tables[1]
 
+new_ft_tidy.to_csv("/mnt/c/Users/marce/Desktop/Sy_bioreactors/annotated_QuantTable.csv") # save to file
+
 # Data-cleanup
 
 # Merge the metadata and feature table (transposed) together.
@@ -73,8 +85,6 @@ print(ins_lvls) #skipping the 0th column (filename) and looking at the summary t
 
 ##### Step 3. Blank removal. This step creates a new ft table and a new metadata table.
 blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_type_index=1, blank_level_index=[1], sample_level_index=[2])
-
-blk_tables = blank_removal(md_df=new_md_tidy, ft_t_df=new_ft_tidy, cutoff = 0.3, sample_type_index=1, blank_level_index="1", sample_level_index="2")
 
 blk_rem = blk_tables[0]
 
@@ -92,13 +102,15 @@ imp_ft = imputation(blk_rem)
 
 ##### Step 5. Either do Normalization or Scaling.
 ### Normalization
-cleaned_data = normalize_ft(imp_ft)
+tic_norm_ft = normalize_ft(imp_ft)
 
 ### Scaling
 scaled_ft = scale_ft(imp_ft)
 
+scaled_ft.to_csv("/mnt/c/Users/marce/Desktop/Sy_bioreactors/annotated_QuantTable_scaled.csv") # save to file
+
 # Check if the feature table and metadata have the same sample names!
-if (md_Samples.index == cleaned_data.index).all():
+if (md_Samples.index == scaled_ft.index).all():
     print("pass")
 else:
     print("WARNING: Sample names in feature and metadata table are NOT the same!")
@@ -114,9 +126,9 @@ else:
 
 ########################################################### Multivariate analyses
 ######## Principal coordinates analysis (PCoA)
-pcoa = pcoa_metabolomics(cleaned_data = cleaned_data, metadata = md_Samples)
+pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
 
-pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Month')
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_operation_day')
 
 pca_plot_fig.show(renderer="png")
 
@@ -125,14 +137,14 @@ pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
 # Scree plot?
 
 ######## Permanova
-permanova_metab(cleaned_data = cleaned_data, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
+permanova_metab(cleaned_data = scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
 
 ################ this gives FALSE
 
 
 ####### Permanova + PCoA
 
-pcoa_w_metrics_plot = pcoa_w_metrics(data = cleaned_data, meta = md_Samples, distmetric = "euclidean",
+pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "euclidean",
                                      attribute = "ATTRIBUTE_Month", col_attribute = "ATTRIBUTE_Month",
                                      mdtype="categorical", cols=custom_palette,
                                      title="Principal coordinates plot", plot=True, print_perm=True)

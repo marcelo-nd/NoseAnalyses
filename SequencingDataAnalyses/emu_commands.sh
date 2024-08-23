@@ -26,13 +26,11 @@ quit()
 # Create custom database
 cd /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database
 
-conda activate emu_py37
+conda activate emu
 
 emu build-database LaCaEmu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_taxonomy.tsv
 
 emu build-database LaCa_rRNA_Emu --sequences /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_rRNA.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_taxonomy.tsv
-
-emu build-database LaCa_rRNA_Emu --sequences /mnt/c/Users/'Marcelo Navarro'/'OneDrive - UT Cloud'/'NoseSynCom Project'/LaCa_16s_emu_database/DB_files/LaCa_sequences.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/DB_files/LaCa_taxonomy.tsv
 
 # Set EmuWrapper
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
@@ -169,7 +167,9 @@ EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 
 export EMU_DATABASE_DIR=/mnt/d/SequencingTemp/16Sdatabases/RRN_db
 
-export SC10=/mnt/d/SequencingTemp/KaroSC_NasalSC/no_sample/20240726_1242_MN45148_aun678_1f2572b2/Karo
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_Emu_200824
+
+export seqs_paths=/mnt/f/SequencingData/Karo/
 
 # Unzip sequences
 
@@ -180,7 +180,7 @@ export SC10=/mnt/d/SequencingTemp/KaroSC_NasalSC/no_sample/20240726_1242_MN45148
 
 # emu
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC10/fastq_qc -o $SC10 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 Rscript $EMUWRAPPER_LOC/tables_merging.R $SC10/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
 

@@ -12,7 +12,14 @@ renv::restore()
 
 # Get all genomes
 # Define the directory path
+# LaCa Genomes
 directory_path <- "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Nasal Genomes/LaCaRenamed"
+
+# Zymo Community Standard genomes
+directory_path <- "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Nasal Genomes/ZymoBIOMICS.STD.refseq.v2/Genomes"
+
+# Remaining Genomes
+directory_path <- "C:/Users/marce/Desktop/remGenomes"
 
 # Get the list of files with .fasta extension
 fasta_files <- list.files(path = directory_path, pattern = "\\.fasta$", full.names = TRUE)
@@ -76,5 +83,5 @@ for (fasta_file in fasta_files) {
 
 print(amplicon_fasta_list)
 
-writeLines(amplicon_fasta_list, con = "C:/Users/marce/Desktop/LaCa_rRNA.fasta")
+writeLines(amplicon_fasta_list, con = "C:/Users/marce/Desktop/Zymo_rRNA.fasta")
 

@@ -205,3 +205,29 @@ export SC10=/mnt/d/SequencingTemp/KaroSC_NasalSC/no_sample/20240726_1242_MN45148
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC10/fastq_qc -o $SC10 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/SequencingTemp/16Sdatabases/LaCa16copies.csv
 
 Rscript $EMUWRAPPER_LOC/tables_merging.R $SC10/emu_results "TRUE" /mnt/d/SequencingTemp/16Sdatabases/LaCa16copies.csv
+
+
+#### Karo2
+
+########## Karo multiple barcodes
+
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+
+export EMU_DATABASE_DIR=/mnt/d/SequencingTemp/16Sdatabases/RRN_db
+
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_Emu_200824
+
+export seqs_paths=/mnt/f/SequencingData/Karo2/
+
+# Unzip sequences
+
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths
+
+# emu
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+
+

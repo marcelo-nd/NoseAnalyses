@@ -427,3 +427,13 @@ barplot_from_feature_table(otu_table_s1)
 otu_table_s1 <- read.csv("F:/SequencingData/Nose/emu_results/otu_table.csv", row.names=1)
 # Raw results
 barplot_from_feature_table(otu_table_s1[,1:6])
+
+
+########
+####### Karo 16S
+
+otu_table_s1 <- read.csv("F:/SequencingData/Karo2/emu_results/otu_table.csv", row.names=1)
+# Raw results
+barplot_from_feature_table(dplyr::select(otu_table_s1, c(1,2,3,7,8,9)))
+
+barplot_from_feature_table(dplyr::select(otu_table_s1, c(10:17)))

@@ -5,7 +5,6 @@ if (!requireNamespace("BiocManager", quietly = TRUE)){
   BiocManager::install()
 }
 
-
 if (!"Biostrings" %in% installed.packages()) {
   BiocManager::install(c("Biostrings"))
 }
@@ -18,6 +17,8 @@ data_fasta <- readDNAStringSet("F:/16Sdatabases/RRN_db/species_taxid.fasta")
 taxonomy <- read_delim("F:/16Sdatabases/RRN_db/taxonomy.tsv",
                        delim = "\t", escape_double = FALSE,
                        trim_ws = TRUE)
+
+taxonomy <- read.delim("F:/16Sdatabases/RRN_db/taxonomy.tsv")
 
 extract_seqs_from_fasta_name <- function(fasta_file, species_names){
   fasta_results <- DNAStringSet() # Empty fasta file to store results
@@ -47,7 +48,7 @@ extract_seqs_from_fasta_name <- function(fasta_file, species_names){
       if (grepl(pattern = specie, x = current_seq@ranges@NAMES, fixed = TRUE)) {
         if(!specie %in% found_species_fasta){
           found_species_fasta <- c(found_species_fasta, specie)
-          print(paste("Missing species: ", specie))
+          #print(paste("Missing species: ", specie))
         }
       }
     }
@@ -59,7 +60,7 @@ extract_seqs_from_fasta_name <- function(fasta_file, species_names){
 
 extract_taxonomy_from_taxtable <- function(tax_table, species_names){
   #empty df
-  extracted_tax_table <- data.frame(row.names = colnames(colnames(tax_table)))
+  extracted_tax_table <- data.frame(row.names = colnames(tax_table))
   
   for (row in 1:nrow(tax_table)) {
     for(specie in species){
@@ -80,13 +81,14 @@ extract_taxonomy_from_taxtable <- function(tax_table, species_names){
       if (specie == extracted_tax_table[tax_spp,]$species) {
         if(!specie %in% found_species_tax){
           found_species_tax <- c(found_species_tax, specie)
-          print(paste("Missing species: ", specie))
+          #print(paste("Missing species: ", specie))
         }
       }
     }
   }
   print("Found sequences for: ")
-  print(found_species_fasta)
+  print(found_species_tax)
+  return(extracted_tax_table)
 }
 
 # Species names for searching in soil microbiome species in fasta file DB.
@@ -97,13 +99,18 @@ species = c("Acidovorax_delafieldii", "Arthrobacter_humicola", "Bacillus_altitud
 soil_extract_fasta <- extract_seqs_from_fasta_name(fasta_file = data_fasta, species_names = species)
 
 # Save fasta file
-writeXStringSet(x = fasta_results, filepath = "C:/Users/Desktop/species_taxid.fasta")
+writeXStringSet(x = soil_extract_fasta, filepath = "C:/Users/marce/Desktop/species_taxid.fasta")
+
+
+
+
 
 ### Extracting from taxonomy table
 # Species name for extracting from taxonomy table
 species = c("Acidovorax delafieldii", "Arthrobacter humicola", "Bacillus altitudinis", "Bacillus subtilis",
             "Flavobacterium pectinovorum", "Priestia megaterium", "Pseudomonas koreensis", "Rhodopseudomonas palustris")
 
-soil_extract_taxtable <- extract_taxonomy_from_taxtable(tax_table = data_fasta, species_names = species)
+soil_extract_taxtable <- extract_taxonomy_from_taxtable(tax_table = taxonomy, species_names = species)
 
-write.table(soil_extract_taxtable, file = "C:/Users/Desktop/taxonomy.tsv")
+write.table(soil_extract_taxtable, file = "C:/Users/marce/Desktop/taxonomy.tsv", row.names = FALSE,
+            quote = FALSE, sep = "\t")

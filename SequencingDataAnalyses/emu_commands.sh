@@ -231,3 +231,6 @@ export seqs_paths=/mnt/f/SequencingData/Karo2/
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 
+# Karos test with DB plus
+export SEQS=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/20240829_Karo_PRimer_SoilSynCom2/no_sample/20240829_1253_MN45148_AVM806_08a69708/fastq_pass
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SEQS/fastq_qc -b "barcode07,barcode08,barcode09,barcode10,barcode11,barcode12,barcode13,barcode14,barcode15,barcode16,barcode17,barcode18" -o $SEQS -d $EMU_DATABASE_DIR -c "FALSE"

@@ -416,11 +416,15 @@ otu_table_070624_filt <- filter_otus_by_counts_col_counts(otu_table_070624, min_
 
 barplot_from_feature_table(otu_table_070624_filt[1:13,])
 
+
+
 ####### Karo 16S
 
-otu_table_s1 <- read.csv("F:/SequencingData/Karo/emu_results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/KaroSC_NasalSC/Karo/emu_results/otu_table.csv", row.names=1)
+
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/20240829_Karo_PRimer_SoilSynCom2/no_sample/20240829_1253_MN45148_AVM806_08a69708/fastq_pass/emu_results/otu_table.csv", row.names=1)
 # Raw results
-barplot_from_feature_table(otu_table_s1)
+barplot_from_feature_table(otu_table_s1[4:12])
 
 ####### Nose
 

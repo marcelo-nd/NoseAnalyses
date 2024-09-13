@@ -1,27 +1,30 @@
 Sys.setenv(LANG = "en")
 
-library(ggplot2)
-library(ggfortify)
-library(plotly)
-library(dplyr)
-
 if (!requireNamespace('BiocManager', quietly = TRUE))
   install.packages('BiocManager')
 
 BiocManager::install('PCAtools')
 
+library(ggplot2)
+library(ggfortify)
+library(plotly)
+library(dplyr)
 library(PCAtools)
 
+# Load helper functions for functional data analysis
 source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")
 
 # Read fia positive mode
-fia_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "pos", col_names = TRUE)
+fia_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "pos", col_names = TRUE)
 
 # Read fia negative mode
-fia_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "neg", col_names = TRUE)
+fia_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "neg", col_names = TRUE)
+
+# Read fia merged
+#fia_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "neg", col_names = TRUE)
 
 # Read metadata
-fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
+fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
 
 # Retain only columns necessary for PCA
 
@@ -67,13 +70,12 @@ print(head(fia_norm))
 
 filtered_fia <- filter_by_error(fia_norm, error_threshold = 50)
 
-fia_pos_pca <- prcomp(filtered_fia[, 5:ncol(filtered_fia)], scale. = TRUE)
-
+fia_pca <- prcomp(filtered_fia[, 5:ncol(filtered_fia)], scale. = TRUE)
 
 fia_metadata_df <- as.data.frame(fia_metadata_df)
 
 # Plot PCA with samples coloured by SynCom
-p2 <- ggplot2::autoplot(fia_pos_pca, data = na.omit(fia_metadata_df), colour = 'SynCom') +
+p2 <- ggplot2::autoplot(fia_pca, data = na.omit(fia_metadata_df), colour = 'SynCom') +
   # change color scale
   scale_color_manual(values = get_palette(60))
 

@@ -10,13 +10,13 @@ BiocManager::install('PCAtools')
 source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")
 
 # Read fia positive mode
-fia_pos_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "pos", col_names = TRUE)
+fia_pos_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "pos", col_names = TRUE)
 
 # Read fia negative mode
-fia_neg_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "neg", col_names = TRUE)
+fia_neg_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "neg", col_names = TRUE)
 
 # Read metadata
-fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
+fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
 
 # Retain only columns necessary for PCA
 
@@ -87,7 +87,7 @@ fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/Desktop/20240523_FI
 fia_pos_df_2 <- cbind(fia_pos_df[, 2], fia_pos_df[, 5:ncol(fia_pos_df)])
 
 # Set column names as metabolites names
-rownames(fia_pos_df_2) <- make.names(fia_pos_df_2$MetName)
+rownames(fia_pos_df_2) <- make.names(fia_pos_df_2$MetName, unique=TRUE)
 
 # Remove 
 fia_pos_df_2 <- fia_pos_df_2[2:nrow(fia_pos_df_2),]
@@ -117,13 +117,39 @@ fia_pos_df_2_t <- t(fia_pos_df_2)
 # Reconvert to dataframe
 fia_pos_df_2_t <- as.data.frame(fia_pos_df_2_t)
 
-
-
 fia_pos_pca <- PCAtools::pca(fia_pos_df_2_t, scale = TRUE, metadata =fia_metadata_df, transposed = FALSE)
 
 p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, colby = "SynCom", colkey = c(A="forestgreen"))
 
-p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, ntopLoadings=4)
+p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, ntopLoadings=2)
 
 p2
 
+###############################
+fia_pos_table <- read_fia_table(table_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx")
+
+fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
+
+# Normalize by OD of SynComs
+fia_norm <- normalize_by_od2(dataframe = fia_pos_table, metadata_table = fia_metadata_df, od_column = "OD")
+
+# Remove highly variable metabolites
+filtered_fia <- filter_by_error2(dataframe = fia_norm, metadata_table = fia_metadata_df, grouping_var = "SynCom", error_threshold = 50)
+
+# Do PCA
+fia_pos_pca <- prcomp(filtered_fia, scale. = TRUE)
+
+# Plot PCA with samples coloured by SynCom
+p2 <- ggplot2::autoplot(fia_pos_pca, data = na.omit(fia_metadata_df), colour = 'SynCom') +
+  # change color scale
+  scale_color_manual(values = get_palette(60))
+
+p2
+
+fia_pos_pca <- PCAtools::pca(filtered_fia, scale = TRUE, metadata =fia_metadata_df, transposed = FALSE)
+
+p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, ntopLoadings = 2, lab = NULL, colby = "SynCom",
+                       legendPosition = "right", legendLabSize = 9, legendIconSize = 2, pointSize = 2,
+                       colkey = get_palette(nColors = 26))
+
+p2

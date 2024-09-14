@@ -125,7 +125,8 @@ p2 <- PCAtools::biplot(fia_pos_pca, showLoadings = TRUE, ntopLoadings=2)
 
 p2
 
-###############################
+############################### Refactoring tests
+
 fia_pos_table <- read_fia_table(table_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx")
 
 fia_metadata_df <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx", sheet = "metadata", col_names = TRUE)
@@ -137,6 +138,19 @@ fia_norm <- normalize_by_od2(dataframe = fia_pos_table, metadata_table = fia_met
 filtered_fia <- filter_by_error2(dataframe = fia_norm, metadata_table = fia_metadata_df, grouping_var = "SynCom", error_threshold = 50)
 
 # Do PCA
+
+fia_pca(feature_table = filtered_fia, metadata_table = fia_metadata_df, grouping_col = "SynCom")
+
+
+
+
+
+
+
+
+
+
+# Do PCA
 fia_pos_pca <- prcomp(filtered_fia, scale. = TRUE)
 
 # Plot PCA with samples coloured by SynCom
@@ -145,6 +159,8 @@ p2 <- ggplot2::autoplot(fia_pos_pca, data = na.omit(fia_metadata_df), colour = '
   scale_color_manual(values = get_palette(60))
 
 p2
+
+
 
 fia_pos_pca <- PCAtools::pca(filtered_fia, scale = TRUE, metadata =fia_metadata_df, transposed = FALSE)
 

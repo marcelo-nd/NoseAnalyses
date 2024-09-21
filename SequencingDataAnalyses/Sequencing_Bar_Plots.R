@@ -428,9 +428,9 @@ barplot_from_feature_table(otu_table_s1[4:12])
 
 ####### Nose
 
-otu_table_s1 <- read.csv("F:/SequencingData/Nose/emu_results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("F:/SequencingData/SynCom100/TimePoints/emu_results/otu_table.csv", row.names=1)
 # Raw results
-barplot_from_feature_table(otu_table_s1[,1:6])
+barplot_from_feature_table(otu_table_s1[,1:5])
 
 
 ########

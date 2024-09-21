@@ -20,6 +20,16 @@ from sklearn.cluster import KMeans
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.metrics import silhouette_score
 from PyComplexHeatmap import *
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.utils import class_weight
+from sklearn.metrics import classification_report
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
+import time
+
+import warnings
+warnings.filterwarnings('ignore')
 
 def pcoa_metabolomics(cleaned_data, metadata):
     # In order to perform a PCoA as described below,
@@ -321,5 +331,99 @@ def metabo_heatmap(cleaned_data, input_list, ins_lev, meta):
     
     return None
 
-def random_forest():
-    return None
+def random_forest(feature_table, metadata_table, attribute):
+    # Prepare the data for random forest
+    # merging metadata with cleaned data
+    feature_table_with_md = metadata_table.merge(feature_table, left_index=True, right_index=True, how="inner")
+    # We make sure that the merging of the two data frames was successful.
+    print('Dimensions cleaned data: ', feature_table.shape)
+    print('Dimensions metadata: ', metadata_table.shape)
+    print('Dimensions cleaned data merged with metadata: ', feature_table_with_md.shape)
+    
+    rf_data = feature_table_with_md.copy()
+    
+    # For the RF classification we need to transform the strings to numericals using the OrdinalEncoder.
+    # Change the values of the attribute of interest from strings to a numerical
+    enc = OrdinalEncoder() # sklearn
+    labels = rf_data[[attribute]]
+    print(labels.value_counts()) # Displays the sample size for each group
+    labels = enc.fit_transform(labels)
+    labels = np.array([x[0] + 1 for x in labels])
+    print(labels)
+    # Extract the features (columns starting with X) and their column names
+    features = rf_data.filter(regex='^X')
+    feature_names = features.columns.values.tolist()
+    print(features.shape)
+    print(features.head())
+    
+    print("Printing training sets")
+    # Split the data into training and test sets
+    train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25, random_state=123)
+
+    print('Training Features Shape:', train_features.shape)
+    print('Training Labels Shape:', train_labels.shape)
+    print('Testing Features Shape:', test_features.shape)
+    print('Testing Labels Shape:', test_labels.shape)
+    
+    # Balance the weights of the attribute of interest to account for unbalanced sample sizes per group
+    sklearn_weights = class_weight.compute_class_weight(
+        class_weight='balanced',
+        classes=np.unique(train_labels),
+        y=train_labels)
+    weights = {}
+    for i,w in enumerate(np.unique(train_labels)):
+        weights[w] = sklearn_weights[i]
+    print(weights)
+    
+    # Step 54: Run Random Forest
+    # Set up the random forest classifier with 500 tress, balanced weights, and a random state to make it reproducible
+    rf = RandomForestClassifier(n_estimators=500, class_weight=weights, random_state=123)
+    # Fit the classifier to the training set
+    rf.fit(train_features, train_labels)
+    # Use the random forest classifier to predict the sample areas in the test set
+    predictions = rf.predict(test_features)
+    print('Classifier mean accuracy score:', round(rf.score(test_features, test_labels)*100, 2), '%.')
+    # Report of the accuracy of predictions on the test set
+    print(classification_report(test_labels, predictions))
+    # Print the sample areas corresponding to the numbers in the report
+    for i,cat in enumerate(enc.categories_[0]):
+        print(i+1.0, cat)
+    #Ranking features by Mean Decrease Accuracy:
+    feature_names = features.columns.tolist() #getting all the column names of features to a list
+    feature_importance_dict = dict(zip(feature_names, rf.feature_importances_)) #creating a dictionary
+    # Depending on the number of permutations (n_repeats) provided, the following cell may take a considerable amount of time to execute!!
+    # We have set n_repeats=10 to shuffle the data 10 times, and we have fixed random_state=0 to ensure reproducibility of our permutation results. 
+    # Record the start time
+    start_time = time.time()
+
+    # Perform permutation importance
+    rf_result = permutation_importance(rf,
+                                   test_features,
+                                   test_labels,
+                                   n_repeats=5, #change n_repeats value here as desired
+                                   random_state=0)
+
+    mean_decrease_accuracy =rf_result.importances_mean
+    std_decrease_accuracy = rf_result.importances_std
+
+    # To map these values back to feature names:
+    mean_decrease_accuracy_dict = dict(zip(feature_names, mean_decrease_accuracy))
+    std_decrease_accuracy_dict = dict(zip(feature_names, std_decrease_accuracy))
+
+    # Calculate and display the time taken
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Time taken: {elapsed_time:.2f} seconds")
+    # Convert dictionaries to DataFrames
+    feature_importance_df = pd.DataFrame(list(feature_importance_dict.items()), columns=['Feature', 'Importance'])
+    mean_decrease_accuracy_df = pd.DataFrame(list(mean_decrease_accuracy_dict.items()), columns=['Feature', 'Mean Decrease Accuracy'])
+    std_decrease_accuracy_df = pd.DataFrame(list(std_decrease_accuracy_dict.items()), columns=['Feature', 'Std Decrease Accuracy'])
+
+    # Merge the DataFrames
+    importance_df = pd.merge(feature_importance_df, mean_decrease_accuracy_df, on='Feature')
+    importance_df = pd.merge(importance_df, std_decrease_accuracy_df, on='Feature')
+
+    # Sort the DataFrame if needed
+    importance_df = importance_df.sort_values(by='Mean Decrease Accuracy', ascending=False)
+    importance_df.head()
+    return importance_df

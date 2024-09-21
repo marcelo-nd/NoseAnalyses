@@ -23,18 +23,15 @@ from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa
 from univar_analyses import norm_test, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data
 from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
 
-# Disable warnings for cleaner output, comment out for debugging
-import warnings
-warnings.filterwarnings('ignore')
+### Soyoungs results
 
-ft = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/SD_BeachSurvey_GapFilled_quant.csv")
+ft = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-featuretable_reformated.csv")
 
-md = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/20221125_Metadata_SD_Beaches_with_injection_order.txt", sep = "\t")
+md = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_metadata.tsv", sep = "\t")
 
-an_gnps = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_result_FBMN.tsv.txt", sep = "\t")
+an_gnps = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_results_with_gnps.tsv", sep = "\t")
 
-an_analog = pd.read_csv("/mnt/d/1_NoseSynComProject/Metabolomics Data/metaboData/GNPS_analog_result_FBMN.tsv.txt", sep = "\t")
-
+an_analog = an_gnps.copy()
 
 ##### Explore original tables
 print('Dimension: ', ft.shape) #gets the dimension (number of rows and columns) of ft
@@ -123,30 +120,32 @@ else:
 ######## Principal coordinates analysis (PCoA)
 pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
 
-pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Sample_Area')
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_operation_day')
+
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Volunteer')
 
 pca_plot_fig.show(renderer="png")
 
-pca_plot_fig.write_image("/mnt/c/Users/marce/Desktop/figtest.svg")
+pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/pca_plot.svg")
 
 # Scree plot?
 
 ######## Permanova
-permanova_metab(cleaned_data = scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Month")
+permanova_metab(cleaned_data = scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Volunteer")
 
-################ this gives FALSE
+################
 
 
 ####### Permanova + PCoA
 
 pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "euclidean",
-                                     attribute = "ATTRIBUTE_Month", col_attribute = "ATTRIBUTE_Month",
+                                     attribute = "ATTRIBUTE_Volunteer", col_attribute = "ATTRIBUTE_Volunteer",
                                      mdtype="categorical", cols=custom_palette,
                                      title="Principal coordinates plot", plot=True, print_perm=True)
 
 pcoa_w_metrics_plot.show(renderer="png")
 
-pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest2.svg")
+pcoa_w_metrics_plot.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/pcoa_w_metrics.svg")
 
 ####### Permanova + PCoA (Attribute and Data cleanup strategies exploration)
 
@@ -154,8 +153,8 @@ pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/Desktop/figtest2.svg")
 # category for coloring the PCoA plot and the type of the chosen category in the cell below.
 
 distance_metric = "euclidean"
-category_permanova = "ATTRIBUTE_Month"
-category_colors = "ATTRIBUTE_Month"
+category_permanova = "ATTRIBUTE_Volunteer"
+category_colors = "ATTRIBUTE_Volunteer"
 category_type = 'categorical'
 
 pcoa_titles = ["a) Before Data cleanup", "b) After Blank removal", "c) After Imputation", "d) After TIC Normalization", "e) After Scaling"]
@@ -175,25 +174,26 @@ pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, cate
                                  pcoa_titles = pcoa_titles,
                                  distance_metric = distance_metric)
 
-pcoa_explore_plot.savefig("/mnt/c/Users/marce/Desktop/figtest3.svg")
+pcoa_explore_plot.savefig("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/figtest3.svg")
 
 ####### Hierarchial Clustering Algorithm
 hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method=None)
 
-#hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="elbow")
+hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="elbow")
 
 #hc_plot = h_cluster(cleaned_data=scaled_ft, cluster_num_method="silhouette")
 
 plt.savefig("/mnt/c/Users/marce/Desktop/colored_dendrogram.svg", format="svg")
 ####### Heatmaps
 print(InsideLevels(new_md_tidy.iloc[:, 1:]))
-heatmap_attributes = [2, 3, 9]
+heatmap_attributes = [1, 2]
 
 metabo_heatmap(cleaned_data=scaled_ft, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
 
 ###### Supervised learning with Random Forest
-rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, attribute = "ATTRIBUTE_Sample_Area")
+rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, attribute = "ATTRIBUTE_Volunteer")
 
+rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/rf_results.csv") 
 ########################################################### Univariate analyses
 
 # Normality Test

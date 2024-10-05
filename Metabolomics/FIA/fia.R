@@ -1,5 +1,7 @@
 source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")
 
+library(dplyr)
+
 # Read tables
 fia_pos_table <- read_fia_table(table_path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_SynComBatch1_2/20240523_FIA_Fc_SynComBatch1_2_fcexport.xlsx")
 

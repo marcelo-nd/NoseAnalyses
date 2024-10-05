@@ -284,7 +284,7 @@ def ttest_volcano(ttest, target_group):
     #fig.write_image(os.path.join(data_dir, "T-Test_Volcano_Plot.pdf"), scale=3)
     return fig
 
-def gen_kruskal_data(cleaned_data, metadata, groups_col):
+def gen_kruskal_data(cleaned_data, metadata, groups_col, cor_method = "none"):
     cleaned_data_with_md = metadata.merge(cleaned_data, left_index=True, right_index=True, how="inner")
     uni_data = cleaned_data_with_md.loc[:, cleaned_data_with_md.columns.str.startswith('X')]
     columns = uni_data.columns
@@ -301,8 +301,8 @@ def gen_kruskal_data(cleaned_data, metadata, groups_col):
     kruskal_columns = ['metabolite', 'stats_ID', 'p', 'H', 'dof']
     kruskal = pd.DataFrame(results, columns=kruskal_columns)
 
-    # add Benjamini-Hochberg corrected p-values
-    kruskal['stats_p_bh'] = pg.multicomp(kruskal['p'], method='fdr_bh')[1]
+    # add corrected p-values
+    kruskal['stats_p_bh'] = pg.multicomp(kruskal['p'], method=cor_method)[1]
 
     # add significance
     kruskal['stats_significant'] = kruskal['stats_p_bh'] < 0.05

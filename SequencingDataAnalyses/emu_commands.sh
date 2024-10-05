@@ -234,3 +234,17 @@ export seqs_paths=/mnt/f/SequencingData/Karo2/
 # Karos test with DB plus
 export SEQS=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/20240829_Karo_PRimer_SoilSynCom2/no_sample/20240829_1253_MN45148_AVM806_08a69708/fastq_pass
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SEQS/fastq_qc -b "barcode07,barcode08,barcode09,barcode10,barcode11,barcode12,barcode13,barcode14,barcode15,barcode16,barcode17,barcode18" -o $SEQS -d $EMU_DATABASE_DIR -c "FALSE"
+
+# Screenind and missing samples
+
+export seqs_paths=/mnt/f/NasalSC100_300924/no_sample_id/20240930_1731_MN45148_FBA32257_3c181886/fastq_pass
+
+# Unzip sequences
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 200 -h 5000
+
+# emu
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv

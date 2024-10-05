@@ -441,3 +441,7 @@ otu_table_s1 <- read.csv("D:/SequencingData/Karo2/emu_results/otu_table.csv", ro
 barplot_from_feature_table(dplyr::select(otu_table_s1, c(1,2,3,7,8,9)))
 
 barplot_from_feature_table(dplyr::select(otu_table_s1, c(10:17)))
+
+otu_table_s1 <- read.csv("F:/NasalSC100_300924/no_sample_id/20240930_1731_MN45148_FBA32257_3c181886/fastq_pass/emu_results/otu_table.csv", row.names=1)
+# Raw results
+barplot_from_feature_table(otu_table_s1)

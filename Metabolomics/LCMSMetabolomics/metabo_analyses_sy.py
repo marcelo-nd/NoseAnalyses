@@ -25,11 +25,11 @@ from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruska
 
 ### Soyoungs results
 
-ft = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-featuretable_reformated.csv")
+ft = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-featuretable_reformated.csv")
 
-md = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_metadata.tsv", sep = "\t")
+md = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_metadata.tsv", sep = "\t")
 
-an_gnps = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_results_with_gnps.tsv", sep = "\t")
+an_gnps = pd.read_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Sy_bioreactors_FBMN/09f095a559eb4d909fc032685b6290c7-merged_results_with_gnps.tsv", sep = "\t")
 
 an_analog = an_gnps.copy()
 
@@ -63,7 +63,7 @@ new_ft_tidy = new_tables[0]
 
 new_md_tidy = new_tables[1]
 
-new_ft_tidy.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/annotated_QuantTable.csv") # save to file
+#new_ft_tidy.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/annotated_QuantTable.csv") # save to file
 
 # Data-cleanup
 
@@ -190,18 +190,49 @@ heatmap_attributes = [1, 2]
 
 metabo_heatmap(cleaned_data=scaled_ft, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
 
+
+
+
 ###### Supervised learning with Random Forest
+cleaned_data = imp_ft
+
 rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, attribute = "ATTRIBUTE_Volunteer")
 
-rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/rf_results.csv") 
+rf_results.sort_values(by="Importance", ascending=False, inplace = True)
+
+rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/rf_results.csv")
+
+# filter resutlst from RF.
+rf_features = rf_results["Feature"]
+
+#rf_feature_table = cleaned_data[cleaned_data["Index"].isin(rf_features["Feature"])]
+
+#rf_feature_table = cleaned_data.loc[rf_features]
+
+rf_feature_table = cleaned_data[rf_features[1:101]]
+
+rf_feature_table_scaled = scaled_ft[rf_features[1:101]]
+
+pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_Samples)
+
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Volunteer')
+
+pca_plot_fig.show(renderer="png")
+
+
+heatmap_attributes = [1, 2]
+
+metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
+
+
 ########################################################### Univariate analyses
 
 # Normality Test
 # In order to decide whether to go for parametric or non-parametric tests, we test for normality. 
-norm_test_df = norm_test(imp_ft, new_md_tidy)
+norm_test_df = norm_test(scaled_ft, new_md_tidy)
 
 # ANOVA
-anova_attribute = 'ATTRIBUTE_Sample_Area'
+anova_attribute = 'ATTRIBUTE_Volunteer'
 
 anova_results = gen_anova_data(cleaned_data= imp_ft, metadata=new_md_tidy, groups_col = anova_attribute)
 
@@ -257,9 +288,9 @@ ttest_volcano_plot.show(renderer="png")
 
 # Kruskall wallis (Non-parametric anova)
 # select an attribute to perform Kruskal Wallis
-kruskal_attribute = 'ATTRIBUTE_Sample_Area'
+kruskal_attribute = 'ATTRIBUTE_Volunteer'
 
-kruskal_results = gen_kruskal_data(cleaned_data = scaled_ft, metadata = new_md_tidy, groups_col = kruskal_attribute)
+kruskal_results = gen_kruskal_data(cleaned_data = scaled_ft, metadata = new_md_tidy, groups_col = kruskal_attribute, cor_method = "fdr_bh")
 
 kruskal = kruskal_results[0]
 print(kruskal.head())

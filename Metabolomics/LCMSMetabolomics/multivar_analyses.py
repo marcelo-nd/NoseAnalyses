@@ -400,7 +400,7 @@ def random_forest(feature_table, metadata_table, attribute):
     rf_result = permutation_importance(rf,
                                    test_features,
                                    test_labels,
-                                   n_repeats=5, #change n_repeats value here as desired
+                                   n_repeats=10, #change n_repeats value here as desired
                                    random_state=0)
 
     mean_decrease_accuracy =rf_result.importances_mean

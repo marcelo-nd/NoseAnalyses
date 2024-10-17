@@ -8,8 +8,8 @@ Created on Fri Feb  9 13:27:01 2024
 
 import pandas as pd
 import matplotlib.pyplot as plt
-#import numpy as np
-
+import numpy as np
+import seaborn as sns
 
 #from sklearn.metrics import silhouette_score
 #from sklearn.cluster import KMeans
@@ -99,7 +99,7 @@ tic_norm_ft = normalize_ft(imp_ft)
 ### Scaling
 scaled_ft = scale_ft(imp_ft)
 
-scaled_ft.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/annotated_QuantTable_scaled.csv") # save to file
+#scaled_ft.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/annotated_QuantTable_scaled.csv") # save to file
 
 # Check if the feature table and metadata have the same sample names!
 if (md_Samples.index == scaled_ft.index).all():
@@ -119,8 +119,6 @@ else:
 ########################################################### Multivariate analyses
 ######## Principal coordinates analysis (PCoA)
 pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md_Samples)
-
-pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_operation_day')
 
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Volunteer')
 
@@ -192,38 +190,110 @@ metabo_heatmap(cleaned_data=scaled_ft, meta=md_Samples, input_list= heatmap_attr
 
 
 
-
 ###### Supervised learning with Random Forest
-cleaned_data = imp_ft
-
 rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, attribute = "ATTRIBUTE_Volunteer")
 
+# Order random forest results by features importance
 rf_results.sort_values(by="Importance", ascending=False, inplace = True)
 
-rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/rf_results.csv")
+# Write random forest to csv
+rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Results/rf_results.csv")
 
-# filter resutlst from RF.
-rf_features = rf_results["Feature"]
+# Filter unannotated features. Only run to keep annotated features!
+rf_results = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
 
-#rf_feature_table = cleaned_data[cleaned_data["Index"].isin(rf_features["Feature"])]
+# Write filtered random forest results to csv
+rf_results.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Results/rf_results_an.csv")
 
-#rf_feature_table = cleaned_data.loc[rf_features]
+# read rf results
+rf_results = pd.read_csv('/mnt/d/2_OtherProjects/SY_bioreactors/Results/rf_results_an.csv', delimiter=',', index_col=0)
 
-rf_feature_table = cleaned_data[rf_features[1:101]]
+# Make a list (Series) of the features (this is already ordered by importance)
+rf_features_list = rf_results["Feature"]
 
-rf_feature_table_scaled = scaled_ft[rf_features[1:101]]
+# Filter feature table to contain only the 100 most important features according to random forest classification.
+rf_feature_table = imp_ft[rf_features_list[1:101]]
 
+# Scale filtered feature table.
+rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
+
+rf_feature_table_scaled = scale_ft(rf_feature_table)
+
+# Write rf filteres feature table to csv
+rf_feature_table_scaled.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Results/rf_featuretable_scaled_an.csv")
+
+# PCoA from rf filtered scaled feature table.
 pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_Samples)
-
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Volunteer')
-
 pca_plot_fig.show(renderer="png")
+pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Results/Graphs/pcoa_rf_an.svg", format = "svg") # save figure
 
-
+# Heatmap between samples and features.
 heatmap_attributes = [1, 2]
-
 metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
 
+# Read the otu table containing microbial composition data for same datapoints.
+combined_otutable = pd.read_csv('/mnt/d/2_OtherProjects/SY_bioreactors/Results/combined_otutable.csv', delimiter=',')
+
+# Transpose the otutable
+combined_otutable = combined_otutable.T
+# Make the first row the column names
+combined_otutable.columns = combined_otutable.iloc[0]
+# Drop the first row since it is now used as the header
+combined_otutable = combined_otutable.drop(combined_otutable.index[0])
+
+# Delete columns with no counts in any sample
+combined_otutable = combined_otutable.loc[:, (combined_otutable != 0).any(axis=0)]
+
+# Change the feature table sample names to the same as the column names of the otu table.
+rf_feature_table_scaled.index = combined_otutable.index
+
+# Heatmap between microbial composition data and feature table.
+
+# Make sure the indices are aligned.
+print(rf_feature_table_scaled.index == combined_otutable.index)
+
+# Compute the correlation between the two dataframes' variables
+combined_df = pd.concat([rf_feature_table_scaled, combined_otutable], axis=1)
+
+# Compute the full correlation matrix
+correlation_matrix = combined_df.corr()
+
+# Extract the correlation matrix between df1's variables and df2's variables
+df1_columns = rf_feature_table_scaled.columns
+df2_columns = combined_otutable.columns
+correlation_between_df1_df2 = correlation_matrix.loc[df1_columns, df2_columns]
+
+# Create a heatmap of the correlation matrix
+sns.heatmap(correlation_between_df1_df2, annot=True, cmap='coolwarm')
+
+# Calculate p-values for each correlation (Pearson correlation test)
+from scipy.stats import pearsonr
+p_values = np.zeros(correlation_between_df1_df2.shape)
+for i, var1 in enumerate(df1_columns):
+    for j, var2 in enumerate(df2_columns):
+        corr, p_val = pearsonr(rf_feature_table_scaled[var1], combined_df[var2])
+        p_values[i, j] = p_val
+
+significance_mask = np.where(p_values < 0.05, '*', '')
+# Convert the significance mask into a DataFrame to match dimensions
+significance_df = pd.DataFrame(significance_mask, index=df1_columns, columns=df2_columns)
+
+# Draw the heatmap using pyComplexHeatmap
+import PyComplexHeatmap
+from PyComplexHeatmap import HeatmapAnnotation, ClusterMapPlotter
+
+# Create annotations for the heatmap using HeatmapAnnotation
+annotations = HeatmapAnnotation(annotation=significance_df)
+
+sns.heatmap(
+    data=correlation_between_df1_df2,            # The correlation matrix
+    annot=significance_df,        # The significance stars mask
+    cmap='coolwarm',              # Color map for heatmap
+    annot_fontsize=12,            # Annotation font size
+    annot_color='black',          # Color of the annotations
+    title="Correlation Heatmap with Significance"  # Title of the heatmap
+)
 
 ########################################################### Univariate analyses
 

@@ -23,12 +23,18 @@ export S27FII=/mnt/f/SequencingData/NanoporeTech/27FII
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $S27FII -o $S27FII
 
 # QC
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $S27FII/fastq -o $S27FII
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $S27FII/fastq -o $S27FII -q 10 -l 800 -h 2500
 
 # emu
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
+# ZCS and Nasal SynCom with LaCa DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06" -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
+
+# Soil SynCom with Karo DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
 
 ### V34
 # Unzip sequences
@@ -37,12 +43,19 @@ export V34=/mnt/f/SequencingData/NanoporeTech/V34
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $V34 -o $V34
 
 # QC
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $V34/fastq -o $V34
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $V34/fastq -o $V34 -q 10 -l 100 -h 400
 
 # emu
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
+# ZCS and Nasal SynCom with LaCa DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06" -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
+
+# Soil SynCom with Karo DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
 
 ### rRNA
 # Unzip sequences
@@ -51,77 +64,15 @@ export Srrna=/mnt/f/SequencingData/NanoporeTech/rrna
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $Srrna -o $Srrna
 
 # QC
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $Srrna/fastq -o $Srrna
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $Srrna/fastq -o $Srrna -q 10 -l 1000 -h 5000
 
 # emu
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+# ZCS and Nasal SynCom with LaCa DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06" -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
 
-# Table Merging
-Rscript $EMUWRAPPER_LOC/tables_merging.R $Srrna/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
+# Soil SynCom with Karo DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
 
-
-
-
-
-
-
-
-
-
-
-
-##############################################
-### rRNA tests
-
-# Unzip sequences
-export Srrna=/mnt/f/SequencingData/NanoporeTech/rrnaTests
-
-. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $Srrna -o $Srrna
-
-# QC
-export Srrna=/mnt/f/SequencingData/NanoporeTech/rrnaTests
-
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $Srrna/fastq -o $Srrna
-
-# emu
-
-export Srrna=/mnt/f/SequencingData/NanoporeTech/rrnaTests
-
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
-
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_medium -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_long -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc_only_short -o $Srrna -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
-
-Rscript $EMUWRAPPER_LOC/tables_merging.R $Srrna/emu_results "TRUE" /mnt/f/16Sdatabases/LaCa16copies.csv
-
-
-########################################## SynCom Batch 1+2
-
-# Unzip sequences
-export scb1_2=/mnt/f/SequencingData/SynComExp070624/no_sample/20240607_1513_MN45148_FAY35296_77d43522/fastq_pass
-
-. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $scb1_2 -o /mnt/f/SequencingData/SynComExp070624/
-
-# QC
-export scb1_2=/mnt/f/SequencingData/SynComExp070624
-
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $scb1_2/fastq -o $scb1_2
-
-# Nanoplot
-
-NanoPlot --fastq /mnt/f/SequencingData/SynComExp070624/fastq_qc/barcode01/barcode01_qc.fastq -o /mnt/f/SequencingData/SynComExp070624/
-
-# emu
-
-export scb1_2=/mnt/f/SequencingData/SynComExp070624
-
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
-
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $scb1_2/fastq_qc -o $scb1_2 -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv

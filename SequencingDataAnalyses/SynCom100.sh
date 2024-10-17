@@ -10,7 +10,7 @@ export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC100_Scree/Sequences -o $SC100_Scree
 
 # QC
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC100_Scree/fastq -o $SC100_Scree
+    . $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $SC100_Scree/fastq -o $SC100_Scree -q 10 -l 1000 -h 5000
 
 # emu
 

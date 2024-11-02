@@ -16,6 +16,8 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCaEmu
 
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27F/fastq_qc -o $S27F -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
+
+
 ### 27F-II
 # Unzip sequences
 export S27FII=/mnt/f/SequencingData/NanoporeTech/27FII
@@ -34,7 +36,14 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 # Soil SynCom with Karo DB
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "TRUE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
+# Gut SynCom20 with rRNA Mirror DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $S27FII/fastq_qc -o $S27FII -d $EMU_DATABASE_DIR -b "barcode10,barcode11,barcode12" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
+
 
 ### V34
 # Unzip sequences
@@ -54,7 +63,13 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 # Soil SynCom with Karo DB
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "TRUE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
+# Gut SynCom20 with rRNA Mirror DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $V34/fastq_qc -o $V34 -d $EMU_DATABASE_DIR -b "barcode10,barcode11,barcode12" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
 
 
 ### rRNA
@@ -75,4 +90,9 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 # Soil SynCom with Karo DB
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/Karo_plus_050924
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -b "barcode07,barcode08,barcode09" -c "TRUE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv
+
+# Gut SynCom20 with rRNA Mirror DB
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/RRN_db
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $Srrna/fastq_qc -o $Srrna -d $EMU_DATABASE_DIR -b "barcode10,barcode11,barcode12" -c "FALSE" -p /mnt/f/16Sdatabases/SoilSC_copies.csv

@@ -219,7 +219,7 @@ rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
 
 rf_feature_table_scaled = scale_ft(rf_feature_table)
 
-# Write rf filteres feature table to csv
+# Write rf filtered feature table to csv
 rf_feature_table_scaled.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/Results/rf_featuretable_scaled_an.csv")
 
 # PCoA from rf filtered scaled feature table.
@@ -227,6 +227,8 @@ pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_S
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Volunteer')
 pca_plot_fig.show(renderer="png")
 pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Results/Graphs/pcoa_rf_an.svg", format = "svg") # save figure
+
+print(pcoa.eigvals)
 
 # Heatmap between samples and features.
 heatmap_attributes = [1, 2]

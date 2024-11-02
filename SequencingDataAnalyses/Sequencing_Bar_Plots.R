@@ -442,6 +442,29 @@ barplot_from_feature_table(dplyr::select(otu_table_s1, c(1,2,3,7,8,9)))
 
 barplot_from_feature_table(dplyr::select(otu_table_s1, c(10:17)))
 
-otu_table_s1 <- read.csv("F:/NasalSC100_300924/no_sample_id/20240930_1731_MN45148_FBA32257_3c181886/fastq_pass/emu_results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/NasalSC100_300924/no_sample_id/20240930_1731_MN45148_FBA32257_3c181886/fastq_pass/emu_results/otu_table.csv", row.names=1)
 # Raw results
+barplot_from_feature_table(otu_table_s1)
+
+##### Sequencing 25.10.24
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SequencingRunBatch5/no_sample_id/20241025_1411_MN45148_FAZ32262_7e5d6e09/fastq_pass/nose/emu_results/otu_table.csv", row.names=1)
+
+gut_table <- otu_table_s1[, 15:23]
+
+gut_table <- gut_table[apply(gut_table, 1, function(row) sum(row >= 10) >= 1), ]
+
+barplot_from_feature_table(gut_table)
+
+otu_table_s2 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SequencingRunBatch5/no_sample_id/20241025_1411_MN45148_FAZ32262_7e5d6e09/fastq_pass/nose/emu_results/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s2)
+
+##### Sequencing 28.10.24
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/Temp/SC100_SR2/no_sample_id/20241028_1159_MN45148_AVN094_845724a9/fastq_pass/emu_results/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s1)
+
+##### Sequencing 29.10.24
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/Temp/SeqRun3_291024/fastq_pass/emu_results/otu_table.csv", row.names=1)
+
 barplot_from_feature_table(otu_table_s1)

@@ -26,15 +26,16 @@ df_filtered <- df_filtered[, -34]
 
 df_filtered <- df_filtered[, -5]
 
+df_filtered <- df_filtered[-3,]
+
+df_filtered <- df_filtered[-20,]
+
 df_filtered <- df_filtered[apply(df_filtered, 1, function(row) sum(row >= 10) >= 1), ]
 
 otu_table_adjusted <- df_filtered
-otu_table_adjusted[7, 25:29] <- otu_table_adjusted[7, 25:29] / 5
+otu_table_adjusted[6, 25:29] <- otu_table_adjusted[7, 25:29] / 5
 
-barplot_from_feature_table(otu_table_screening[1:20,])
-barplot_from_feature_table(otu_table_adjusted[1:9,])
-
-barplot_from_feature_table()
+barplot_from_feature_table(otu_table_adjusted)
 
 
 ##### Timepoints
@@ -62,7 +63,11 @@ otu_table_SC_tp_filt <- filter_otus_by_counts_col_counts(otu_table_SC24,
                                                              min_count = 50,
                                                              col_number = 1)
 
-barplot_from_feature_table(otu_table_adjusted[1:9,])
+otu_table_SC_tp <- otu_table_SC_tp[-2,]
+
+otu_table_SC_tp <- otu_table_SC_tp[-9,]
+
+barplot_from_feature_table(otu_table_SC_tp)
 
 
 ##### Ordered plots
@@ -75,9 +80,9 @@ library(tibble)
 ######## First calculate the proportions of S. aureus.
 df <- otu_table_adjusted %>% rownames_to_column(var = "Species")
 
-df <- df %>% rownames_to_column(var = "Species")
+#df <- df %>% rownames_to_column(var = "Species")
 
-df <- df[1:9,]
+#df <- df[1:8,]
 
 # Specify the species of interest
 species_of_interest <- "Staphylococcus aureus"
@@ -107,7 +112,7 @@ color_palette <- get_palette(nColors = 50)
 otu_barplot <- ggplot2::ggplot(df_long, ggplot2::aes(x=Sample, y=Abundance, fill=Species)) + 
   ggplot2::geom_bar(position="fill", stat="identity", show.legend = TRUE) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  ggplot2::scale_fill_manual(values=color_palette) +
+  ggplot2::scale_fill_manual(values=colors_vec) +
   ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"),
                  legend.title=ggplot2::element_text(size=10), 
                  legend.text=ggplot2::element_text(size=08))
@@ -115,17 +120,18 @@ otu_barplot
 
 
 ##### Plot with bars ordered by similarity
-
+# Z-Scaling
 df2 <- as.data.frame(scale(otu_table_adjusted))
 
+# Min-max scaling
 df2 <- otu_table_adjusted
 normalize = function(x) (x- min(x))/(max(x) - min(x))
 cols <- sapply(otu_table_adjusted, is.numeric)
 df2[cols] <- lapply(otu_table_adjusted[cols], normalize)
 
-df <- df2 %>% rownames_to_column(var = "Species")
+df2 <- df2 %>% rownames_to_column(var = "Species")
 
-df_t <- as.matrix(t(df[, -1]))  # Exclude the "Species" column after moving it to row names
+df_t <- as.matrix(t(df2[, -1]))  # Exclude the "Species" column after moving it to row names
 
 # Perform hierarchical clustering
 d <- dist(df_t, method = "euclidean")
@@ -137,17 +143,14 @@ ordered_samples_cluster <- colnames(df)[-1][hc$order]  # Remove "Species" again
 # Update sample factor levels in the long-format data for ggplot
 df_long$Sample <- factor(df_long$Sample, levels = ordered_samples_cluster)
 
-# Plot ordered by clustering similarity
-ggplot(df_long, aes(x = Sample, y = Abundance, fill = Species)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Stacked Barplot Ordered by Clustering Similarity") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+colors_vec <- c("gold3", "olivedrab3", "blueviolet", "#CC79A7",
+                "lightblue1","brown1", "#053f73", "darkorange3")
 
+# Plot ordered by clustering similarity
 otu_barplot <- ggplot2::ggplot(df_long, ggplot2::aes(x=Sample, y=Abundance, fill=Species)) + 
   ggplot2::geom_bar(position="fill", stat="identity", show.legend = TRUE) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  ggplot2::scale_fill_manual(values=color_palette) +
+  ggplot2::scale_fill_manual(values=colors_vec) +
   ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"),
                  legend.title=ggplot2::element_text(size=10), 
                  legend.text=ggplot2::element_text(size=08))

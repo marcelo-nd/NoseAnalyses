@@ -16,24 +16,26 @@ colnames(otu_table_screening) <- c("SC1","SC2","SC3", "SC4", "SC5", "SC6", "SC7"
                                    "SC44", "SC45", "SC46", "SC47", "SC48", "SC49", "SC50",
                                    "SC51", "SC52", "SC53")
 
+barplot_from_feature_table(otu_table_screening)
+
 otu_table_screening_filt <- filter_otus_by_counts_col_counts(otu_table_screening,
                                                              min_count = 10,
                                                              col_number = 1)
-
+# Remove SC 39, contaminated with P. aueruginosa
 df_filtered <- otu_table_screening[, -39]
-
+# Remove SC34, contains. Micrococcus luteus
 df_filtered <- df_filtered[, -34]
-
+# Remove SC5, not correct species included
 df_filtered <- df_filtered[, -5]
-
-df_filtered <- df_filtered[-3,]
-
-df_filtered <- df_filtered[-20,]
-
+# Change name of C. keffirresidenti to C. cuberculostearicum
+rownames(df_filtered)[rownames(df_filtered) == "Corynebacterium kefirresidentii"] <- "Corynebacterium tuberculostearicum"
+# Remove Unassigned Readcounts
+df_filtered <- df_filtered[-21,]
+# Remove species with no counts
 df_filtered <- df_filtered[apply(df_filtered, 1, function(row) sum(row >= 10) >= 1), ]
 
 otu_table_adjusted <- df_filtered
-otu_table_adjusted[6, 25:29] <- otu_table_adjusted[7, 25:29] / 5
+otu_table_adjusted[7, 25:29] <- otu_table_adjusted[7, 25:29] / 5
 
 barplot_from_feature_table(otu_table_adjusted)
 
@@ -63,12 +65,38 @@ otu_table_SC_tp_filt <- filter_otus_by_counts_col_counts(otu_table_SC24,
                                                              min_count = 50,
                                                              col_number = 1)
 
-otu_table_SC_tp <- otu_table_SC_tp[-2,]
+# Remove unnassigned reads
+otu_table_SC_tp <- otu_table_SC_tp[-10,]
 
-otu_table_SC_tp <- otu_table_SC_tp[-9,]
+# Change name of C. keffirresidenti to C. cuberculostearicum
+rownames(otu_table_SC_tp)[rownames(otu_table_SC_tp) == "Corynebacterium kefirresidentii"] <- "Corynebacterium tuberculostearicum"
 
 barplot_from_feature_table(otu_table_SC_tp)
 
+colors_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#6279B8",
+                "lightblue1","brown1", "olivedrab3", "darkorange3")
+
+barplot_from_feature_table(otu_table_SC_tp, color_palette = colors_vec)
+
+# Create subtables for each SC
+sc4 <- otu_table_SC_tp[1:3]
+sc7 <- otu_table_SC_tp[4:6]
+sc13 <- otu_table_SC_tp[7:9]
+sc20 <- otu_table_SC_tp[10:12]
+sc24 <- otu_table_SC_tp[13:15]
+sc25 <- otu_table_SC_tp[16:18]
+sc32 <- otu_table_SC_tp[19:21]
+sc43 <- otu_table_SC_tp[22:24]
+sc47 <- otu_table_SC_tp[25:27]
+sc53 <- otu_table_SC_tp[28:30]
+
+barplot_from_feature_tables(feature_tables = list(sc4, sc7, sc13,
+                                                  sc20, sc24, sc25,
+                                                  sc32, sc43, sc47, sc53),
+                            experiments_names = c("SC4", "SC7", "SC13",
+                                                  "SC20", "SC24", "SC25",
+                                                  "SC32", "SC43", "SC47", "SC53"),
+                            color_palette = colors_vec)
 
 ##### Ordered plots
 library(ggplot2)
@@ -79,10 +107,6 @@ library(tibble)
 
 ######## First calculate the proportions of S. aureus.
 df <- otu_table_adjusted %>% rownames_to_column(var = "Species")
-
-#df <- df %>% rownames_to_column(var = "Species")
-
-#df <- df[1:8,]
 
 # Specify the species of interest
 species_of_interest <- "Staphylococcus aureus"
@@ -107,15 +131,17 @@ df_long <- df %>%
 
 df_long$Sample <- factor(df_long$Sample, levels = ordered_samples)
 
-color_palette <- get_palette(nColors = 50)
-
 otu_barplot <- ggplot2::ggplot(df_long, ggplot2::aes(x=Sample, y=Abundance, fill=Species)) + 
   ggplot2::geom_bar(position="fill", stat="identity", show.legend = TRUE) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
   ggplot2::scale_fill_manual(values=colors_vec) +
-  ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"),
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold"),
+                 legend.position="bottom",
                  legend.title=ggplot2::element_text(size=10), 
-                 legend.text=ggplot2::element_text(size=08))
+                 legend.text=ggplot2::element_text(size=8),
+                 axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1, size=8),
+                 axis.text.y = ggplot2::element_text(size=8)) +
+  guides(fill = guide_legend(ncol = 3))
 otu_barplot
 
 
@@ -143,15 +169,19 @@ ordered_samples_cluster <- colnames(df)[-1][hc$order]  # Remove "Species" again
 # Update sample factor levels in the long-format data for ggplot
 df_long$Sample <- factor(df_long$Sample, levels = ordered_samples_cluster)
 
-colors_vec <- c("gold3", "olivedrab3", "blueviolet", "#CC79A7",
-                "lightblue1","brown1", "#053f73", "darkorange3")
+colors_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#290f76",
+                "lightblue1","brown1", "olivedrab3", "darkorange3")
 
 # Plot ordered by clustering similarity
 otu_barplot <- ggplot2::ggplot(df_long, ggplot2::aes(x=Sample, y=Abundance, fill=Species)) + 
   ggplot2::geom_bar(position="fill", stat="identity", show.legend = TRUE) +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
   ggplot2::scale_fill_manual(values=colors_vec) +
-  ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"),
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 10, face = "bold"),
+                 legend.position="bottom",
                  legend.title=ggplot2::element_text(size=10), 
-                 legend.text=ggplot2::element_text(size=08))
+                 legend.text=ggplot2::element_text(size=8),
+                 axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1, size=8),
+                 axis.text.y = ggplot2::element_text(size=8)) +
+  guides(fill = guide_legend(ncol = 3))
 otu_barplot

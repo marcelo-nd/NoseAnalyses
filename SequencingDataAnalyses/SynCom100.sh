@@ -1,3 +1,4 @@
+conda activate nanopack
 conda activate emu
 
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"

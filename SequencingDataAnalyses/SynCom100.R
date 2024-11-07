@@ -33,7 +33,6 @@ df_filtered <- df_filtered[-21,]
 
 df_filtered <- filter_otus_by_counts_col_counts(df_filtered,min_count = 10, col_number = 1)
 
-
 otu_table_adjusted <- df_filtered
 otu_table_adjusted[7, 25:29] <- otu_table_adjusted[7, 25:29] / 5
 
@@ -42,6 +41,8 @@ barplot_from_feature_table(otu_table_adjusted)
 ###### Plots with fixed colour palette 
 colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#290f76",
                 "lightblue1","brown1", "olivedrab3", "darkorange3")
+
+barplot_from_feature_table(feature_table = otu_table_adjusted, colour_palette = colours_vec)
 
 barplot_from_feature_table_sorted(feature_table = otu_table_adjusted, colour_palette = colours_vec,
                                   sort_type = "species_abundance", species_to_sort = "Staphylococcus aureus")

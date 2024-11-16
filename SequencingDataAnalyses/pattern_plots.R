@@ -34,7 +34,7 @@ df_otu_long$Sample <- factor(df_otu_long$Sample, levels = ordered_samples_cluste
 
 
 ##### Now lets work with the strain data
-strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:AZ31", col_names = TRUE)
+strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:AY31", col_names = TRUE)
 
 # Define strain numbers based on the position of each strain within the species
 strain_data2 <- strain_data %>%
@@ -133,7 +133,7 @@ p2 <- ggdendrogram(hc, rotate = 0,
 
 p3 <- plot_grid(p2, pt1, align = "v",
                 ncol = 1,
-                rel_heights = c(3/8, 5/8),
+                rel_heights = c(4/8, 4/8),
                 axis = "lr")
 
 ggsave(

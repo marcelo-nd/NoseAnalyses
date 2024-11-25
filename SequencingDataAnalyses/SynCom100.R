@@ -47,7 +47,11 @@ barplot_from_feature_table_sorted(feature_table = ot_scree_filtered, sort_type =
                                   colour_palette = colours_vec, legend_pos = "right", legend_cols = 1)
 
 
-##### Barplots with pattern
+
+write.csv(x = ot_scree_filtered,
+          file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/SynCom100/Results/scree_ot_filtered.csv",
+          row.names = T,
+          quote = F)
 
 ############
 ##### Timepoints

@@ -6,31 +6,18 @@ library(ggdendro)
 
 library(cowplot)
 
+# Read OTU table for SC100 screening
+ot_scree_filtered <- read.csv("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/SynCom100/Results/scree_ot_filtered.csv",
+                        header = T,
+                        row.names=1)
+# Transform table
+ot_scree_filtered_norm <- transform_feature_table(ot_scree_filtered, transform_method = "min_max")
+# Get clustering order
+ordered_samples_cluster <- order_samples_by_clustering(ot_scree_filtered_norm)
 
-#### Process otu table first
-df_otu <- ot_scree_filtered
-
-##### Generate sorting data
-# Min-max normalization>
-normalize = function(x) (x- min(x))/(max(x) - min(x))
-cols <- sapply(df_otu, is.numeric)
-df_otu[cols] <- lapply(df_otu[cols], normalize)
-
-# Relative abundance
-df_otu <- sweep(df_otu, 2, colSums(df_otu), FUN = "/")
-
-df_otu <- df_otu %>% rownames_to_column(var = "Species")
-
-df_t <- as.matrix(t(df_otu[, -1]))  # Exclude the "Species" column after moving it to row names
-
-# Perform hierarchical clustering
-d <- dist(df_t, method = "euclidean")
-hc <- hclust(d, method = "ward.D2")
-
-# Get the order of samples based on clustering
-ordered_samples_cluster <- colnames(df_otu)[-1][hc$order]  # Remove "Species" again
-
-df_otu_long <- df_otu %>%
+# Generate df long format for Species abundance data
+ot_scree_filtered2 <- ot_scree_filtered %>% rownames_to_column(var = "Species")
+df_otu_long <- ot_scree_filtered2 %>%
   pivot_longer(-Species, names_to = "Sample", values_to = "Abundance")
 
 # Update sample factor levels in the long-format data for ggplot
@@ -65,11 +52,12 @@ colnames(new_row_df) <- colnames(df_collapsed)
 
 df_collapsed2 <- rbind(df_collapsed, new_row_df)
 
+##### Generate table for 
 df_otu_long2 <- df_collapsed2 %>% # this might be df_strain_long
   pivot_longer(-Species, names_to = "Sample", values_to = "Strain")
 
 
-### Join the two datafames
+### Join the two long dataframes
 
 df_joined <- dplyr::full_join(df_otu_long, df_otu_long2, by = c("Species", "Sample"))
 
@@ -149,7 +137,7 @@ ggsave(
   height = 8,
 )
 
-###########
+########### Dendogram + barplot, no pattern
 
 p4 <- ggplot(data = df_joined_filtered, aes(x = Sample, y=Abundance)) +
   geom_bar(aes(fill = Species),

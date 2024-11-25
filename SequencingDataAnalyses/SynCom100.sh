@@ -15,10 +15,9 @@ export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
 
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
-
 
 
 ### Timepoints
@@ -33,6 +32,6 @@ export SC100_TP=/mnt/f/SequencingData/SynCom100/TheChampions
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
 
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_TP/fastq_qc -o $SC100_TP -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv

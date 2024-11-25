@@ -460,12 +460,12 @@ otu_table_s2 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/Seq
 barplot_from_feature_table(otu_table_s2)
 
 ##### Sequencing 28.10.24
-otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/Temp/SC100_SR2/no_sample_id/20241028_1159_MN45148_AVN094_845724a9/fastq_pass/emu_results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_SR2/no_sample_id/20241028_1159_MN45148_AVN094_845724a9/fastq_pass/emu_results/otu_table.csv", row.names=1)
 
 barplot_from_feature_table(otu_table_s1)
 
 ##### Sequencing 29.10.24
-otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/Temp/SeqRun3_291024/fastq_pass/emu_results/otu_table.csv", row.names=1)
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SeqRun3_291024/no_sample_id/20241029_1750_MN45148_AUN642_9d368fc1/fastq_pass/emu_results/otu_table.csv", row.names=1)
 
 barplot_from_feature_table(otu_table_s1)
 

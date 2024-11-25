@@ -279,13 +279,13 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_S
 . $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
 
 # emu
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
 
 
 #### SequencingRunBatch5 29.10.24
 
-export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/Temp/SeqRun3_291024/fastq_pass
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SeqRun3_291024/no_sample_id/20241029_1750_MN45148_AUN642_9d368fc1/fastq_pass
 
 # Unzip sequences
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
@@ -294,7 +294,7 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/Temp/SeqRun3_291024/
 . $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
 
 # emu
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
+export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
 
 
@@ -326,3 +326,9 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_S
 # emu
 export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
+
+#### Weird SCs
+
+export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
+
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree/weirdscs2 -b "barcode16,barcode34,barcode39" -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv

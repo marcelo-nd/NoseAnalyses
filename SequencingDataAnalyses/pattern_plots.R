@@ -8,12 +8,16 @@ library(cowplot)
 
 
 #### Process otu table first
-df_otu <- otu_table_adjusted
+df_otu <- ot_scree_filtered
 
 ##### Generate sorting data
+# Min-max normalization>
 normalize = function(x) (x- min(x))/(max(x) - min(x))
 cols <- sapply(df_otu, is.numeric)
 df_otu[cols] <- lapply(df_otu[cols], normalize)
+
+# Relative abundance
+df_otu <- sweep(df_otu, 2, colSums(df_otu), FUN = "/")
 
 df_otu <- df_otu %>% rownames_to_column(var = "Species")
 
@@ -34,7 +38,7 @@ df_otu_long$Sample <- factor(df_otu_long$Sample, levels = ordered_samples_cluste
 
 
 ##### Now lets work with the strain data
-strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:AY31", col_names = TRUE)
+strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA31", col_names = TRUE)
 
 # Define strain numbers based on the position of each strain within the species
 strain_data2 <- strain_data %>%
@@ -60,8 +64,6 @@ new_row_df <- as.data.frame(t(new_row), stringsAsFactors = FALSE)
 colnames(new_row_df) <- colnames(df_collapsed)
 
 df_collapsed2 <- rbind(df_collapsed, new_row_df)
-
-sort(colnames(df_collapsed)) == sort(colnames(df_otu))
 
 df_otu_long2 <- df_collapsed2 %>% # this might be df_strain_long
   pivot_longer(-Species, names_to = "Sample", values_to = "Strain")
@@ -96,7 +98,7 @@ colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#6279B8",
 
 
 # this is the one, do not touch
-pt1 <- ggplot(data = df_joined_filtered, aes(x = Sample, y=Abundance)) +
+p1 <- ggplot(data = df_joined_filtered, aes(x = Sample, y=Abundance)) +
   geom_bar_pattern(aes(fill = Species, pattern = Strain, pattern_density = Strain),
                    position = "fill",
                    stat="identity",
@@ -114,9 +116,11 @@ pt1 <- ggplot(data = df_joined_filtered, aes(x = Sample, y=Abundance)) +
   scale_pattern_manual(values = c("Strain 1" = "none", "Strain 2" = "circle", "Strain 3" = "stripe")) +
   scale_pattern_density_manual(values = c(0, 0.2, 0.05))
 
+p1
+
 ggsave(
-  "C:/Users/marce/Desktop/pt1.pdf",
-  plot = pt1,
+  "C:/Users/marce/Desktop/barplot_scree.pdf",
+  plot = p1,
   device = "pdf",
   width = 20,
   height = 10, scale = 0.5
@@ -124,23 +128,64 @@ ggsave(
 
 p2 <- ggdendrogram(hc, rotate = 0,
                    leaf_labels = F) +
-  theme(plot.margin = margin(t = 180,  # Top margin
+  theme(plot.margin = margin(t = 40,  # Top margin
                              r = 0,  # Right margin
-                             b = -30,  # Bottom margin
+                             b = -25,  # Bottom margin
                              l = 0)) + # Left margin
   scale_y_continuous(expand = expansion(add = c(1, 1)), labels = NULL) + 
   scale_x_continuous(expand = expansion(add = c(0.35, 0.5)), labels = NULL)
 
-p3 <- plot_grid(p2, pt1, align = "v",
+p3 <- plot_grid(p2, p1, align = "v",
                 ncol = 1,
-                rel_heights = c(4/8, 4/8),
+                rel_heights = c(2/10, 8/10),
                 axis = "lr")
 
 ggsave(
-  "C:/Users/marce/Desktop/plot3.pdf",
+  "C:/Users/marce/Desktop/barplot_clut_dend.pdf",
   plot = p3,
   dpi = 10,
   device = "pdf",
   width = 15,
-  height = 10,
-  )
+  height = 8,
+)
+
+###########
+
+p4 <- ggplot(data = df_joined_filtered, aes(x = Sample, y=Abundance)) +
+  geom_bar(aes(fill = Species),
+                   position = "fill",
+                   stat="identity",
+                   show.legend = TRUE) +
+  ggplot2::scale_fill_manual(values=colours_vec) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1, size=12),
+                 axis.text.y = ggplot2::element_text(size=12),
+                 legend.text = element_text(size=12)) +
+  guides(fill = guide_legend(override.aes = list(pattern = "none")))
+
+p4
+
+p5 <- ggdendrogram(hc, rotate = 0,
+                   leaf_labels = F) +
+  theme(plot.margin = margin(t = 50,  # Top margin
+                             r = 0,  # Right margin
+                             b = -20,  # Bottom margin
+                             l = 0)) + # Left margin
+  scale_y_continuous(expand = expansion(add = c(1, 1)), labels = NULL) + 
+  scale_x_continuous(expand = expansion(add = c(0.35, 0.5)), labels = NULL)
+
+p6 <- plot_grid(p5, p4, align = "v",
+                ncol = 1,
+                rel_heights = c(2/10, 8/10),
+                axis = "lr")
+
+p6
+
+ggsave(
+  "C:/Users/marce/Desktop/barplot_clut_dend_no_pat.pdf",
+  plot = p6,
+  dpi = 10,
+  device = "pdf",
+  width = 15,
+  height = 8,
+)
+

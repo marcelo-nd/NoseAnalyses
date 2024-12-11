@@ -332,3 +332,18 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
 
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree/weirdscs2 -b "barcode16,barcode34,barcode39" -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
+
+
+#### SequencingRunBatch5 28.11.24
+
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_281124/no_sample_id/20241128_1507_MN45148_FAY35296_ff71f5b3/fastq_pass
+
+# Unzip sequences
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
+
+# emu
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/Fertig/16Sdatabases/LaCa_rRNA_Emu_181124
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/Fertig/16Sdatabases/LaCa_copies.csv

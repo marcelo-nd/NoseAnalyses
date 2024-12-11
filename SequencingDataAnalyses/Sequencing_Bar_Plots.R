@@ -478,3 +478,8 @@ barplot_from_feature_table(otu_table_s1)
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_SeqRun_151124/no_sample_id/20241115_1500_MN45148_FBA32257_7de35303/fastq_pass/emu_results/otu_table.csv", row.names=1)
 
 barplot_from_feature_table(otu_table_s1)
+
+##### Sequencing 28.11.24
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_281124/no_sample_id/20241128_1507_MN45148_FAY35296_ff71f5b3/fastq_pass/emu_results/otu_table.csv", row.names=1)
+
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)

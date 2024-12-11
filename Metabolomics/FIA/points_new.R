@@ -9,7 +9,7 @@ LC_metadata <- read_excel("C:/Users/marce/OneDrive - UT Cloud/LC_metadata.xlsx")
 
 # Extract data that matches a list of compounds froma  feature table.
 extract_features_comparison <- function(comparison_name, feature_table, sig_features, columns_to_preserve = NULL){
-  # Creat list of columns to extract
+  # Create list of columns to extract
   if (!is.null(columns_to_preserve)) {
     columns_to_preserve <- c(columns_to_preserve, sig_features)
   }else{

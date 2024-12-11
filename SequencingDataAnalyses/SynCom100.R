@@ -56,7 +56,7 @@ write.csv(x = ot_scree_filtered,
 ############
 ##### Timepoints
 
-otu_table_SC_tp <- read.csv("F:/SequencingData/SynCom100/TheChampions/emu_results/otu_table.csv", row.names=1)
+otu_table_SC_tp <- read.csv("D:/1_NoseSynComProject/SequencingData/Fertig/SequencingData/SynCom100/TheChampions2/emu_results/otu_table.csv", row.names=1)
 
 cn <- colnames(otu_table_SC_tp)
 
@@ -72,28 +72,36 @@ colnames(otu_table_SC_tp) <- c("SC4_T1_R1", "SC4_T1_R2", "SC4_T1_R3",
                                "SC7_T2_R1", "SC7_T2_R2", "SC7_T2_R3",
                                "SC7_T3_R1", "SC7_T3_R2", "SC7_T3_R3",
                               "SC7_TF_R1", "SC7_TF_R2", "SC7_TF_R3",
+                              "SC9_T1_R1", "SC9_T1_R2", "SC9_T1_R3",
+                              "SC9_T2_R1", "SC9_T2_R2", "SC9_T2_R3",
+                              "SC9_T3_R1", "SC9_T3_R2", "SC9_T3_R3",
+                              "SC9_TF_R1", "SC9_TF_R2", "SC9_TF_R3",
+                              "SC10_T1_R1", "SC10_T1_R2", "SC10_T1_R3",
+                              "SC10_T2_R1", "SC10_T2_R2", "SC10_T2_R3",
+                              "SC10_T3_R1", "SC10_T3_R2", "SC10_T3_R3",
+                              "SC10_TF_R1", "SC10_TF_R2", "SC10_TF_R3",
+                              "SCT11_T1_R1", "SC11_T1_R2", "SC11_T1_R3",
+                              "SC11_T2_R1", "SC11_T2_R2", "SC11_T2_R3",
+                              "SC11_T3_R1", "SC11_T3_R2", "SC11_T3_R3",
+                              "SC11_TF_R1", "SC11_TF_R2", "SC11_TF_R3",
                               "SC13_T1_R1", "SC13_T1_R2", "SC13_T1_R3",
                               "SC13_T2_R1", "SC13_T2_R2", "SC13_T2_R3",
                               "SC13_T3_R1", "SC13_T3_R2", "SC13_T3_R3",
                               "SC13_TF_R1", "SC13_TF_R2", "SC13_TF_R3",
-                              "SC20_TF_R1", "SC20_TF_R2", "SC20_TF_R3",
-                              "SC24_TF_R1", "SC24_TF_R2", "SC24_TF_R3",
+                              #"SC20_TF_R1", "SC20_TF_R2", "SC20_TF_R3",
+                              #"SC24_TF_R1", "SC24_TF_R2", "SC24_TF_R3",
                               "SC25_T1_R1", "SC25_T1_R2", "SC25_T1_R3",
                               "SC25_T2_R1", "SC25_T2_R2", "SC25_T2_R3",
                               "SC25_T3_R1", "SC25_T3_R2", "SC25_T3_R3",
                               "SC25_TF_R1", "SC25_TF_R2", "SC25_TF_R3",
-                              "SC32_TF_R1", "SC32_TF_R2", "SC32_TF_R3",
+                              #"SC32_TF_R1", "SC32_TF_R2", "SC32_TF_R3",
                               "SC43_T1_R1", "SC43_T1_R2", "SC43_T1_R3",
                               "SC43_T2_R1", "SC43_T2_R2", "SC43_TF_R3",
                               "SC43_T3_R1", "SC43_T3_R2", "SC43_T2_R3",
-                              "SC43_TF_R1", "SC43_TF_R2", "SC43_T3_R3",
-                              "SC47_TF_R1", "SC47_TF_R2", "SC47_TF_R3",
-                              "SC53_TF_R1", "SC53_TF_R2", "SC53_TF_R3",
-                              "SC11_T1_R1", "SC11_T1_R2", "SC11_T1_R3",
-                              "SC11_T2_R1", "SC11_T2_R2", "SC11_T2_R3",
-                              "SC11_T3_R1", "SC11_T3_R2", "SC11_T3_R3",
-                              "SC11_TF_R1", "SC11_TF_R2", "SC11_TF_R3",
-                              "SC25_TF_R4"
+                              "SC43_TF_R1", "SC43_TF_R2", "SC43_T3_R3"
+                              #"SC47_TF_R1", "SC47_TF_R2", "SC47_TF_R3"
+                              #"SC53_TF_R1", "SC53_TF_R2", "SC53_TF_R3",
+                              #"SC25_TF_R4"
                               )
 
 # Remove species with no counts
@@ -108,35 +116,35 @@ otu_table_SC_tp_filt <- otu_table_SC_tp_filt[!rownames(otu_table_SC_tp_filt) %in
 otu_table_SC_tp_filt <- otu_table_SC_tp_filt[!rownames(otu_table_SC_tp_filt) %in% "Cutibacterium acnes", ]
 
 # Remove unnassigned reads
-otu_table_SC_tp_filt <- otu_table_SC_tp_filt[-11,]
+otu_table_SC_tp_filt <- otu_table_SC_tp_filt[-10,]
 
-barplot_from_feature_table(otu_table_SC_tp_filt)
+barplot_from_feature_table(otu_table_SC_tp_filt, legend_cols = 1)
 
 # Barbplot with fixed palette
 colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#6279B8",
                 "lightblue1", "brown1", "olivedrab3", "darkorange3", "springgreen4")
 
-barplot_from_feature_table(otu_table_SC_tp_filt, colour_palette = colours_vec)
+barplot_from_feature_table(otu_table_SC_tp_filt, colour_palette = colours_vec, legend_cols = 1)
 
 # Create subtables for each SC
 sc4 <- otu_table_SC_tp_filt[1:12]
 sc7 <- otu_table_SC_tp_filt[13:24]
-sc9
-sc10
-sc11 <- otu_table_SC_tp_filt[76:87]
+sc9 <- otu_table_SC_tp_filt[25:36]
+sc10 <- otu_table_SC_tp_filt[37:48]
+sc11 <- otu_table_SC_tp_filt[49:60]
 sc12
 sc13 <- otu_table_SC_tp_filt[25:36]
 sc14
 sc20 <- otu_table_SC_tp_filt[37:39]
 sc23
 sc24 <- otu_table_SC_tp_filt[40:42]
-sc25 <- otu_table_SC_tp_filt[43:54]
+sc25 <- otu_table_SC_tp_filt[73:84]
 sc26
 sc28
 sc32 <- otu_table_SC_tp_filt[55:57]
 sc36
 sc42
-sc43 <- otu_table_SC_tp_filt[58:69]
+sc43 <- otu_table_SC_tp_filt[85:96]
 sc47 <- otu_table_SC_tp_filt[70:72]
 sc53 <- otu_table_SC_tp_filt[73:75]
 
@@ -301,10 +309,6 @@ sc43_t0 <- select(df_collapsed_3, "SC43")
 sc43_t0 <- as.data.frame(sc43_t0)
 rownames(sc43_t0) <- spps
 sc43_t0 <- sc43_t0[-3, , drop = F]
-#rownames(sc43_t0) <- spps
-#sc43_t0 <- as.data.frame(sc43_t0)
-
-#rownames(sc43_t0) <- spps
 
 sc43_t0 <- filter_species_by_col_counts(sc43_t0, min_count = 1, col_number = 1)
 

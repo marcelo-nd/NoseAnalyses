@@ -27,6 +27,7 @@ from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
 import time
+import random
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -132,15 +133,22 @@ def permanova_metab(cleaned_data, metadata, attribute_permanova, distmetric="euc
     print("\n")
     
 custom_palette = [
-    "orange", "green", "red", "blue", "black", "slategray", "purple", "cyan",
-    "maroon", "yellow", "magenta", "teal", "pink", "lavender", "olive",
-    "turquoise", "brown", "navy", "goldenrod", "indigo", "darkorange"
+    "orange", "green", "red", "blue", "black",
+    "slategray", "purple", "cyan", "maroon", "yellow",
+    "magenta", "teal", "pink", "lavender", "olive",
+    "turquoise", "brown", "navy", "goldenrod", "indigo",
+    "darkorange", "goldenrod", "darkslategray", "palegoldenrod", "cornflowerblue",
+    "springgreen", "rebeccapurple", "royalblue", "darkolivegreen", "hotpink",
+    "skyblue", "cadetblue", "lightsteelblue", "sienna", "firebrick"
 ]
 
 def pcoa_w_metrics(data, meta, distmetric, attribute,
              col_attribute, mdtype='categorical', cols=custom_palette,
-             title='Principal coordinates plot', plot=True, print_perm=True):
-     
+             title='Principal coordinates plot', plot=True, print_perm=True,
+             pWidth= 600, pHeight = 400, dot_size = 2):
+    
+    random.shuffle(cols)
+
     metrices = ['euclidean','cityblock','canberra','braycurtis','jaccard','minkowski']
     
     if not distmetric in metrices:
@@ -183,15 +191,19 @@ def pcoa_w_metrics(data, meta, distmetric, attribute,
     )
 
     if mdtype == 'categorical':
-      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400, color=col_attribute, color_discrete_sequence=cols)
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_discrete_sequence=cols)
     elif mdtype == 'continuous':
-      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=600, height=400, color=col_attribute, color_continuous_scale=cols)
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_continuous_scale=cols)
     else:
       print('Wrong mdtype parameter. Please choose from categorical or continuous')
     pcoa_w_metrics_plot.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
                       title={"text": title_text, 'x':0.18, "font_color":"#3E3D53"},
                       xaxis_title=f'PC1 {round(pcoa.proportion_explained[0]*100, 1)}%',
                       yaxis_title=f'PC2 {round(pcoa.proportion_explained[1]*100, 1)}%')
+    
+    pcoa_w_metrics_plot.update_traces(marker={'size': dot_size})
+    
+    
     if plot:
       pcoa_w_metrics_plot.show()
     

@@ -158,7 +158,7 @@ sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/L
 from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap, random_forest
 
 pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "braycurtis",
-                                     attribute = "ATTRIBUTE_Sample", col_attribute = "ATTRIBUTE_Sample",
+                                     attribute = "ATTRIBUTE_Sample", attribute2 = "ATTRIBUTE_Time", col_attribute = "ATTRIBUTE_Sample",
                                      mdtype="categorical", title="Principal coordinates plot",
                                      plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
 

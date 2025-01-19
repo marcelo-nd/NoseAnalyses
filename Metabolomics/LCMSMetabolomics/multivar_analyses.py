@@ -142,7 +142,7 @@ custom_palette = [
     "skyblue", "cadetblue", "lightsteelblue", "sienna", "firebrick"
 ]
 
-def pcoa_w_metrics(data, meta, distmetric, attribute,
+def pcoa_w_metrics(data, meta, distmetric, attribute, attribute2,
              col_attribute, mdtype='categorical', cols=custom_palette,
              title='Principal coordinates plot', plot=True, print_perm=True,
              pWidth= 600, pHeight = 400, dot_size = 2):
@@ -183,6 +183,9 @@ def pcoa_w_metrics(data, meta, distmetric, attribute,
     df = pcoa.samples[['PC1', 'PC2']]
     df = df.set_index(meta.index)
     df = pd.merge(df[['PC1', 'PC2']], meta[attribute].apply(str), left_index=True, right_index=True)
+    
+    if(attribute2 != None):
+        df = pd.merge(df, meta[attribute2].apply(str), left_index=True, right_index=True)
 
     title_text = (
     f'{title}<br>'  # First line with existing title
@@ -191,9 +194,9 @@ def pcoa_w_metrics(data, meta, distmetric, attribute,
     )
 
     if mdtype == 'categorical':
-      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_discrete_sequence=cols)
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', symbol=attribute2, template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_discrete_sequence=cols)
     elif mdtype == 'continuous':
-      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_continuous_scale=cols)
+      pcoa_w_metrics_plot = px.scatter(df, x='PC1', y='PC2', symbol=attribute2, template='plotly_white', width=pWidth, height=pHeight, color=col_attribute, color_continuous_scale=cols)
     else:
       print('Wrong mdtype parameter. Please choose from categorical or continuous')
     pcoa_w_metrics_plot.update_layout(font={"color":"grey", "size":12, "family":"Sans"},
@@ -201,8 +204,9 @@ def pcoa_w_metrics(data, meta, distmetric, attribute,
                       xaxis_title=f'PC1 {round(pcoa.proportion_explained[0]*100, 1)}%',
                       yaxis_title=f'PC2 {round(pcoa.proportion_explained[1]*100, 1)}%')
     
-    pcoa_w_metrics_plot.update_traces(marker={'size': dot_size})
-    
+    #pcoa_w_metrics_plot.update_traces(marker={'size': dot_size}, line=dict(width=2, color='DarkSlateGrey'))
+    pcoa_w_metrics_plot.update_traces(marker=dict(size=12, line=dict(width=2, color='MediumPurple'),
+                                                  opacity=0.7))
     
     if plot:
       pcoa_w_metrics_plot.show()

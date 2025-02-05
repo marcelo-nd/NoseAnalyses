@@ -1,0 +1,10 @@
+conda create -n MetaboAnalyses python=3.11
+
+conda activate MetaboAnalyses
+
+# Install libraries that are not preinstalled
+!pip install pandas==2.0.0 numpy==1.26.4 plotly scikit-learn scikit-posthocs pingouin kaleido nbformat session_info PyComplexHeatmap==1.6 yellowbrick matplotlib==3.7.1
+
+!pip install scikit-bio
+
+conda install spyder

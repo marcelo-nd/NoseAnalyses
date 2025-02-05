@@ -1,0 +1,17 @@
+Spark
+od = preader.od * 3.18 - 0.28
+
+Epoch
+od = preader.od * 3.88 - 0.31
+
+Synergy
+od = preader.od * 3.17 - 0.26
+
+Infinite
+od = preader.od * 4.4131 - 0.3588
+
+LogPhase600 "Heidi"
+od = preader.od * 3.1442 - 0.275
+
+LogPhase600 "Helga"
+od = preader.od * 2.987- 0.2646

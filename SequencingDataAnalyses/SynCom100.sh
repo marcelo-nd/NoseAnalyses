@@ -6,7 +6,7 @@ EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 ### Screening
 
 # Unzip sequences
-export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
+export SC100_Scree=/mnt/e/SequencingData/SynCom100/Screening
 
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC100_Scree/Sequences -o $SC100_Scree
 
@@ -15,7 +15,7 @@ export SC100_Scree=/mnt/f/SequencingData/SynCom100/Screening
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
+export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/LaCa_rRNA_Emu_181124
 
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
 
@@ -23,7 +23,7 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_181124
 ### Timepoints
 
 # Unzip sequences
-export SC100_TP=/mnt/d/1_NoseSynComProject/SequencingData/Fertig/SequencingData/SynCom100/TheChampions2
+export SC100_TP=/mnt/e/SequencingData/SynCom100/TheChampions
 
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $SC100_TP -o $SC100_TP
 
@@ -32,6 +32,6 @@ export SC100_TP=/mnt/d/1_NoseSynComProject/SequencingData/Fertig/SequencingData/
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/Fertig/16Sdatabases/LaCa_rRNA_Emu_181124
+export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/LaCa_rRNA_Emu_181124
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_TP/fastq_qc -o $SC100_TP -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/Fertig/16Sdatabases/LaCa_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_TP/fastq_qc -o $SC100_TP -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/e/16Sdatabases/LaCa_copies.csv

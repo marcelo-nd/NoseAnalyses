@@ -1,85 +1,117 @@
 library(dplyr)
 library(ggplot2)
+library(readxl)
+
+############## Real run
+source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")
+
+# Read table, todo order or not
+fia_table <- read_fia_table("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/20250115_FIA-Data_lc_SCs_exp.xlsx")
+fia_table <- fia_table[order(row.names(fia_table)), ]
+write.csv(x = fia_table, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/feature_table.csv")
+
+LC_metadata <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/Metabolomics tubes annotation - Nov 2024_2.xlsx", sheet = "Tabelle1")
+LC_metadata <- LC_metadata[order(LC_metadata$sample), ]
+write.csv(x = LC_metadata, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/metadata.csv")
+
+# Extract Interesting features
+ft_subset <- extract_features_comparison(feature_table = fia_table, sig_features = c("L-Alanine[M+H]+", "L-Arginine[M+H]+", "L-Asparagine[M+H]+",
+                                                                                     "L-Aspartic acid[M+H]+", "L-Cystine[M+H]+", "L-Glutamic acid[M+H]+",
+                                                                                     "L-Glutamine[M+H]+", "L-Histidine[M+H]+", "L-Isoleucine[M+H]+",
+                                                                                     "L-Leucine[M+H]+", "L-Lysine[M+H]+", "L-Methionine[M+H]+",
+                                                                                     "L-Phenylalanine[M+H]+", "L-Proline[M+H]+", "L-Serine[M+H]+",
+                                                                                     "L-Threonine[M+H]+", "L-Tryptophan[M+H]+", "L-Tyrosine[M+H]+",
+                                                                                     "L-Valine[M+H]+"), columns_to_preserve = NULL)
+write.csv(x = ft_subset, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv")
+
+# Normalize
+ft_od <- normalize_by_od(feature_table = ft_subset, metadata_table = LC_metadata, select_by = "all", samples_group_to_exclude = "PBS")
+
+# Log transform
+ft_log <- log2_convert(ft_subset)
+
+# Normalize to treatment
+#ft_log_norm <- normalize_table_to_treatment(metabolites_table = ft_log, metadata_table = LC_metadata, samples_norm = colnames(select(ft_log, contains("PBS"))))
+ft_log_norm <- normalize_table_to_treatment(metabolites_table = ft_log, metadata_table = LC_metadata, samples_norm = "PBS")
+
+write.csv(x = ft_log_norm, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_log_norm.csv")
+# Graph
+graph_metabolites(ft_log_norm, y1 = -8, y2 = 8, dotsize = 25, binwidth = 0.01)
+
+# DO PCA
+ft_pca(fia_table, metadata_table = LC_metadata, grouping_col = syncom)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 feature_table <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_Test_230824/20240822_FIA-Data_LC_Test_pos.xlsx")
 
-feature_table <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_Test_230824/20240822_MergePos_LC_Test.xlsx")
+#feature_table <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_Test_230824/20240822_MergePos_LC_Test.xlsx")
 
-LC_metadata <- read_excel("C:/Users/marce/OneDrive - UT Cloud/LC_metadata.xlsx")
-
-# Extract data that matches a list of compounds froma  feature table.
-extract_features_comparison <- function(comparison_name, feature_table, sig_features, columns_to_preserve = NULL){
-  # Create list of columns to extract
-  if (!is.null(columns_to_preserve)) {
-    columns_to_preserve <- c(columns_to_preserve, sig_features)
-  }else{
-    columns_to_preserve <- sig_features
-  }
-  
-  print(columns_to_preserve)
-  
-  temp_df <- dplyr::select(feature_table, any_of(columns_to_preserve))
-  print(head(temp_df))
-  #temp_df <- temp_df[2:length(temp_df)]
-  temp_df_t <- as.data.frame(t(temp_df))
-  
-  #colnames(temp_df_t) <- temp_df$ATTRIBUTE_GROUPS
-  
-  colnames(temp_df_t) <- make.unique(colnames(temp_df_t), sep = "_")
-  
-  #temp_df_t <- temp_df_t[2:nrow(temp_df_t),]
-  
-  # Convert to numeric
-  i = colnames(temp_df_t)
-  temp_df_t[ , i] <- apply(temp_df_t[ , i], 2,  # Specify own function within apply
-                           function(x) as.numeric(as.character(x)))
-  
-  temp_df_t$Metabolite <- row.names(temp_df_t)
-  return(temp_df_t)
-}
-
-log2_convert <- function(metabolites_table){
-  metabolites_table_log2 <- metabolites_table %>% dplyr::select(-Metabolite) %>% log2()
-  #metabolites_table_log2 <- metabolites_table %>% log2()
-  #rownames(metabolites_table_log2) <- metabolites_table$Metabolite
-  metabolites_table_log2 <- tibble::add_column(metabolites_table_log2, "Metabolite" = metabolites_table$Metabolite, .before = 1)
-  return(metabolites_table_log2)
-}
-
-normalize_table_to_treatment <- function(metabolites_table, samples_norm){
-  #metabolites_table_norm <- metabolites_table %>% dplyr::select(-Metabolite) %>% t()
-  metabolites_table_norm <- metabolites_table %>% dplyr::select(-Metabolite)
-  
-  # Get the means of the treatment used to normalize the rest of treatments
-  norm_treatment_means <- rowMeans(dplyr::select(metabolites_table, samples_norm))
-  #print(norm_treatment_means)
-  # Get the sds of the treatment used to normalize the rest of treatments
-  #norm_treatment_stds <- apply(dplyr::select(metabolites_table, starts_with(treatment_to_normilize)), MARGIN = 1, FUN = sd)
-  norm_treatment_stds <- apply(dplyr::select(metabolites_table, samples_norm), MARGIN = 1, FUN = sd)
-  #print(norm_treatment_stds)
-  
-  for (metabolite in 1:nrow(metabolites_table_norm)) {
-    #print(metabolite)
-    for (cSample in 1:ncol(metabolites_table_norm)) {
-      #print(metabolites_table_norm[metabolite, cSample]*1000)
-      #metabolites_table_norm[metabolite, cSample] <- (metabolites_table_norm[metabolite, cSample]-norm_treatment_means[metabolite])/norm_treatment_stds[metabolite]
-      metabolites_table_norm[metabolite, cSample] <- (metabolites_table_norm[metabolite, cSample]-norm_treatment_means[metabolite])
-    }
-  }
-  
-  #print(head(metabolites_table_norm))
-  #rownames(metabolites_table_norm) <- metabolites_table$Metabolite
-  metabolites_table_norm <- tibble::add_column(metabolites_table_norm, "Metabolite" = metabolites_table$Metabolite, .before = 1)
-  return(metabolites_table_norm)
-}
-
-graph_metabolites <- function(metabolite_table_g, y1 = -10, y2= 10, dotsize = 0.5, binwidth = 0.5, ylab = "Log fold change"){
-  dotplot <- ggplot(data = metabolite_table_g, aes(x = Metabolite, y = Change, fill = sample_type))
-  dotplot + geom_dotplot(binaxis = 'y', dotsize = dotsize, stackdir='center', position=position_dodge(0.8), binwidth = binwidth) +
-    labs(y= ylab, x = "Metabolites") +
-    ylim(y1, y2) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5))
-}
+LC_metadata <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_Test_230824/LC_metadata.xlsx")
 
 transdata <- t(feature_table)
 transdata <- as.data.frame(transdata)
@@ -131,3 +163,82 @@ metab_scrapping_g$sample_type <- sapply(strsplit(metab_scrapping_g$Sample, "_"),
 
 graph_metabolites(metab_scrapping_g, , y1 = -3, y2 = 7.5, dotsize = 25, binwidth = 0.01)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Data forming
+ft_log_norm_g <- tidyr::gather(data = ft_log_norm, key = "Sample", value = "Change", colnames(ft_log_norm[,2:ncol(ft_log_norm)]))
+
+ft_log_norm_g$sample_type <- sapply(strsplit(ft_log_norm_g$Sample, ".", fixed = TRUE), "[", 1)
+
+# Graphing
+graph_metabolites(ft_log_norm_g, , y1 = -7.5, y2 = 3, dotsize = 25, binwidth = 0.01)
+
+
+
+
+
+feature_table_lc <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/20250115_FIA-Data_lc_SCs_exp.xlsx")
+
+
+
+LC_metadata <- read_excel("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/Metabolomics tubes annotation - Nov 2024_2.xlsx", sheet = "Tabelle1")
+
+LC_metadata <- LC_metadata[order(LC_metadata$sample), ]
+
+transdata <- t(feature_table_lc)
+colnames(transdata) <- transdata[2,]
+transdata <- transdata[5:nrow(transdata), ]
+transdata <- transdata[order(row.names(transdata)), ]
+transdata <- as.data.frame(transdata)
+
+#transdata2 <- cbind(LC_metadata["od"], transdata)
+
+#df_normalized <- transdata2 %>% mutate(across(where(is.numeric), ~ . / od))
+
+# Normalize by OD
+transdata <- extract_features_comparison(feature_table = transdata, sig_features = c("L-Alanine[M+H]+", "L-Arginine[M+H]+", "L-Asparagine[M+H]+",
+                                                                                         "L-Aspartic acid[M+H]+", "L-Cystine[M+H]+", "L-Glutamic acid[M+H]+",
+                                                                                         "L-Glutamine[M+H]+", "L-Histidine[M+H]+", "L-Isoleucine[M+H]+",
+                                                                                         "L-Leucine[M+H]+", "L-Lysine[M+H]+", "L-Methionine[M+H]+",
+                                                                                         "L-Phenylalanine[M+H]+", "L-Proline[M+H]+", "L-Serine[M+H]+",
+                                                                                         "L-Threonine[M+H]+", "L-Tryptophan[M+H]+", "L-Tyrosine[M+H]+",
+                                                                                         "L-Valine[M+H]+"), columns_to_preserve = NULL)
+
+transdata2 <- t(transdata[1:ncol(transdata) - 1])
+
+transdata2 <- as.data.frame(transdata2)
+
+ft_od <- normalize_by_od(feature_table = transdata2, metadata_table = LC_metadata, od_column = "od", select_by = "all")
+
+ft_log <- log2_convert(ft_od)
+
+ft_log_norm <- normalize_table_to_treatment(metabolites_table = ft_log, samples_norm = colnames(select(ft_log, contains("PBS"))))
+
+ft_log_norm_g <- tidyr::gather(data = ft_log_norm, key = "Sample", value = "Change", colnames(ft_log_norm[,2:ncol(ft_log_norm)]))
+
+ft_log_norm_g$sample_type <- sapply(strsplit(ft_log_norm_g$Sample, ".", fixed = TRUE), "[", 1)
+
+graph_metabolites(ft_log_norm_g, , y1 = -7.5, y2 = 3, dotsize = 25, binwidth = 0.01)

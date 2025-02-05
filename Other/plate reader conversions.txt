@@ -1,0 +1,34 @@
+%% OD
+    % Convert OD platereader -> real OD
+    if(d==1)
+        %Spark
+        od = preader.od(:,i)* 3.18 - 0.28; 
+    elseif(d==2)
+        %Epoch
+        od = preader.od(:,i)* 3.88 - 0.31; 
+    elseif(d==3)
+        %logEpoch
+        od = preader.od(:,i)* 3.88 - 0.31
+        od = log(od)
+    elseif(d==4)
+        %logSpark
+        od = preader.od(:,i)* 3.18 - 0.28;
+        od = log(od)
+    elseif(d==5)
+        %logSpark12
+        od= preader.od(:,i)* 2.32 - 0.199
+    elseif(d==6)
+        %logInfinite
+        od= preader.od(:,i)*4.441 - 0.36
+        od=log(od)
+    elseif(d==7)
+        %logHeidi
+        od= preader.od(:,i)*3.1442 - 0.275
+        od=log(od)
+
+ 
+
+    else
+        %Synergy
+        od = preader.od(:,i)* 3.17 - 0.26; 
+    end

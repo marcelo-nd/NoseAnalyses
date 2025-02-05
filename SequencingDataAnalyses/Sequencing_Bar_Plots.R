@@ -477,9 +477,42 @@ barplot_from_feature_table(otu_table_s1)
 ##### Sequencing 15.11.24
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_SeqRun_151124/no_sample_id/20241115_1500_MN45148_FBA32257_7de35303/fastq_pass/emu_results/otu_table.csv", row.names=1)
 
-barplot_from_feature_table(otu_table_s1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
 
 ##### Sequencing 28.11.24
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_281124/no_sample_id/20241128_1507_MN45148_FAY35296_ff71f5b3/fastq_pass/emu_results/otu_table.csv", row.names=1)
 
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+##### Karos Run
+##### emuDB
+otu_table_s1 <- read.csv("C:/Users/marce/Desktop/pass/emu_results_emuDB/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+##### karoDB
+otu_table_s1 <- read.csv("C:/Users/marce/Desktop/pass/emu_results_karoDB/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+#### run 20.01.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_200125/no_sample_id/20250120_1209_MN45148_aui012_771ff743/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+#### run 23.01.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_230125/no_sample_id/20250123_1637_MN45148_AVM817_037deab6/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+#### run 29.01.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_290125/no_sample_id/20250129_1629_MN45148_AUI367_bf1e5858/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1[1:19], legend_pos = "right", legend_cols = 1)
+
+# Duda SC12
+otu_table_s1 <- read.csv("F:/SequencingData/SynCom100/duda/SC12/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# Duda SC13
+otu_table_s1 <- read.csv("F:/SequencingData/SynCom100/duda/SC13/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 31.01.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_300125/no_sample_id/20250131_1506_MN45148_awo447_fd9b78e9/fastq_pass/emu_results/otu_table.csv", row.names=1)
 barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)

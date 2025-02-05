@@ -12,10 +12,6 @@ import numpy as np
 import seaborn as sns
 import os
 
-#from sklearn.metrics import silhouette_score
-#from sklearn.cluster import KMeans
-#from yellowbrick.cluster import KElbowVisualizer
-
 #### From scripts
 import sys
 sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
@@ -26,7 +22,7 @@ from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruska
 
 ### Get files
 
-taskID = "1bf212a7af8c40e198afabd9c4fcf538"
+taskID = "115e1b26a65b436e9057a52305f5a315"
 
 ft_url = os.path.join('https://gnps2.org/resultfile?task='+taskID+'&file=nf_output/clustering/featuretable_reformated.csv')
 md_url = os.path.join('https://gnps2.org/resultfile?task='+taskID+'&file=nf_output/metadata/merged_metadata.tsv')
@@ -37,9 +33,10 @@ md = pd.read_csv(md_url, sep = "\t")
 an_gnps = pd.read_csv(an_gnps_url, sep = "\t")
 
 
-ft = pd.read_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/FBMN/170125_all_samples_blks_ctrl_removed/featuretable_reformated.csv")
-md = pd.read_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/FBMN/170125_all_samples_blks_ctrl_removed/merged_metadata.tsv", sep = "\t")
-an_gnps = pd.read_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/FBMN/170125_all_samples_blks_ctrl_removed/merged_results_with_gnps.tsv", sep = "\t")
+ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/featuretable_reformated.csv")
+md.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_metadata.tsv")
+an_gnps.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_results_with_gnps.tsv")
+
 an_analog = an_gnps.copy() # since GNPS2 offers a single merged file containing both actual annotations and analogs
 
 ##### Explore original tables
@@ -76,9 +73,9 @@ new_md_tidy = new_tables[1]
 
 # Data-cleanup
 
-# Merge the metadata and feature table (transposed) together.
-ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be used for batch correction
+# Merge the metadata and feature table (transposed) together. FIX!!!!!!!!!!!!!!!!!
 
+#ft_merged_with_md = ft_md_merging(new_ft_tidy, new_md_tidy) # This file can be used for batch correction
 
 # Examine Metadata Attributes
 ins_lvls = InsideLevels(new_md_tidy)
@@ -110,13 +107,20 @@ tic_norm_ft = normalize_ft(imp_ft)
 ### Scaling
 scaled_ft = scale_ft(imp_ft)
 
-#scaled_ft.to_csv("/mnt/d/2_OtherProjects/SY_bioreactors/SY_bioreactors/annotated_QuantTable_scaled.csv") # save to file
-
 # Check if the feature table and metadata have the same sample names!
 if (md_Samples.index == scaled_ft.index).all():
     print("pass")
 else:
     print("WARNING: Sample names in feature and metadata table are NOT the same!")
+
+# Write the tables to disk
+
+imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_quantTable_imp.csv")
+
+tic_norm_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_quantTable_ticNorm.csv")
+
+scaled_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_QuantTable_scaled.csv") # save to file
+
 
 #Setting 'filename' column as 'index' for md_Samples
 #md_Samples.set_index('filename', inplace=True)
@@ -142,21 +146,7 @@ pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/pca_plot
 ######## Permanova
 permanova_metab(cleaned_data = scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Volunteer")
 
-################
-
-
 ####### Permanova + PCoA
-
-pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "braycurtis",
-                                     attribute = "ATTRIBUTE_Sample", col_attribute = "ATTRIBUTE_Sample",
-                                     mdtype="categorical", cols=custom_palette,
-                                     title="Principal coordinates plot", plot=True, print_perm=True)
-
-pcoa_w_metrics_plot.show(renderer="png")
-
-sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
-from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap, random_forest
-
 pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "braycurtis",
                                      attribute = "ATTRIBUTE_Sample", attribute2 = "ATTRIBUTE_Time", col_attribute = "ATTRIBUTE_Sample",
                                      mdtype="categorical", title="Principal coordinates plot",
@@ -166,31 +156,47 @@ pcoa_w_metrics_plot.show(renderer="png")
 
 pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/pcoa_w_metrics.pdf", format="pdf")
 
-####### Permanova + PCoA (Attribute and Data cleanup strategies exploration)
 
-# Define the choice of distance metric, category for permanova calculation,
-# category for coloring the PCoA plot and the type of the chosen category in the cell below.
+###### Supervised learning with Random Forest
+rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, attribute = "ATTRIBUTE_Sample")
 
-distance_metric = "euclidean"
-category_permanova = "ATTRIBUTE_Volunteer"
-category_colors = "ATTRIBUTE_Volunteer"
-category_type = 'categorical'
+# Order random forest results by features importance
+rf_results.sort_values(by="Importance", ascending=False, inplace = True)
 
-pcoa_titles = ["a) Before Data cleanup", "b) After Blank removal", "c) After Imputation", "d) After TIC Normalization", "e) After Scaling"]
+# Write random forest to csv
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results.csv")
 
-# Define the dataframe of data choices
-cleaned_data_choice = pd.DataFrame({
-    'INDEX': range(1, 6),
-    'Description': ["Raw data", "Blank removed data", "Imputed data", "TIC Normalized", "Scaled"],
-    'Variable_name': [new_ft_tidy, blk_rem, imp_ft, tic_norm_ft, scaled_ft],
-    'metadata_name': [new_md_tidy, md_Samples, md_Samples, md_Samples, md_Samples]
-})
+# Filter unannotated features. Only run to keep annotated features!
+rf_results = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
 
-cleaned_data = scaled_ft
+# Write filtered random forest results to csv
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results_an.csv")
 
-pcoa_explore_plot = pcoa_explore(cleaned_data_choice = cleaned_data_choice, category_permanova = category_permanova,
-                                 category_type = category_type, category_colors = category_colors,
-                                 pcoa_titles = pcoa_titles,
-                                 distance_metric = distance_metric)
+# read rf results
+rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results_an.csv', delimiter=',', index_col=0)
 
-pcoa_explore_plot.savefig("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/figtest3.svg")
+# Make a list (Series) of the features (this is already ordered by importance)
+rf_features_list = rf_results["Feature"]
+
+# Filter feature table to contain only the 100 most important features according to random forest classification.
+rf_feature_table = imp_ft[rf_features_list[1:101]]
+
+# Scale filtered feature table.
+rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
+
+rf_feature_table_scaled = scale_ft(rf_feature_table)
+
+# Write rf filtered feature table to csv
+rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_featuretable_scaled_an.csv")
+
+# PCoA from rf filtered scaled feature table.
+pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_Samples)
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Sample')
+pca_plot_fig.show(renderer="png")
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/pcoa_rf_an.svg", format = "svg") # save figure
+
+print(pcoa.eigvals)
+
+# Heatmap between samples and features.
+heatmap_attributes = [1, 2]
+metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)

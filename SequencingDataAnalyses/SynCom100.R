@@ -5,7 +5,7 @@ source("C:/Users/marce/Documents/GitHub/microbiome-help/otuTableWrangling.R")
 
 # Screening
 
-otu_table_screening <- read.csv("D:/1_NoseSynComProject/SequencingData/Fertig/SequencingData/SynCom100/Screening/emu_results/otu_table.csv", row.names=1)
+otu_table_screening <- read.csv("E:/SequencingData/SynCom100/Screening/emu_results/otu_table.csv", row.names=1)
 
 colnames(otu_table_screening) <- c("SC1","SC2","SC3", "SC4", "SC5", "SC6", "SC7", "SC8", "SC9", "SC10",
                                    "SC11", "SC12", "SC13", "SC14", "SC15", "SC17", "SC18", "SC19", "SC20", "SC21",
@@ -56,7 +56,7 @@ write.csv(x = ot_scree_filtered,
 ############
 ##### Timepoints
 
-otu_table_SC_tp <- read.csv("D:/1_NoseSynComProject/SequencingData/Fertig/SequencingData/SynCom100/TheChampions2/emu_results/otu_table.csv", row.names=1)
+otu_table_SC_tp <- read.csv("E:/SequencingData/SynCom100/TheChampions2/emu_results/otu_table.csv", row.names=1)
 
 cn <- colnames(otu_table_SC_tp)
 
@@ -88,6 +88,10 @@ colnames(otu_table_SC_tp) <- c("SC4_T1_R1", "SC4_T1_R2", "SC4_T1_R3",
                               "SC13_T2_R1", "SC13_T2_R2", "SC13_T2_R3",
                               "SC13_T3_R1", "SC13_T3_R2", "SC13_T3_R3",
                               "SC13_TF_R1", "SC13_TF_R2", "SC13_TF_R3",
+                              "SC14_T1_R1", "SC14_T1_R2", "SC14_T1_R3",
+                              "SC14_T2_R1", "SC14_T2_R2", "SC14_T2_R3",
+                              "SC14_T3_R1", "SC14_T3_R2", "SC14_T3_R3",
+                              "SC14_TF_R1", "SC14_TF_R2", "SC14_TF_R3",
                               #"SC20_TF_R1", "SC20_TF_R2", "SC20_TF_R3",
                               #"SC24_TF_R1", "SC24_TF_R2", "SC24_TF_R3",
                               "SC25_T1_R1", "SC25_T1_R2", "SC25_T1_R3",
@@ -132,23 +136,22 @@ sc7 <- otu_table_SC_tp_filt[13:24]
 sc9 <- otu_table_SC_tp_filt[25:36]
 sc10 <- otu_table_SC_tp_filt[37:48]
 sc11 <- otu_table_SC_tp_filt[49:60]
-sc12
-sc13 <- otu_table_SC_tp_filt[25:36]
-sc14
-sc20 <- otu_table_SC_tp_filt[37:39]
-sc23
-sc24 <- otu_table_SC_tp_filt[40:42]
-sc25 <- otu_table_SC_tp_filt[73:84]
-sc26
-sc28
-sc32 <- otu_table_SC_tp_filt[55:57]
-sc36
-sc42
-sc43 <- otu_table_SC_tp_filt[85:96]
-sc47 <- otu_table_SC_tp_filt[70:72]
-sc53 <- otu_table_SC_tp_filt[73:75]
-
-
+#sc12 <- otu_table_SC_tp_filt[61:72]
+#sc13 <- otu_table_SC_tp_filt[73:84]
+sc13 <- otu_table_SC_tp_filt[61:72]
+sc14 <- otu_table_SC_tp_filt[73:84]
+#sc20 <- otu_table_SC_tp_filt[97:108]
+#sc23 <- otu_table_SC_tp_filt[109:120]
+#sc24 <- otu_table_SC_tp_filt[121:132]
+#sc25 <- otu_table_SC_tp_filt[133:144]
+#sc26 <- otu_table_SC_tp_filt[145:156]
+#sc28 <- otu_table_SC_tp_filt[157:168]
+#sc32 <- otu_table_SC_tp_filt[169:180]
+#sc36 <- otu_table_SC_tp_filt[181:192]
+#sc42 <- otu_table_SC_tp_filt[193:204]
+#sc43 <- otu_table_SC_tp_filt[205:216]
+#sc47 <- otu_table_SC_tp_filt[217:228]
+#sc53 <- otu_table_SC_tp_filt[229:240]
 
 barplot_from_feature_tables(feature_tables = list(sc4, sc7, sc11, sc13, sc20,
                                                   sc24, sc25, sc32, sc43, sc47,

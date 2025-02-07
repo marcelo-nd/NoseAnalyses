@@ -294,6 +294,10 @@ export seqs_paths=/mnt/f/SequencingData/SynCom100/duda/SC12
 ### Duda SC13
 export seqs_paths=/mnt/f/SequencingData/SynCom100/duda/SC13
 
+#### SequencingRunBatch5 05.02.25
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_050224/no_sample_id/20250205_1052_MN45148_FBA33889_f4d732c7/fastq_pass
+
+
 #### SequencingRun 31.01.25 (nanopore computer)
 EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
 export seqs_paths=/mnt/c/data/Marcelo/SC100_300125/no_sample_id/20250131_1506_MN45148_awo447_fd9b78e9/fastq_pass

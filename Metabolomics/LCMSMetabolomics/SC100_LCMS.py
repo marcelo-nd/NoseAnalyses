@@ -152,7 +152,7 @@ pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distme
                                      mdtype="categorical", title="Principal coordinates plot",
                                      plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
 
-pcoa_w_metrics_plot.show(renderer="png")
+pcoa_w_metrics_plot.show(renderer="png", pheight = 800, pwidth = 1200)
 
 pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/pcoa_w_metrics.pdf", format="pdf")
 
@@ -164,39 +164,53 @@ rf_results = random_forest(feature_table = imp_ft, metadata_table = md_Samples, 
 rf_results.sort_values(by="Importance", ascending=False, inplace = True)
 
 # Write random forest to csv
-rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results.csv")
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results.csv")
+
+# read rf results
+rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results.csv', delimiter=',', index_col=0)
 
 # Filter unannotated features. Only run to keep annotated features!
 rf_results = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
 
 # Write filtered random forest results to csv
-rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results_an.csv")
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv")
 
 # read rf results
-rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_results_an.csv', delimiter=',', index_col=0)
+#rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv', delimiter=',', index_col=0)
 
 # Make a list (Series) of the features (this is already ordered by importance)
 rf_features_list = rf_results["Feature"]
 
 # Filter feature table to contain only the 100 most important features according to random forest classification.
 rf_feature_table = imp_ft[rf_features_list[1:101]]
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp_an.csv")
+
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp.csv")
 
 # Scale filtered feature table.
 rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
 
-rf_feature_table_scaled = scale_ft(rf_feature_table)
+#rf_feature_table_scaled = scale_ft(rf_feature_table)
 
 # Write rf filtered feature table to csv
-rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/rf_featuretable_scaled_an.csv")
+rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled_an.csv")
+
+rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled.csv")
 
 # PCoA from rf filtered scaled feature table.
 pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_Samples)
 pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Sample')
+
+pca_plot_fig = pcoa_w_metrics(data = rf_feature_table_scaled, meta = md_Samples, distmetric = "euclidean",
+                              attribute = 'ATTRIBUTE_Sample', col_attribute = 'ATTRIBUTE_Sample',
+                              attribute2='ATTRIBUTE_Time', plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
+
 pca_plot_fig.show(renderer="png")
-pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/pcoa_rf_an.svg", format = "svg") # save figure
+
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/pcoa_rf_an.svg", format = "svg") # save figure
 
 print(pcoa.eigvals)
 
 # Heatmap between samples and features.
-heatmap_attributes = [1, 2]
+heatmap_attributes = [0, 2]
 metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)

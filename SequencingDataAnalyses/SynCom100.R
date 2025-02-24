@@ -56,7 +56,7 @@ write.csv(x = ot_scree_filtered,
 ############
 ##### Timepoints
 
-otu_table_SC_tp <- read.csv("E:/SequencingData/SynCom100/TheChampions2/emu_results/otu_table.csv", row.names=1)
+otu_table_SC_tp <- read.csv("E:/SequencingData/SynCom100/TheChampions/emu_results/otu_table.csv", row.names=1)
 
 cn <- colnames(otu_table_SC_tp)
 
@@ -71,41 +71,79 @@ colnames(otu_table_SC_tp) <- c("SC4_T1_R1", "SC4_T1_R2", "SC4_T1_R3",
                                "SC7_T1_R1", "SC7_T1_R2", "SC7_T1_R3",
                                "SC7_T2_R1", "SC7_T2_R2", "SC7_T2_R3",
                                "SC7_T3_R1", "SC7_T3_R2", "SC7_T3_R3",
-                              "SC7_TF_R1", "SC7_TF_R2", "SC7_TF_R3",
-                              "SC9_T1_R1", "SC9_T1_R2", "SC9_T1_R3",
-                              "SC9_T2_R1", "SC9_T2_R2", "SC9_T2_R3",
-                              "SC9_T3_R1", "SC9_T3_R2", "SC9_T3_R3",
-                              "SC9_TF_R1", "SC9_TF_R2", "SC9_TF_R3",
-                              "SC10_T1_R1", "SC10_T1_R2", "SC10_T1_R3",
-                              "SC10_T2_R1", "SC10_T2_R2", "SC10_T2_R3",
-                              "SC10_T3_R1", "SC10_T3_R2", "SC10_T3_R3",
-                              "SC10_TF_R1", "SC10_TF_R2", "SC10_TF_R3",
-                              "SCT11_T1_R1", "SC11_T1_R2", "SC11_T1_R3",
-                              "SC11_T2_R1", "SC11_T2_R2", "SC11_T2_R3",
-                              "SC11_T3_R1", "SC11_T3_R2", "SC11_T3_R3",
-                              "SC11_TF_R1", "SC11_TF_R2", "SC11_TF_R3",
-                              "SC13_T1_R1", "SC13_T1_R2", "SC13_T1_R3",
-                              "SC13_T2_R1", "SC13_T2_R2", "SC13_T2_R3",
-                              "SC13_T3_R1", "SC13_T3_R2", "SC13_T3_R3",
-                              "SC13_TF_R1", "SC13_TF_R2", "SC13_TF_R3",
-                              "SC14_T1_R1", "SC14_T1_R2", "SC14_T1_R3",
-                              "SC14_T2_R1", "SC14_T2_R2", "SC14_T2_R3",
-                              "SC14_T3_R1", "SC14_T3_R2", "SC14_T3_R3",
-                              "SC14_TF_R1", "SC14_TF_R2", "SC14_TF_R3",
-                              #"SC20_TF_R1", "SC20_TF_R2", "SC20_TF_R3",
-                              #"SC24_TF_R1", "SC24_TF_R2", "SC24_TF_R3",
-                              "SC25_T1_R1", "SC25_T1_R2", "SC25_T1_R3",
-                              "SC25_T2_R1", "SC25_T2_R2", "SC25_T2_R3",
-                              "SC25_T3_R1", "SC25_T3_R2", "SC25_T3_R3",
-                              "SC25_TF_R1", "SC25_TF_R2", "SC25_TF_R3",
-                              #"SC32_TF_R1", "SC32_TF_R2", "SC32_TF_R3",
-                              "SC43_T1_R1", "SC43_T1_R2", "SC43_T1_R3",
-                              "SC43_T2_R1", "SC43_T2_R2", "SC43_TF_R3",
-                              "SC43_T3_R1", "SC43_T3_R2", "SC43_T2_R3",
-                              "SC43_TF_R1", "SC43_TF_R2", "SC43_T3_R3"
-                              #"SC47_TF_R1", "SC47_TF_R2", "SC47_TF_R3"
-                              #"SC53_TF_R1", "SC53_TF_R2", "SC53_TF_R3",
-                              #"SC25_TF_R4"
+                               "SC7_TF_R1", "SC7_TF_R2", "SC7_TF_R3",
+                               "SC9_T1_R1", "SC9_T1_R2", "SC9_T1_R3",
+                               "SC9_T2_R1", "SC9_T2_R2", "SC9_T2_R3",
+                               "SC9_T3_R1", "SC9_T3_R2", "SC9_T3_R3",
+                               "SC9_TF_R1", "SC9_TF_R2", "SC9_TF_R3",
+                               "SC10_T1_R1", "SC10_T1_R2", "SC10_T1_R3",
+                               "SC10_T2_R1", "SC10_T2_R2", "SC10_T2_R3",
+                               "SC10_T3_R1", "SC10_T3_R2", "SC10_T3_R3",
+                               "SC10_TF_R1", "SC10_TF_R2", "SC10_TF_R3",
+                               "SC11_T1_R1", "SC11_T1_R2", "SC11_T1_R3",
+                               "SC11_T2_R1", "SC11_T2_R2", "SC11_T2_R3",
+                               "SC11_T3_R1", "SC11_T3_R2", "SC11_T3_R3",
+                               "SC11_TF_R1", "SC11_TF_R2", "SC11_TF_R3",
+                               "SC12_T1_R1", "SC12_T1_R2", "SC12_T1_R3",
+                               "SC12_T2_R1", "SC12_T2_R2", "SC12_T2_R3",
+                               "SC12_T3_R1", "SC12_T3_R2", "SC12_T3_R3",
+                               "SC12_TF_R1", "SC12_TF_R2", "SC12_TF_R3",
+                               "SC13_T1_R1", "SC13_T1_R2", "SC13_T1_R3",
+                               "SC13_T2_R1", "SC13_T2_R2", "SC13_T2_R3",
+                               "SC13_T3_R1", "SC13_T3_R2", "SC13_T3_R3",
+                               "SC13_TF_R1", "SC13_TF_R2", "SC13_TF_R3",
+                               "SC14_T1_R1", "SC14_T1_R2", "SC14_T1_R3",
+                               "SC14_T2_R1", "SC14_T2_R2", "SC14_T2_R3",
+                               "SC14_T3_R1", "SC14_T3_R2", "SC14_T3_R3",
+                               "SC14_TF_R1", "SC14_TF_R2", "SC14_TF_R3",
+                               "SC20_T1_R1", "SC20_T1_R2", "SC20_T1_R3",
+                               "SC20_T2_R1", "SC20_T2_R2", "SC20_T2_R3",
+                               "SC20_T3_R1", "SC20_T3_R2", "SC20_T3_R3",
+                               "SC20_TF_R1", "SC20_TF_R2", "SC20_TF_R3",
+                               "SC23_T1_R1", "SC23_T1_R2", "SC23_T1_R3",
+                               "SC23_T2_R1", "SC23_T2_R2", "SC23_T2_R3",
+                               "SC23_T3_R1", "SC23_T3_R2", "SC23_T3_R3",
+                               "SC23_TF_R1", "SC23_TF_R2", "SC23_TF_R3",
+                               "SC24_T1_R1", "SC24_T1_R2", "SC24_T1_R3",
+                               "SC24_T2_R1", "SC24_T2_R2", "SC24_T2_R3",
+                               "SC24_T3_R1", "SC24_T3_R2", "SC24_T3_R3",
+                               "SC24_TF_R1", "SC24_TF_R2", "SC24_TF_R3",
+                               "SC25_T1_R1", "SC25_T1_R2", "SC25_T1_R3",
+                               "SC25_T2_R1", "SC25_T2_R2", "SC25_T2_R3",
+                               "SC25_T3_R1", "SC25_T3_R2", "SC25_T3_R3",
+                               "SC25_TF_R1", "SC25_TF_R2", "SC25_TF_R3",
+                               "SC26_T1_R1", "SC26_T1_R2", "SC26_T1_R3",
+                               "SC26_T2_R1", "SC26_T2_R2", "SC26_T2_R3",
+                               "SC26_T3_R1", "SC26_T3_R2", "SC26_T3_R3",
+                               "SC26_TF_R1", "SC26_TF_R2", "SC26_TF_R3",
+                               "SC28_T1_R1", "SC28_T1_R2", "SC28_T1_R3",
+                               "SC28_T2_R1", "SC28_T2_R2", "SC28_T2_R3",
+                               "SC28_T3_R1", "SC28_T3_R2", "SC28_T3_R3",
+                               "SC28_TF_R1", "SC28_TF_R2", "SC28_TF_R3",
+                               "SC32_T1_R1", "SC32_T1_R2", "SC32_T1_R3",
+                               "SC32_T2_R1", "SC32_T2_R2", "SC32_T2_R3",
+                               "SC32_T3_R1", "SC32_T3_R2", "SC32_T3_R3",
+                               "SC32_TF_R1", "SC32_TF_R2", "SC32_TF_R3",
+                               "SC36_T1_R1", "SC36_T1_R2", "SC36_T1_R3",
+                               "SC36_T2_R1", "SC36_T2_R2", "SC36_T2_R3",
+                               "SC36_T3_R1", "SC36_T3_R2", "SC36_T3_R3",
+                               "SC36_TF_R1", "SC36_TF_R2", "SC36_TF_R3",
+                               "SC42_T1_R1", "SC42_T1_R2", "SC42_T1_R3",
+                               "SC42_T2_R1", "SC42_T2_R2", "SC42_T2_R3",
+                               "SC42_T3_R1", "SC42_T3_R2", "SC42_T3_R3",
+                               "SC42_TF_R1", "SC42_TF_R2", "SC42_TF_R3",
+                               "SC43_T1_R1", "SC43_T1_R2", "SC43_T1_R3",
+                               "SC43_T2_R1", "SC43_T2_R2", "SC43_T2_R3",
+                               "SC43_T3_R1", "SC43_T3_R2", "SC43_T3_R3",
+                               "SC43_TF_R1", "SC43_TF_R2", "SC43_TF_R3",
+                               "SC47_T1_R1", "SC47_T1_R2", "SC47_T1_R3",
+                               "SC47_T2_R1", "SC47_T2_R2", "SC47_T2_R3",
+                               "SC47_T3_R1", "SC47_T3_R2", "SC47_T3_R3",
+                               "SC47_TF_R1", "SC47_TF_R2", "SC47_TF_R3",
+                               "SC53_T1_R1", "SC53_T1_R2", "SC53_T1_R3",
+                               "SC53_T2_R1", "SC53_T2_R2", "SC53_T2_R3",
+                               "SC53_T3_R1", "SC53_T3_R2", "SC53_T3_R3",
+                               "SC53_TF_R1", "SC53_TF_R2", "SC53_TF_R3"
                               )
 
 # Remove species with no counts
@@ -128,7 +166,7 @@ barplot_from_feature_table(otu_table_SC_tp_filt, legend_cols = 1)
 colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#6279B8",
                 "lightblue1", "brown1", "olivedrab3", "darkorange3", "springgreen4")
 
-barplot_from_feature_table(otu_table_SC_tp_filt, colour_palette = colours_vec, legend_cols = 1)
+barplot_from_feature_table(otu_table_SC_tp_filt, colour_palette = colours_vec, legend_cols = 1, x_axis_text_size = 8)
 
 # Create subtables for each SC
 sc4 <- otu_table_SC_tp_filt[1:12]
@@ -136,22 +174,22 @@ sc7 <- otu_table_SC_tp_filt[13:24]
 sc9 <- otu_table_SC_tp_filt[25:36]
 sc10 <- otu_table_SC_tp_filt[37:48]
 sc11 <- otu_table_SC_tp_filt[49:60]
-#sc12 <- otu_table_SC_tp_filt[61:72]
-#sc13 <- otu_table_SC_tp_filt[73:84]
+sc12 <- otu_table_SC_tp_filt[61:72]
+sc13 <- otu_table_SC_tp_filt[73:84]
 sc13 <- otu_table_SC_tp_filt[61:72]
 sc14 <- otu_table_SC_tp_filt[73:84]
-#sc20 <- otu_table_SC_tp_filt[97:108]
-#sc23 <- otu_table_SC_tp_filt[109:120]
-#sc24 <- otu_table_SC_tp_filt[121:132]
-#sc25 <- otu_table_SC_tp_filt[133:144]
-#sc26 <- otu_table_SC_tp_filt[145:156]
-#sc28 <- otu_table_SC_tp_filt[157:168]
-#sc32 <- otu_table_SC_tp_filt[169:180]
-#sc36 <- otu_table_SC_tp_filt[181:192]
-#sc42 <- otu_table_SC_tp_filt[193:204]
-#sc43 <- otu_table_SC_tp_filt[205:216]
-#sc47 <- otu_table_SC_tp_filt[217:228]
-#sc53 <- otu_table_SC_tp_filt[229:240]
+sc20 <- otu_table_SC_tp_filt[97:108]
+sc23 <- otu_table_SC_tp_filt[109:120]
+sc24 <- otu_table_SC_tp_filt[121:132]
+sc25 <- otu_table_SC_tp_filt[133:144]
+sc26 <- otu_table_SC_tp_filt[145:156]
+sc28 <- otu_table_SC_tp_filt[157:168]
+sc32 <- otu_table_SC_tp_filt[169:180]
+sc36 <- otu_table_SC_tp_filt[181:192]
+sc42 <- otu_table_SC_tp_filt[193:204]
+sc43 <- otu_table_SC_tp_filt[205:216]
+sc47 <- otu_table_SC_tp_filt[217:228]
+sc53 <- otu_table_SC_tp_filt[229:240]
 
 barplot_from_feature_tables(feature_tables = list(sc4, sc7, sc11, sc13, sc20,
                                                   sc24, sc25, sc32, sc43, sc47,

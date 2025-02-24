@@ -449,6 +449,8 @@ barplot_from_feature_table(otu_table_s1)
 ##### Sequencing 25.10.24
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SequencingRunBatch5/no_sample_id/20241025_1411_MN45148_FAZ32262_7e5d6e09/fastq_pass/nose/emu_results/otu_table.csv", row.names=1)
 
+barplot_from_feature_table(otu_table_s1, legend_pos = "bottom", legend_cols = 5)
+
 gut_table <- otu_table_s1[, 15:23]
 
 gut_table <- gut_table[apply(gut_table, 1, function(row) sum(row >= 10) >= 1), ]
@@ -519,4 +521,24 @@ barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
 
 # run 05.02.25
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_050224/no_sample_id/20250205_1052_MN45148_FBA33889_f4d732c7/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 07.02.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_070225/no_sample_id/20250207_1300_MN45148_FAY35296_64b2d4a6/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 13.02.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_130225/no_sample_id/20250213_1012_MN45148_AYU138_31d9206a/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 14.02.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_140225/no_sample_id/20250214_1618_MN45148_AYY707_b38a097e/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 18.02.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_180225/no_sample_id/20250218_1259_MN45148_AWS287_8c3aa7bd/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 21.02.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_200225/no_sample_id/20250220_1746_MN45148_FAZ32262_c1bd7e7d/fastq_pass/emu_results/otu_table.csv", row.names=1)
 barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)

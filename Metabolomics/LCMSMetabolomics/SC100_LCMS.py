@@ -32,7 +32,6 @@ ft = pd.read_csv(ft_url)
 md = pd.read_csv(md_url, sep = "\t")
 an_gnps = pd.read_csv(an_gnps_url, sep = "\t")
 
-
 ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/featuretable_reformated.csv")
 md.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_metadata.tsv")
 an_gnps.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_results_with_gnps.tsv")

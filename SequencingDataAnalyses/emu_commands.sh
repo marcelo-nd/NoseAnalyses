@@ -250,6 +250,27 @@ export EMU_DATABASE_DIR=/mnt/f/16Sdatabases/LaCa_rRNA_Emu_210824
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa16copies.csv
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Set EmuWrapper
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+
+
+
 #### SequencingRunBatch5 25.10.24
 
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SequencingRunBatch5/no_sample_id/20241025_1411_MN45148_FAZ32262_7e5d6e09/fastq_pass
@@ -278,7 +299,6 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_2
 
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_200125/no_sample_id/20250120_1209_MN45148_aui012_771ff743/fastq_pass
 
-
 #### SequencingRunBatch5 24.01.25
 
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_230125/no_sample_id/20250123_1637_MN45148_AVM817_037deab6/fastq_pass
@@ -289,18 +309,41 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_2
 
 ### Duda SC12
 
-export seqs_paths=/mnt/f/SequencingData/SynCom100/duda/SC12
+export seqs_paths=/mnt/e/SequencingData/SynCom100/duda/SC12
 
 ### Duda SC13
-export seqs_paths=/mnt/f/SequencingData/SynCom100/duda/SC13
+export seqs_paths=/mnt/e/SequencingData/SynCom100/duda/SC13
 
 #### SequencingRunBatch5 05.02.25
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_050224/no_sample_id/20250205_1052_MN45148_FBA33889_f4d732c7/fastq_pass
+
+#### SequencingRun 13.02.25
+
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_130225/no_sample_id/20250213_1012_MN45148_AYU138_31d9206a/fastq_pass
+
+#### Check 
+export seqs_paths=/mnt/e/SequencingData/SynCom100/duda
+
+#### SequencingRun 18.02.25 (nanopore computer)
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_180225/no_sample_id/20250218_1259_MN45148_AWS287_8c3aa7bd/fastq_pass
 
 
 #### SequencingRun 31.01.25 (nanopore computer)
 EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
 export seqs_paths=/mnt/c/data/Marcelo/SC100_300125/no_sample_id/20250131_1506_MN45148_awo447_fd9b78e9/fastq_pass
+
+#### SequencingRun 07.02.25 (nanopore computer)
+EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
+export seqs_paths=/mnt/c/data/Marcelo/SC100_070225/no_sample_id/20250207_1300_MN45148_FAY35296_64b2d4a6/fastq_pass
+
+#### SequencingRun 14.02.25 (nanopore computer)
+EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
+export seqs_paths=/mnt/c/data/Marcelo/SC100_140225/no_sample_id/20250214_1618_MN45148_AYY707_b38a097e/fastq_pass
+
+#### SequencingRun 21.02.25 (nanopore computer)
+EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
+export seqs_paths=/mnt/c/data/Marcelo/SC100_200225/no_sample_id/20250220_1746_MN45148_FAZ32262_c1bd7e7d/fastq_pass
+
 
 # Unzip sequences
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths

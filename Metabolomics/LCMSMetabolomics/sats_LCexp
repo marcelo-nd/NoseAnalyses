@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Feb 18 14:02:49 2025
+
+@author: marcelo
+"""
+
+#  Stats from FIA table
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+import os
+
+#### From scripts
+import sys
+sys.path.append('/mnt/c/Users/marce/Documents/GitHub/NoseAnalyses/Metabolomics/LCMSMetabolomics/')
+from data_prep import InsideLevels, MergingAnnotationsFT, tidyTables, ft_md_merging, blank_removal, imputation, normalize_ft, scale_ft
+from multivar_analyses import pcoa_metabolomics, pca_plot, permanova_metab, pcoa_w_metrics, custom_palette, pcoa_explore, h_cluster, metabo_heatmap, random_forest
+from univar_analyses import norm_test, gen_anova_data, anova_vis, anova_boxplots, tukey_post_hoc_test, volcano, tukey_boxplots, gen_ttest_data
+from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
+
+# Read feature table and metadata
+ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/feature_table.csv"
+
+# only amino acids
+ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv"
+
+md_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/metadata.csv"
+
+ft2 = pd.read_csv(ft_path, index_col=0)
+
+md = pd.read_csv(md_path, index_col=0)
+
+##### Explore original tables
+
+# Examine Metadata Attributes
+ins_lvls = InsideLevels(md)
+print(ins_lvls) #skipping the 0th column (filename) and looking at the summary table
+
+##### Step 4. Imputation (dealing with missing values)
+imp_ft = imputation(ft2)
+
+### Scaling
+scaled_ft = scale_ft(imp_ft)
+
+scaled_ft = scale_ft(ft2)
+
+pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md)
+
+pca_plot_fig = pcoa_w_metrics(data = scaled_ft, meta = md, distmetric = "euclidean",
+                              attribute = 'syncom', col_attribute = 'syncom', attribute2=None,
+                              plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
+
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md, attribute = 'syncom')
+
+pca_plot_fig.show(renderer="png")
+
+
+
+
+###### Supervised learning with Random Forest
+rf_results = random_forest(feature_table = imp_ft, metadata_table = md, attribute = "syncom")
+
+# Order random forest results by features importance
+rf_results.sort_values(by="Importance", ascending=False, inplace = True)
+
+# Write random forest to csv
+rf_results.to_csv("/mnt/c/Users/marce/Desktop/lc_rf_results.csv")
+
+# read rf results
+rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results.csv', delimiter=',', index_col=0)
+
+# Filter unannotated features. Only run to keep annotated features!
+rf_results = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
+
+# Write filtered random forest results to csv
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv")
+
+# read rf results
+#rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv', delimiter=',', index_col=0)
+
+# Make a list (Series) of the features (this is already ordered by importance)
+rf_features_list = rf_results["Feature"]
+
+# Filter feature table to contain only the 100 most important features according to random forest classification.
+rf_feature_table = imp_ft[rf_features_list[0:101]]
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp_an.csv")
+
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp.csv")
+
+# Scale filtered feature table.
+rf_feature_table_scaled = scaled_ft[rf_features_list[0:101]]
+
+#rf_feature_table_scaled = scale_ft(rf_feature_table)
+
+# Write rf filtered feature table to csv
+rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled_an.csv")
+
+rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled.csv")
+
+# PCoA from rf filtered scaled feature table.
+pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md)
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md, attribute = 'syncom')
+
+pca_plot_fig = pcoa_w_metrics(data = rf_feature_table_scaled, meta = md, distmetric = "euclidean",
+                              attribute = 'syncom', col_attribute = 'syncom', attribute2=None,
+                              plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
+
+pca_plot_fig.show(renderer="png")
+
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/pcoa_rf_an.svg", format = "svg") # save figure
+
+print(pcoa.eigvals)
+
+# Heatmap between samples and features.
+heatmap_attributes = [0]
+metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md, input_list= heatmap_attributes, ins_lev=ins_lvls)
+

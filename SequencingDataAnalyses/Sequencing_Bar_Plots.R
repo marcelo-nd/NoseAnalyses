@@ -542,3 +542,7 @@ barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
 # run 21.02.25
 otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_200225/no_sample_id/20250220_1746_MN45148_FAZ32262_c1bd7e7d/fastq_pass/emu_results/otu_table.csv", row.names=1)
 barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)
+
+# run 07.03.25
+otu_table_s1 <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/NS_SC100_070325/no_sample_id/20250307_1222_MN45148_FBA33889_f5fe9dab/fastq_pass/emu_results/otu_table.csv", row.names=1)
+barplot_from_feature_table(otu_table_s1, legend_pos = "right", legend_cols = 1)

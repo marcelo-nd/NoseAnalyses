@@ -344,12 +344,20 @@ export seqs_paths=/mnt/c/data/Marcelo/SC100_140225/no_sample_id/20250214_1618_MN
 EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
 export seqs_paths=/mnt/c/data/Marcelo/SC100_200225/no_sample_id/20250220_1746_MN45148_FAZ32262_c1bd7e7d/fastq_pass
 
+#### SequencingRun 21.02.25 (nanopore computer)
+EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
+export seqs_paths=/mnt/c/data/Marcelo/SC100_200225/no_sample_id/20250220_1746_MN45148_FAZ32262_c1bd7e7d/fastq_pass
+
+#### SequencingRun 07.03.25
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/NS_SC100_070325/no_sample_id/20250307_1222_MN45148_FBA33889_f5fe9dab/fastq_pass
+
 
 # Unzip sequences
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
 
 # QC
-. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 100 -h 5000
 
 # emu
 export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_rRNA_Emu_181124

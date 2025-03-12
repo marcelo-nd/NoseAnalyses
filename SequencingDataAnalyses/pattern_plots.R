@@ -10,7 +10,8 @@ library(cowplot)
 ot_scree_filtered <- read.csv("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/SynCom100/Results/scree_ot_filtered.csv",
                         header = T,
                         row.names=1)
-# Transform table
+
+# Minmax transform
 ot_scree_filtered_norm <- transform_feature_table(ot_scree_filtered, transform_method = "min_max")
 # Get clustering order
 ordered_samples_cluster <- order_samples_by_clustering(ot_scree_filtered_norm)
@@ -25,7 +26,7 @@ df_otu_long$Sample <- factor(df_otu_long$Sample, levels = ordered_samples_cluste
 
 
 ##### Now lets work with the strain data
-strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA31", col_names = TRUE)
+strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA31", col_names = TRUE)
 
 # Define strain numbers based on the position of each strain within the species
 strain_data2 <- strain_data %>%

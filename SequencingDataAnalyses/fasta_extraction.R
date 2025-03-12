@@ -10,16 +10,6 @@ if (!"Biostrings" %in% installed.packages()) {
 }
 library("Biostrings")
 
-# Read fasta file
-data_fasta <- readDNAStringSet("F:/16Sdatabases/RRN_db/species_taxid.fasta")
-
-# Read taxonomy table
-taxonomy <- read_delim("F:/16Sdatabases/RRN_db/taxonomy.tsv",
-                       delim = "\t", escape_double = FALSE,
-                       trim_ws = TRUE)
-
-taxonomy <- read.delim("F:/16Sdatabases/RRN_db/taxonomy.tsv")
-
 extract_seqs_from_fasta_name <- function(fasta_file, species_names){
   fasta_results <- DNAStringSet() # Empty fasta file to store results
   
@@ -91,6 +81,9 @@ extract_taxonomy_from_taxtable <- function(tax_table, species_names){
   return(extracted_tax_table)
 }
 
+# Read fasta file
+data_fasta <- readDNAStringSet("E:/16Sdatabases/2_Not_in_Use/RRN_db/species_taxid.fasta")
+
 # Species names for searching in soil microbiome species in fasta file DB.
 # Bacillus megaterium is now Priestia megaterium, in taxonomy table name is correct.
 species = c("Acidovorax_delafieldii", "Arthrobacter_humicola", "Bacillus_altitudinis", "Bacillus_subtilis",
@@ -102,13 +95,17 @@ soil_extract_fasta <- extract_seqs_from_fasta_name(fasta_file = data_fasta, spec
 writeXStringSet(x = soil_extract_fasta, filepath = "C:/Users/marce/Desktop/species_taxid.fasta")
 
 
-
-
-
 ### Extracting from taxonomy table
 # Species name for extracting from taxonomy table
 species = c("Acidovorax delafieldii", "Arthrobacter humicola", "Bacillus altitudinis", "Bacillus subtilis",
             "Flavobacterium pectinovorum", "Priestia megaterium", "Pseudomonas koreensis", "Rhodopseudomonas palustris")
+
+# Read taxonomy table
+#taxonomy <- read_delim("F:/16Sdatabases/RRN_db/taxonomy.tsv",
+#                       delim = "\t", escape_double = FALSE,
+#                       trim_ws = TRUE)
+
+taxonomy <- read.delim("E:/16Sdatabases/2_Not_in_Use/RRN_db/taxonomy.tsv")
 
 soil_extract_taxtable <- extract_taxonomy_from_taxtable(tax_table = taxonomy, species_names = species)
 

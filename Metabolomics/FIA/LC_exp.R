@@ -19,7 +19,7 @@ ft_subset <- extract_features_comparison(feature_table = fia_table, sig_features
                                                                                      "L-Leucine[M+H]+", "L-Lysine[M+H]+", "L-Methionine[M+H]+",
                                                                                      "L-Phenylalanine[M+H]+", "L-Proline[M+H]+", "L-Serine[M+H]+",
                                                                                      "L-Threonine[M+H]+", "L-Tryptophan[M+H]+", "L-Tyrosine[M+H]+",
-                                                                                     "L-Valine[M+H]+"), columns_to_preserve = NULL)
+                                                                                     "L-Valine[M+H]+", "Glycine[M+H]+"), columns_to_preserve = NULL)
 
 write.csv(x = ft_subset, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv")
 
@@ -53,7 +53,14 @@ write.csv(x = ft_log_tnorm, file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSyn
 # Graph
 graph_metabolites(ft_log_tnorm, y1 = -10, y2 = 5, dotsize = 25, binwidth = 0.01)
 
-  
+
+####
+#log fold
+ft_log2 <- log2_fold(ft_subset, metadata_table = LC_metadata,
+                     grouping_variable = "syncom", samples_group_to_norm = "PBS")
+
+graph_metabolites(ft_log2, y1 = -10, y2 = 5, dotsize = 25, binwidth = 0.01)
+
 # DO PCA
 scaled_ft <- scale_0_1(fia_table, scale_by = "variable")
 

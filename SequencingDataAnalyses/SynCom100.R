@@ -289,8 +289,22 @@ feature_table_heatmap_w_sig(otu_table_sctp_filt_rel_ab, t(feature_table2))
 
 
 ##### Time series barplots
-# Theoretical values
+ot_scree_filtered <- read.csv("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/SynCom100/Results/scree_ot_filtered.csv",
+                              header = T,
+                              row.names=1)
 
+nose_strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA32", col_names = TRUE)
+
+nose_strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA31", col_names = TRUE)
+
+test1 <- barplot_w_strain_data(otu_table = ot_scree_filtered, strain_data = nose_strain_data)
+
+#barplot_w_strain_data(otu_table = otu_table_sctp_filt)
+barplot_w_strain_data(otu_table = ot_scree_filtered, strain_data = nose_strain_data)
+
+barplot_w_strain_data(otu_table = sc4_t1)
+
+# Theoretical values
 # Collapse the information by species
 df_collapsed_3 <- strain_data %>%
   mutate(Species = sapply(strsplit(Species, " "), function(x) paste(x[1:2], collapse = " "))) %>% # Extract species name

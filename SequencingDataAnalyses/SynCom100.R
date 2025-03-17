@@ -300,9 +300,52 @@ nose_strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Clou
 test1 <- barplot_w_strain_data(otu_table = ot_scree_filtered, strain_data = nose_strain_data)
 
 #barplot_w_strain_data(otu_table = otu_table_sctp_filt)
+test1 <- barplot_w_strain_data(otu_table = ot_scree_filtered, strain_data = nose_strain_data)
+
+write.csv(x = test1,
+          file = "C:/Users/marce/Desktop/test1.csv",
+          row.names = T,
+          quote = F)
+
 barplot_w_strain_data(otu_table = ot_scree_filtered, strain_data = nose_strain_data)
 
 barplot_w_strain_data(otu_table = sc4_t1)
+
+test2 <- barplot_w_strain_data2(feature_table = abundance_per_strain)
+
+
+
+df <- data.frame(Value1 = c(10, 20, 30, 40, 50, 60),
+                 Value2 = c(5, 15, 25, 35, 45, 55))
+rownames(df) <- c("Staphylococcus aureus USA300", 
+                  "Staphylococcus aureus COL",
+                  "Staphylococcus epidermidis RP62A", 
+                  "Staphylococcus epidermidis ATCC12228",
+                  "Corynebacterium accolens ATCC49725",
+                  "Corynebacterium accolens DSM20259")
+
+
+df <- ot_scree_filtered
+
+df <- abundance_per_strain
+
+# Extract only the "Genus species" part
+species_names <- sub(" \\S+$", "", rownames(df))
+
+# Create a numeric ID for each strain within the same species
+species_ids <- ave(species_names, species_names, FUN = function(x) seq_along(x))
+
+# Create new rownames with species + strain ID
+new_rownames <- paste(species_names, species_ids)
+
+# Assign new rownames to the dataframe
+rownames(df) <- new_rownames
+
+# Print the updated dataframe
+print(df)
+
+
+
 
 # Theoretical values
 # Collapse the information by species

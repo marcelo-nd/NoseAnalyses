@@ -23,7 +23,17 @@ from univar_analyses import norm_test, gen_anova_data, anova_vis, anova_boxplots
 from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
 
 # Read feature table and metadata
-ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/feature_table.csv"
+ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/LC_exp_ft_raw.csv"
+
+ft = pd.read_csv(ft_path, index_col=0)
+
+imp_ft = imputation(ft)
+
+imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/imp_ft.csv")
+
+##############
+# Read feature table and metadata
+ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/LC_exp_ft_raw.csv"
 
 # only amino acids
 ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv"
@@ -48,16 +58,19 @@ scaled_ft = scale_ft(imp_ft)
 
 scaled_ft = scale_ft(ft2)
 
+scaled_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/scaled_ft.csv")
+
 pcoa = pcoa_metabolomics(cleaned_data = scaled_ft, metadata = md)
+pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md, attribute = 'syncom')
 
 pca_plot_fig = pcoa_w_metrics(data = scaled_ft, meta = md, distmetric = "euclidean",
                               attribute = 'syncom', col_attribute = 'syncom', attribute2=None,
                               plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
 
-pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md, attribute = 'syncom')
 
 pca_plot_fig.show(renderer="png")
 
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/pcoa_w_metrics.pdf", format = "pdf") # save figure
 
 
 

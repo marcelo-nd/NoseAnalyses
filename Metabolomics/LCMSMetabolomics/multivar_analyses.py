@@ -189,7 +189,7 @@ def pcoa_w_metrics(data, meta, distmetric, attribute, attribute2,
 
     title_text = (
     f'{title}<br>'  # First line with existing title
-    f'PERMISP p-value: {permdisp["p-value"]}<br>'  # Second line with PERMISP p-value
+    f'PERMDISP p-value: {permdisp["p-value"]}<br>'  # Second line with PERMISP p-value
     f'PERMANOVA p-value: {permanova["p-value"]}  R2: {permanova["R2"]:.4f}<br>'  # Third line with PERMANOVA p-value and R2
     )
 
@@ -299,7 +299,7 @@ def h_cluster(cleaned_data, cluster_num_method = None):
             km = KMeans(n_clusters=i, random_state=42)
             km.fit_predict(cleaned_data)
             silhouette_scores.append(silhouette_score(cleaned_data, km.labels_))
-        #print(max(range(len(silhouette_scores)), key=silhouette_scores.__getitem__)+2)
+        #print(max(range(len(silhouett                          e_scores)), key=silhouette_scores.__getitem__)+2)
         clusters_value = (max(range(len(silhouette_scores)), key=silhouette_scores.__getitem__)+2)
         
     

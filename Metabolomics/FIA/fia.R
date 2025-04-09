@@ -15,3 +15,5 @@ filtered_fia <- filter_by_error(feature_table = fia_norm, metadata_table = fia_m
 
 # Do PCA
 fia_pca(feature_table = filtered_fia, metadata_table = fia_metadata_df, grouping_col = "SynCom")
+
+

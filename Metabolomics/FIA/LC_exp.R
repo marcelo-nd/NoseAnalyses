@@ -13,6 +13,8 @@ ft <- read_targeted_table("D:/2_OtherProjects/LauraSynComs/20250408_ratioList_fi
 LC_metadata <- read_metadata_xls(path = "D:/2_OtherProjects/LauraSynComs/Metabolomics tubes annotation - Nov 2024_2.xlsx",
                                  sheet = "Tabelle1", sort_table = TRUE)
 
+write.csv(LC_metadata, "D:/2_OtherProjects/LauraSynComs/metadata_table.csv")
+
 # Imputing data table
 ft_imp <- ft_imputation(ft)
 
@@ -32,6 +34,8 @@ ft_aas <- extract_features_comparison(feature_table = ft_imp, sig_features = c("
 
 # Read LCMS table
 lcms_table <- read_lcms_table("D:/2_OtherProjects/LauraSynComs/20250408_ratioList_final.xlsx")
+
+write.csv(lcms_table, "D:/2_OtherProjects/LauraSynComs/lcms_table.csv")
 
 # Chose table to use
 ft <- ft_imp

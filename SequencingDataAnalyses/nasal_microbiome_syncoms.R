@@ -3,8 +3,81 @@ source("C:/Users/marce/Documents/GitHub/microbiome-help/feature_table_wrangling.
 
 source("C:/Users/marce/Documents/GitHub/microbiome-help/microbiomeGraphing.R")
 
-### ... ###
+###
+otu_table_screening <- read.csv("E:/SequencingData/SynCom100/Screening/emu_results/otu_table.csv", row.names=1)
 
+colnames(otu_table_screening) <- c("SC1","SC2","SC3", "SC4", "SC5", "SC6", "SC7", "SC8", "SC9", "SC10",
+                                   "SC11", "SC12", "SC13", "SC14", "SC15", "SC17", "SC18", "SC19", "SC20", "SC21",
+                                   "SC22", "SC23", "SC24", "SC25", "SC26", "SC27", "SC28", "SC29", "SC30", "SC31",
+                                   "SC32", "SC33", "SC35", "SC36", "SC37", "SC38", "SC40", "SC41", "SC42", "SC43",
+                                   "SC44", "SC45", "SC46", "SC47", "SC48", "SC49", "SC50", "SC51", "SC52", "SC53")
+
+# Remove Unassigned Readcounts
+ot_scree_filtered <- otu_table_screening[-10,]
+
+# Remove species with no counts
+ot_scree_filtered <- filter_otus_by_counts_col_counts(ot_scree_filtered,min_count = 10, col_number = 1)
+
+write.csv(x = ot_scree_filtered,
+          file = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Experiments/SynCom100/Results/scree_ot_filtered.csv",
+          row.names = T,
+          quote = F)
+
+# Set colour palette 
+colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#290f76",
+                 "lightblue1","brown1", "olivedrab3", "darkorange3")
+
+##### Screening Barplot
+screening_barplot <- barplot_from_feature_table(feature_table = ot_scree_filtered, sort_type = "none", colour_palette = colours_vec, legend_pos = "right", legend_cols = 1)
+
+##### Screening Barplots sorted by S. aureus abundance and Similarity
+screening_barplot <- barplot_from_feature_table(feature_table = ot_scree_filtered, sort_type = "feature_value", feature_to_sort = "Staphylococcus aureus",
+                           colour_palette = colours_vec, legend_pos = "right", legend_cols = 1)
+
+screening_barplot <- barplot_from_feature_table(feature_table = ot_scree_filtered, sort_type = "similarity",
+                           colour_palette = colours_vec, legend_pos = "right", legend_cols = 1)
+
+screening_barplot
+
+ggsave(
+  "C:/Users/marce/Desktop/bar_plot_scree.pdf",
+  plot = screening_barplot,
+  dpi = 10, device = "pdf", width = 15, height = 6
+)
+
+##### Add dendograms to barplots
+dendo_plot <- dendogram_from_feature_table(ot_scree_filtered)
+
+p3 <- cowplot::plot_grid(dendo_plot, screening_barplot, align = "v",
+                ncol = 1,
+                rel_heights = c(2/10, 8/10),
+                axis = "lr")
+
+p3
+
+# Screening barplot with strain information
+# Convert OTU Table to strain level table.
+
+strain_data <- readxl::read_excel(path = "C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/SOPs/1_Nose (HMP) Strains.xlsx", sheet = "SynCom100_2", range = "A1:BA32", col_names = TRUE)
+
+strain_ft <- merge_abundance_by_strain(ot_scree_filtered, strain_data)
+
+screening_barplot <- barplot_from_feature_table(feature_table = strain_ft, sort_type = "none", strains = TRUE,
+                                                colour_palette = colours_vec, legend_pos = "right", legend_cols = 1)
+
+screening_barplot
+
+# To use species-level data
+#otu_table <- otu_table_sctp_filt
+
+# To use strain-level data
+#otu_table <- strain_ft
+
+
+
+###...###
+
+###### Time-series analyses
 otu_table_sctp <- read.csv("E:/SequencingData/SynCom100/TheChampions/emu_results/otu_table.csv", row.names=1)
 
 otu_table_sctp_sorted <- sort_nanopore_table_by_barcodes(df = otu_table_sctp,
@@ -166,9 +239,6 @@ barplots_grid(feature_tables = list(sc24, sc25, sc26, sc28, sc32,
               legend_pos = "bottom", legend_cols = 2,
               legend_title_size = 9, legend_text_size = 7,
               legend_key_size = 0.3, colour_palette = colours_vec)
-
-
-
 
 
 barplots_grid(feature_tables = list(sc4, sc7, sc9, sc10, sc11),

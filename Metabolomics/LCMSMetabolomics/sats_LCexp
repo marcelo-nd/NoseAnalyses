@@ -25,20 +25,22 @@ from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruska
 # Read feature table and metadata
 ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/LC_exp_ft_raw.csv"
 
+ft_path = "/mnt/d/2_OtherProjects/LauraSynComs/lcms_table.csv"
+
 ft = pd.read_csv(ft_path, index_col=0)
 
-imp_ft = imputation(ft)
+#imp_ft = imputation(ft)
 
-imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/imp_ft.csv")
+#imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/imp_ft.csv")
 
 ##############
 # Read feature table and metadata
-ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/LC_exp_ft_raw.csv"
+#ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/LC_exp_ft_raw.csv"
 
 # only amino acids
-ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv"
+#ft_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/ft_subset.csv"
 
-md_path = "/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/FIA/Results_LC_SC_exp/metadata.csv"
+md_path = "/mnt/d/2_OtherProjects/LauraSynComs/metadata_table.csv"
 
 ft2 = pd.read_csv(ft_path, index_col=0)
 

@@ -1,6 +1,8 @@
 # Load helping functions
 source("C:/Users/marce/Documents/GitHub/microbiome-help/microbiomeGraphing.R")
 
+source("C:/Users/marce/Documents/GitHub/microbiome-help/feature_table_wrangling.R")
+
 source("C:/Users/marce/Documents/GitHub/microbiome-help/otuTableWrangling.R")
 
 source("C:/Users/marce/Documents/GitHub/microbiome-help/functionalDataWrangling.R")

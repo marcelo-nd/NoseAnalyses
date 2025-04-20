@@ -356,6 +356,9 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/NS_SC10
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SCPlus_070425/no_sample_id/20250407_1236_MN45148_AYT875_52253316/fastq_pass
 
+#### SequencingRun 17.04.25
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100Plus_try2_160425/no_sample_id/20250416_1346_MN45148_ayz085_541b5a66/fastq_pass
 
 # Unzip sequences
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
@@ -365,8 +368,8 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SCPlus_
 
 # emu
 export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_rRNA_Emu_181124
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv
 
 # emu (nanopore computer)
 export EMU_DATABASE_DIR=/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/16Sdatabases/LaCa_rRNA_Emu_181124
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/c/Users/AGLinkNanopore/Documents/Marcelo/16Sdatabases/LaCa_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/c/Users/AGLinkNanopore/Documents/Marcelo/16Sdatabases/LaCa_copies.csv

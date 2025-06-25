@@ -15,11 +15,11 @@ export SC100_Scree=/mnt/e/SequencingData/SynCom100/Screening
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/LaCa_rRNA_Emu_181124
+export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/nose_sc_db_200824
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/f/16Sdatabases/LaCa_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/e/16Sdatabases/16s_copies.csv
 
-
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_Scree/fastq_qc -o $SC100_Scree -d $EMU_DATABASE_DIR -b "barcode07" -c "TRUE" -p /mnt/e/16Sdatabases/16s_copies.csv
 ### Timepoints
 
 # Unzip sequences
@@ -32,6 +32,6 @@ export SC100_TP=/mnt/e/SequencingData/SynCom100/TheChampions
 
 # emu
 
-export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/LaCa_rRNA_Emu_181124
+export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/nose_sc_db_200824
 
-. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_TP/fastq_qc -o $SC100_TP -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/e/16Sdatabases/LaCa_copies.csv
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $SC100_TP/fastq_qc -o $SC100_TP -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/e/16Sdatabases/16s_copies.csv

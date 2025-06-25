@@ -360,6 +360,64 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SCPlus_
 EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100Plus_try2_160425/no_sample_id/20250416_1346_MN45148_ayz085_541b5a66/fastq_pass
 
+#### SequencingRun 25.04.25
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100_PaoloSC_250425/no_sample_id/20250425_1330_MN45148_AWM177_48528f9c/fastq_pass
+
+# Emu for run 25.04.25
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 300 -h 5000
+
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_rRNA_Emu_181124
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06,barcode07,barcode08,barcode09,barcode10,barcode23" -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv
+
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC_mod
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -b "barcode11,barcode12,barcode13,barcode14,barcode15,barcode16,barcode17,barcode18,barcode19,barcode20,barcode21,barcode22" -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC/Ara_Library_copies.csv
+
+#### Combined run 17.04.25 and 25.04.25
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/Comb_SC100_PaoloSC_250425_KemenSC_260425
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 300 -h 5000
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC_mod
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -b "barcode11,barcode12,barcode13,barcode14,barcode15,barcode16,barcode17,barcode18,barcode19,barcode20,barcode21,barcode22" -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC/Ara_Library_copies.csv
+
+
+#### Run 15.05.25 (SEVERAL PRIMER FROM BARCODES 1-9)
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/Paolo_SC100_140525/no_sample_id/20250514_1614_MN45148_AWR003_8e853f3f/fastq_pass
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 150 -h 1100
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC_mod
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06,barcode07,barcode08,barcode09" -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC/Ara_Library_copies.csv
+
+
+#### Run Comb_paolo 15.05.25 (SEVERAL PRIMER FROM BARCODES 1-9)
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/Comb_Paolo_140525_150525
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 150 -h 1100
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC_mod
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -b "barcode01,barcode02,barcode03,barcode04,barcode05,barcode06,barcode07,barcode08,barcode09" -c "FALSE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/KemenSC/Ara_Library_copies.csv
+
+
+#### Run SC100 15.05.25 (SEVERAL PRIMER FROM BARCODES 1-9)
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/Comb_SC100_140525_150525
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_rRNA_Emu_181124
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR  -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv
+
+"barcode12,barcode13,barcode14,barcode15,barcode16,barcode17,barcode18,barcode19,barcode20,barcode21,barcode22" 
+
+#### Run NPT 23.05.25
+EMUWRAPPER_LOC="/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/EmuWrapper"
+export seqs_paths=/mnt/c/data/Marcelo/NanoporeTech_230525/no_sample_id/20250523_1713_MN45148_FBB06794_1bd5bf2c/fastq_pass
+
+
+
+
+
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
 # Unzip sequences
 . $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
 
@@ -373,3 +431,30 @@ export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/L
 # emu (nanopore computer)
 export EMU_DATABASE_DIR=/mnt/c/Users/AGLinkNanopore/Documents/Marcelo/16Sdatabases/LaCa_rRNA_Emu_181124
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/c/Users/AGLinkNanopore/Documents/Marcelo/16Sdatabases/LaCa_copies.csv
+
+
+# plant database
+emu build-database KemenSC_DB --sequences /mnt/d/2_OtherProjects/Paolo_Sequencing/DB_files/plant_syncom.fasta --seq2tax /mnt/d/2_OtherProjects/Paolo_Sequencing/DB_files/plant_seq2tax.map --taxonomy-list /mnt/d/2_OtherProjects/Paolo_Sequencing/DB_files/plant_taxonomy.tsv
+
+
+# Only Laca
+emu build-database LaCa_DB --sequences /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_LaCa/LaCa_rRNA.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_LaCa/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_LaCa/LaCa_taxonomy.tsv
+
+# Only Zymo
+emu build-database Zymo_DB --sequences /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_zymo/LaCa_rRNA.fasta --seq2tax /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_zymo/LaCa_seq2tax.map --taxonomy-list /mnt/c/Users/marce/'OneDrive - UT Cloud'/'1_NoseSynCom Project'/'Nasal Genomes'/LaCa_rRNA/only_zymo/LaCa_taxonomy.tsv
+
+
+
+#### Run NPT 28.05.25
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/NT_28052025/no_sample_id/20250528_1532_MN45148_FBA33889_840e0bfa/fastq_pass
+
+# Unzip sequences
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 200 -h 5000
+
+# emu
+export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/RRN_db
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv

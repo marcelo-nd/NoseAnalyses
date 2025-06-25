@@ -16,7 +16,7 @@ colnames(otu_table_screening) <- c("SC1","SC2","SC3", "SC4", "SC5", "SC6", "SC7"
                                    "SC22", "SC23", "SC24", "SC25", "SC26", "SC27", "SC28", "SC29", "SC30", "SC31",
                                    "SC32", "SC33", "SC35", "SC36", "SC37", "SC38", "SC40", "SC41", "SC42", "SC43",
                                    "SC44", "SC45", "SC46", "SC47", "SC48", "SC49", "SC50", "SC51", "SC52", "SC53")
-
+# SC16, SC34, SC39
 # Remove Unassigned Readcounts
 ot_scree_filtered <- otu_table_screening[-10,]
 
@@ -24,7 +24,7 @@ ot_scree_filtered <- otu_table_screening[-10,]
 ot_scree_filtered <- filter_otus_by_counts_col_counts(ot_scree_filtered,min_count = 10, col_number = 1)
 
 # Set colour palette 
-colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","#290f76",
+colours_vec <- c("gold3", "#053f73", "blueviolet", "#CC79A7","mediumspringgreen",
                 "lightblue1","brown1", "olivedrab3", "darkorange3")
 
 ##### Screening Barplot

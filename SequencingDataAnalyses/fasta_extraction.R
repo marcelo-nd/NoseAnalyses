@@ -100,6 +100,8 @@ writeXStringSet(x = soil_extract_fasta, filepath = "C:/Users/marce/Desktop/speci
 species = c("Acidovorax delafieldii", "Arthrobacter humicola", "Bacillus altitudinis", "Bacillus subtilis",
             "Flavobacterium pectinovorum", "Priestia megaterium", "Pseudomonas koreensis", "Rhodopseudomonas palustris")
 
+species = c("Arthrobacter humicola", "Bacillus altitudinis")
+
 # Read taxonomy table
 #taxonomy <- read_delim("F:/16Sdatabases/RRN_db/taxonomy.tsv",
 #                       delim = "\t", escape_double = FALSE,
@@ -111,3 +113,5 @@ soil_extract_taxtable <- extract_taxonomy_from_taxtable(tax_table = taxonomy, sp
 
 write.table(soil_extract_taxtable, file = "C:/Users/marce/Desktop/taxonomy.tsv", row.names = FALSE,
             quote = FALSE, sep = "\t")
+
+

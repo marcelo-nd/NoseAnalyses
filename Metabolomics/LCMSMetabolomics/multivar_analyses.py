@@ -136,10 +136,10 @@ custom_palette = [
     "orange", "green", "red", "blue", "black",
     "slategray", "purple", "cyan", "maroon", "yellow",
     "magenta", "teal", "pink", "lavender", "olive",
-    "turquoise", "brown", "navy", "goldenrod", "indigo",
-    "darkorange", "goldenrod", "darkslategray", "palegoldenrod", "cornflowerblue",
-    "springgreen", "rebeccapurple", "royalblue", "darkolivegreen", "hotpink",
-    "skyblue", "cadetblue", "lightsteelblue", "sienna", "firebrick"
+    "darkslategray", "brown", "navy", "lightsteelblue", "indigo",
+    "darkorange", "goldenrod", "turquoise", "palegoldenrod", "cornflowerblue",
+    "springgreen", "sienna", "royalblue", "goldenrod", "hotpink",
+    "skyblue", "cadetblue", "rebeccapurple", "darkolivegreen", "firebrick"
 ]
 
 def pcoa_w_metrics(data, meta, distmetric, attribute, attribute2,
@@ -147,7 +147,7 @@ def pcoa_w_metrics(data, meta, distmetric, attribute, attribute2,
              title='Principal coordinates plot', plot=True, print_perm=True,
              pWidth= 600, pHeight = 400, dot_size = 2):
     
-    random.shuffle(cols)
+    #random.shuffle(cols)
 
     metrices = ['euclidean','cityblock','canberra','braycurtis','jaccard','minkowski']
     
@@ -328,6 +328,7 @@ def metabo_heatmap(cleaned_data, input_list, ins_lev, meta):
       colors = {}
       for attribute in attributes:
         unique_levels = list(set(ann.loc[:,attribute]))
+        unique_levels = sorted(unique_levels)
         n_colors = len(unique_levels)
         selected_colors = custom_palette[:n_colors]
         colors_levels = {unique_levels[i]: selected_colors[i] for i in range(n_colors)}

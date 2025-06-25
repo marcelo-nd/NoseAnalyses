@@ -21,8 +21,11 @@ from univar_analyses import norm_test, gen_anova_data, anova_vis, anova_boxplots
 from univar_analyses import ttest_volcano, gen_kruskal_data, kruskal_viz, kruskal_boxplots, dunn_post_hoc_test, dunn_volcano, dunn_boxplots
 
 ### Get files
-
+# no analog search
 taskID = "115e1b26a65b436e9057a52305f5a315"
+
+# with analog search
+taskID = "4bf27f73090641c4ad8acea79edc8855"
 
 ft_url = os.path.join('https://gnps2.org/resultfile?task='+taskID+'&file=nf_output/clustering/featuretable_reformated.csv')
 md_url = os.path.join('https://gnps2.org/resultfile?task='+taskID+'&file=nf_output/metadata/merged_metadata.tsv')
@@ -32,9 +35,16 @@ ft = pd.read_csv(ft_url)
 md = pd.read_csv(md_url, sep = "\t")
 an_gnps = pd.read_csv(an_gnps_url, sep = "\t")
 
+# No analog search
 ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/featuretable_reformated.csv")
 md.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_metadata.tsv")
 an_gnps.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/FBMN/merged_results_with_gnps.tsv")
+
+# With analog search
+ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/FBMN/featuretable_reformated.csv")
+md.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/FBMN/merged_metadata.tsv")
+an_gnps.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/FBMN/merged_results_with_gnps.tsv")
+
 
 an_analog = an_gnps.copy() # since GNPS2 offers a single merged file containing both actual annotations and analogs
 
@@ -113,12 +123,15 @@ else:
     print("WARNING: Sample names in feature and metadata table are NOT the same!")
 
 # Write the tables to disk
-
+# no analog search
 imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_quantTable_imp.csv")
-
 tic_norm_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_quantTable_ticNorm.csv")
-
 scaled_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/annotated_QuantTable_scaled.csv") # save to file
+
+# analog search
+imp_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/annotated_quantTable_imp.csv")
+tic_norm_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/annotated_quantTable_ticNorm.csv")
+scaled_ft.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/annotated_QuantTable_scaled.csv") # save to file
 
 
 #Setting 'filename' column as 'index' for md_Samples
@@ -138,7 +151,7 @@ pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATT
 
 pca_plot_fig.show(renderer="png")
 
-pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/pca_plot.svg")
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/Figures/pca_plot.pdf", width=1200, height=850, format="pdf")
 
 # Scree plot?
 
@@ -146,6 +159,16 @@ pca_plot_fig.write_image("/mnt/d/2_OtherProjects/SY_bioreactors/Figures/pca_plot
 permanova_metab(cleaned_data = scaled_ft, metadata=md_Samples, distmetric = "euclidean", attribute_permanova="ATTRIBUTE_Volunteer")
 
 ####### Permanova + PCoA
+pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "euclidean",
+                                     attribute = "ATTRIBUTE_Sample", attribute2 = "ATTRIBUTE_Time", col_attribute = "ATTRIBUTE_Sample",
+                                     mdtype="categorical", title="Principal coordinates plot",
+                                     plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
+
+pcoa_w_metrics_plot.show(renderer="png", pheight = 800, pwidth = 1200)
+
+pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/Figures/pcoa_w_metrics_euclidean.pdf", format="pdf")
+
+# bray curtis
 pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distmetric = "braycurtis",
                                      attribute = "ATTRIBUTE_Sample", attribute2 = "ATTRIBUTE_Time", col_attribute = "ATTRIBUTE_Sample",
                                      mdtype="categorical", title="Principal coordinates plot",
@@ -153,7 +176,8 @@ pcoa_w_metrics_plot = pcoa_w_metrics(data = scaled_ft, meta = md_Samples, distme
 
 pcoa_w_metrics_plot.show(renderer="png", pheight = 800, pwidth = 1200)
 
-pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/pcoa_w_metrics.pdf", format="pdf")
+pcoa_w_metrics_plot.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/Figures/pcoa_w_metrics_euclidean_braycurtis.pdf", format="pdf")
+
 
 
 ###### Supervised learning with Random Forest
@@ -164,52 +188,81 @@ rf_results.sort_values(by="Importance", ascending=False, inplace = True)
 
 # Write random forest to csv
 rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results.csv")
+# with Analog search
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_results.csv")
 
 # read rf results
 rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results.csv', delimiter=',', index_col=0)
-
-# Filter unannotated features. Only run to keep annotated features!
-rf_results = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
-
-# Write filtered random forest results to csv
-rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv")
-
-# read rf results
-#rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv', delimiter=',', index_col=0)
+# with analog search
+rf_results = pd.read_csv('/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_results.csv', delimiter=',', index_col=0)
 
 # Make a list (Series) of the features (this is already ordered by importance)
 rf_features_list = rf_results["Feature"]
 
 # Filter feature table to contain only the 100 most important features according to random forest classification.
 rf_feature_table = imp_ft[rf_features_list[1:101]]
-rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp_an.csv")
 
+# Write random forest filtered feature table
 rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp.csv")
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_featuretable_imp.csv")
 
-# Scale filtered feature table.
-rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
 
-#rf_feature_table_scaled = scale_ft(rf_feature_table)
+# Scaled filtered feature table.
+rf_ft_scaled = scale_ft(rf_feature_table)
+#rf_feature_table_scaled = scaled_ft[rf_features_list[1:101]]
 
 # Write rf filtered feature table to csv
-rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled_an.csv")
-
-rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled.csv")
+rf_ft_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled.csv")
+# With analog search
+rf_ft_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_featuretable_scaled.csv")
 
 # PCoA from rf filtered scaled feature table.
-pcoa = pcoa_metabolomics(cleaned_data = rf_feature_table_scaled, metadata = md_Samples)
-pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Sample')
+#pcoa = pcoa_metabolomics(cleaned_data = rf_ft_scaled, metadata = md_Samples)
+#pca_plot_fig = pca_plot(pcoa_obj = pcoa, metadata = md_Samples, attribute = 'ATTRIBUTE_Sample')
 
-pca_plot_fig = pcoa_w_metrics(data = rf_feature_table_scaled, meta = md_Samples, distmetric = "euclidean",
+pca_plot_fig = pcoa_w_metrics(data = rf_ft_scaled, meta = md_Samples, distmetric = "euclidean",
                               attribute = 'ATTRIBUTE_Sample', col_attribute = 'ATTRIBUTE_Sample',
                               attribute2='ATTRIBUTE_Time', plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
 
 pca_plot_fig.show(renderer="png")
 
-pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/pcoa_rf_an.svg", format = "svg") # save figure
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/Figures/pcoa_rf_euclidean.pdf", format = "pdf") # save figure
+
+# bray curtis
+pca_plot_fig = pcoa_w_metrics(data = rf_ft_scaled, meta = md_Samples, distmetric = "braycurtis",
+                              attribute = 'ATTRIBUTE_Sample', col_attribute = 'ATTRIBUTE_Sample',
+                              attribute2='ATTRIBUTE_Time', plot=True, print_perm=True, pWidth= 1200, pHeight=850, dot_size=12)
+
+pca_plot_fig.show(renderer="png")
+pca_plot_fig.write_image("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/Figures/pcoa_rf_braycurtis.pdf", format = "pdf") # save figure
 
 print(pcoa.eigvals)
 
 # Heatmap between samples and features.
-heatmap_attributes = [0, 2]
-metabo_heatmap(cleaned_data=rf_feature_table_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
+heatmap_attributes = [0]
+metabo_heatmap(cleaned_data=rf_ft_scaled, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
+
+metabo_heatmap(cleaned_data=scaled_ft, meta=md_Samples, input_list= heatmap_attributes, ins_lev=ins_lvls)
+
+
+
+
+##### Filter unannotated features. Only run to keep annotated features!
+rf_results_an = rf_results[~rf_results['Feature'].str.contains('nan', na=False)]
+
+# Write filtered random forest results to csv
+rf_results_an.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_results_an.csv")
+# with analog search
+rf_results.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_results_an.csv")
+
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_imp_an.csv")
+# With analog search
+rf_feature_table.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_featuretable_imp_an.csv")
+# Write rf filtered feature table to csv
+#rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/3_200125_No_QCs_noSinStrs/DA/rf_featuretable_scaled_an.csv")
+# With analog search
+#rf_feature_table_scaled.to_csv("/mnt/c/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/Results/4_no.qcs_no.sin.strs_an.search/DA/rf_featuretable_scaled_an.csv")
+
+
+
+

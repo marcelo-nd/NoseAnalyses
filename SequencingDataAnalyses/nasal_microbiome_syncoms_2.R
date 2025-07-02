@@ -334,7 +334,7 @@ species_to_remove <- c("Anaerococcus octavius", "Cutibacterium acnes")
 
 # Apply the function
 strain_data2 <- remove_species_by_prefix(strain_data2, species_to_remove)
-otu_table <- remove_species_by_prefix(otu_table, species_to_remove)
+otu_table <-remove_feature_by_prefix(otu_table, species_to_remove)
 
 time_names <- c("Inoc", "T1", "T2", "T3", "T4")
 
@@ -376,7 +376,7 @@ sc43 <- cbind(strain_data2["SC43"], otu_table[c(206,209,212,215)])
 colnames(sc43) <- time_names
 sc47 <- cbind(strain_data2["SC47"], otu_table[c(218,221,224,227)])
 colnames(sc47) <- time_names
-sc53 <- cbind(strain_data2["SC53"], otu_table[c(230,233,236,239)])
+sc50 <- cbind(strain_data2["SC50"], otu_table[c(230,233,236,239)])
 colnames(sc53) <- time_names
 
 

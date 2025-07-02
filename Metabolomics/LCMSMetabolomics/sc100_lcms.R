@@ -23,22 +23,6 @@ feature_table <- read_ft_1("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Proj
 
 #feature_table <- feature_table[-1]
 
-metadata <- read_metadata("C:/Users/marce/OneDrive - UT Cloud/1_NoseSynCom Project/Metabolomics/UT_LCMS/SC100/SC100_metadata_noqcs_nosinStrs.csv",
-                            sort_by_names = TRUE)
 
-metadata <- metadata[7:nrow(metadata),]
-
-# Remove highly variable metabolites (intrareplicate variability).
-filtered_ft <- filter_by_error(feature_table = feature_table, metadata_table = metadata, grouping_var = "ATTRIBUTE_Sample", error_threshold = 25)
-rownames(filtered_ft) <- rownames(feature_table)
-
-# Do PCA
-ft_pca(feature_table = feature_table, metadata_table = metadata, grouping_col = "ATTRIBUTE_Sample", encircle = FALSE)
-
-ft_pca(feature_table = filtered_ft, metadata_table = metadata, grouping_col = "ATTRIBUTE_Sample", encircle = TRUE)
-
-# PCA with vegan
-ft_pca_2(feature_table = feature_table, metadata_table = metadata, dist_method = "euclidean",
-         grouping_col = "ATTRIBUTE_Sample", p_shape = "ATTRIBUTE_Time")
 
 

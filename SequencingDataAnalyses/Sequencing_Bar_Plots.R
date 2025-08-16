@@ -682,3 +682,9 @@ paolosc_rep <- read.csv("E:/SequencingData/Paolo/Runs/PaoloSC_Rep_180625/no_samp
 barplot_from_feature_table(paolosc_rep, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
 
 
+# Run Repeat
+rep_exp <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100-Repetition_Experiment/no_sample_id/20250731_1603_MN45148_FAY35296_2d1229a5/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(rep_exp, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+

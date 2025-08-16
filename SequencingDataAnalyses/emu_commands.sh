@@ -458,3 +458,19 @@ export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/NT_2805
 # emu
 export EMU_DATABASE_DIR=/mnt/e/16Sdatabases/RRN_db
 . $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "FALSE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv
+
+
+
+#### Run NPT 28.05.25
+EMUWRAPPER_LOC="/mnt/c/Users/marce/Documents/GitHub/EmuWrapper"
+export seqs_paths=/mnt/d/1_NoseSynComProject/SequencingData/OriginalRuns/SC100-Repetition_Experiment/no_sample_id/20250731_1603_MN45148_FAY35296_2d1229a5/fastq_pass
+
+# Unzip sequences
+. $EMUWRAPPER_LOC/emu_wrapper_unzipper.sh -s $seqs_paths -o $seqs_paths
+
+# QC
+. $EMUWRAPPER_LOC/emu_wrapper_qc.sh -s $seqs_paths/fastq -o $seqs_paths -q 10 -l 1000 -h 5000
+
+# emu
+export EMU_DATABASE_DIR=/mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_rRNA_Emu_181124
+. $EMUWRAPPER_LOC/emu_wrapper_run_emu.sh -s $seqs_paths/fastq_qc -o $seqs_paths -d $EMU_DATABASE_DIR -c "TRUE" -p /mnt/d/1_NoseSynComProject/SequencingData/16Sdatabases/LaCa_copies.csv

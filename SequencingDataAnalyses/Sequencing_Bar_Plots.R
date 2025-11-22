@@ -683,8 +683,128 @@ barplot_from_feature_table(paolosc_rep, legend_pos = "right", legend_cols = 2, c
 
 
 # Run Repeat
-rep_exp <- read.csv("D:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100-Repetition_Experiment/no_sample_id/20250731_1603_MN45148_FAY35296_2d1229a5/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+rep_exp <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/SC100-Repetition_Experiment/no_sample_id/20250731_1603_MN45148_FAY35296_2d1229a5/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
 
 barplot_from_feature_table(rep_exp, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
 
 
+# Run Repeat
+rep_exp <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/Rep_exp_2/no_sample_id/20250804_1145_MN45148_FBA33889_6231beab/basecalling/pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(rep_exp[1:15], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+
+# Run AAs
+rep_exp <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/AAsExp_270825/no_sample_id/20250827_1852_MN45148_FBB06794_a4f73dd9/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(rep_exp, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+barplot_from_feature_table(rep_exp[10:15], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+aas_df <- remove_feature_by_prefix(rep_exp[10:15], patterns = c("Unassigned"))
+
+barplot_from_feature_table(aas_df, legend_pos = "right", legend_cols = 1, colour_palette = NULL)
+
+
+# Run 1 Paolo Bacteria Batch 2
+paolosc_b2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloBatch2_Bact1/no_sample_id/20250912_1552_MN45148_FBB05369_22cef7a6/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_b2_1[1:11,1:16], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_size = 8, x_axis_text_angle = 45)
+
+# Run 2 Paolo Bacteria Batch 2
+paolosc_b2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC2_Bact2/no_sample_id/20250917_1447_MN45148_FBB05369_9a30df6c/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_b2_1[1:12,1:13], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_size = 8, x_axis_text_angle = 45)
+
+
+
+# Run Paolo Bacteria Batch 2
+paolosc_b2_1 <- read.csv("D:/SequencingData/Paolo/ProcesssedSeqData/Bacteria2/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_b2_1[1:12,], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_size = 8, x_axis_text_angle = 45)
+
+
+# Run Paolo Fungi Batch 2
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/ProcesssedSeqData/Fungi2/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1, legend_pos = "right", legend_cols = 1, colour_palette = NULL)
+
+barplot_from_feature_table(paolosc_f2_1[c(1, 5, 6),], legend_pos = "right", legend_cols = 1, colour_palette = NULL)
+
+# Run Paolo Batch 3
+#Bacteria General DB
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC_B3_30092025/no_sample_id/20250930_1408_MN45148_FBB05369_a648c805/fastq_pass/emu_results_genDB/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1, legend_pos = "right", legend_cols = 3, colour_palette = NULL)
+
+# Bacteria PlantDB
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC_B3_30092025/no_sample_id/20250930_1408_MN45148_FBB05369_a648c805/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1[1:10], legend_pos = "right", legend_cols = 2, colour_palette = NULL, x_axis_text_size = 7)
+
+
+# Bacteria PlantDB + Zymo
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC_B3_30092025/no_sample_id/20250930_1408_MN45148_FBB05369_a648c805/fastq_pass/emu_results_pdb_zym/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1[1:11], legend_pos = "right", legend_cols = 2, colour_palette = NULL, x_axis_text_size = 7)
+
+
+# Bacteria Illumina
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC_B3_30092025/no_sample_id/20250930_1408_MN45148_FBB05369_a648c805/fastq_pass/Ilu/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+# Fungi
+paolosc_f2_1 <- read.csv("D:/SequencingData/Paolo/Runs/PaoloSC_B3_30092025/no_sample_id/20250930_1408_MN45148_FBB05369_a648c805/fastq_pass/fungi/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(paolosc_f2_1[1:6,], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+
+barplot_from_feature_table(paolosc_f2_1, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+
+
+# Cocultures 22.10.25
+seqs_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/PaoloSC2_221025_Nose/no_sample_id/20251022_1402_MN45148_FBA97141_ce19b3fa/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(seqs_emu[1:9,1:3], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+
+
+# Paolo Rep 
+seqs_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/PaoloSC2_221025_Paolo/no_sample_id/20251022_1402_MN45148_FBA97141_ce19b3fa/fastq_pass/emu_results_real/otu_table.csv", row.names=1, sep = ";")
+
+seqs_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/PaoloSC2_221025_Paolo/no_sample_id/20251022_1402_MN45148_FBA97141_ce19b3fa/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+barplot_from_feature_table(seqs_emu, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+barplot_from_feature_table(seqs_emu[1:11,], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+
+
+# Paolo Rep 2
+seqs_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/PaoloSC_011125/no_sample_id/20251101_1501_MN45148_FBE49262_d86ea796/fastq_pass/emu_results_zymo/otu_table.csv", row.names=1, sep = ";")
+
+seqs_emu <- read.csv("E:/1_NoseSynComProject/SequencingData/OriginalRuns/PaoloSC_011125/no_sample_id/20251101_1501_MN45148_FBE49262_d86ea796/fastq_pass/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+# Check control
+barplot_from_feature_table(seqs_emu[21], legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+barplot_from_feature_table(seqs_emu, legend_pos = "right", legend_cols = 2, colour_palette = NULL)
+
+barplot_from_feature_table(seqs_emu[1:13,], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_angle = 90)
+
+
+
+
+###################### Paolo mutants from plates
+seqs_emu <- read.csv("D:/SequencingData/Paolo/2_PaoloSC_MutntExp_Plates/Bacteria/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+# Check control
+barplot_from_feature_table(seqs_emu[1:12,], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_angle = 90)
+
+
+seqs_emu <- read.csv("D:/SequencingData/Paolo/2_PaoloSC_MutntExp_Plates/Fungi/emu_results/otu_table.csv", row.names=1, sep = ";")
+
+# Check control
+barplot_from_feature_table(seqs_emu[1:6,], legend_pos = "right", legend_cols = 1, colour_palette = NULL, x_axis_text_angle = 90)
